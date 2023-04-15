@@ -27,7 +27,27 @@
     height: 480px;
     position: relative;
     background: rgba(255, 2, 2, 0.155);
-    box-shadow: 0 0 20px 9px rgba(255, 255, 255, 0.427);
+    box-shadow: 0 0 20px 9px rgba(115, 72, 72, 0.54);
     border-radius: 8%;
     margin:  10% auto;
+}
+
+/*
+    This needs to improve
+*/
+
+.button-link {
+    position: relative;
+    padding: 20px 50px;
+    border: none;
+    background:rgb(106, 92, 143);
+    outline: none;
+    color: rgba(255, 255, 255, 0.933);
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    top: 30%;
+    left: 30%;
+
+    
 }
