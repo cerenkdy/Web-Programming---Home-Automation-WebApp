@@ -1,11 +1,16 @@
-body { 
-    color: red;
+
+
+*{
+    margin: 0;
+    padding: 0;
 }
 
-h1 { 
-    color: black;
-}
-
-p { 
-    color: white;
+.main {
+    width: 100%;
+    height: 100%;
+    background-image: url(landingpage.jpg);
+    position: absolute;
+    background-position: center center;
+    background-size: cover;
+    background-attachment: fixed;
 }
