@@ -33,7 +33,7 @@
 }
 
 /*
-    This needs to improve
+    Button link needs to improve
 */
 
 .button-link {
@@ -47,7 +47,5 @@
     font-weight: bold;
     cursor: pointer;
     top: 30%;
-    left: 30%;
-
-    
+    left: 30%; 
 }
