@@ -11,26 +11,30 @@ if(isset($_POST["login"]))
     $username = $_POST["username"];  
     $pwd=$_POST["password"];  
 
-    if(isset($_username) && isset($pwd)) 
+    if(isset($username) && isset($pwd)) 
     {
         //Searching for username
-        $selection = "SELECT * FROM  producer WHERE username ='$username'";
+        $selection = "SELECT * FROM  producer WHERE Username ='$username'";
         $start=mysqli_query($connection, $selection);
 
         //Usernames are unique so this works as found or not found
-        $is_user_found = mysqli_num_rows($start); 
+        $is_user_found = mysqli_num_rows($start); // 0 or 1
 
         if($is_user_found>0)
         {
             //All data related to that user
             $user_record = mysqli_fetch_assoc($start);
-
+            
+            $passowrd = $user_record["Password"];
             //Password check
-            if(password_verify($user_record["password"], $pwd))
+            if(password_verify($password, $pwd))
             {
                 session_start();
                 $_SESSION["username"]=$user_record["username"];
-                header("location:producerMainPage.php");
+                echo '<div class="alert alert-success" role="alert">
+            giriş yapıldı!
+            </div>';
+            header('Location: http://www.google.com/');;
             }
             else
             {
@@ -46,6 +50,8 @@ if(isset($_POST["login"]))
             </div>';
             
         }
+
+        mysqli_close($connection);
 
     }
 
