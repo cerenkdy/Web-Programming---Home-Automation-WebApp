@@ -25,16 +25,16 @@ if(isset($_POST["login"]))
             //All data related to that user
             $user_record = mysqli_fetch_assoc($start);
             
-            $passowrd = $user_record["Password"];
+            $password = $user_record["Password"];
             //Password check
-            if(password_verify($password, $pwd))
+            if($pwd == $password)
             {
                 session_start();
                 $_SESSION["username"]=$user_record["username"];
                 echo '<div class="alert alert-success" role="alert">
             giriş yapıldı!
             </div>';
-            header('Location: http://www.google.com/');;
+            header('Location: ../Consumer/livingroom.html');
             }
             else
             {
