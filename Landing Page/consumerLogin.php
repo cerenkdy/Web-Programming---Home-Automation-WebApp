@@ -1,8 +1,9 @@
 <?php
 
-include("connection.php");
 
 
+$user="admin";
+$password="1234";
 
 if(isset($_POST["login"])) 
 {
@@ -13,24 +14,11 @@ if(isset($_POST["login"]))
 
     if(isset($username) && isset($pwd)) 
     {
-        //Searching for username
-        $selection = "SELECT * FROM  consumer WHERE Username ='$username'";
-        $start=mysqli_query($connection, $selection);
-
-        //Usernames are unique so this works as found or not found
-        $is_user_found = mysqli_num_rows($start); // 0 or 1
-
-        if($is_user_found>0)
-        {
-            //All data related to that user
-            $user_record = mysqli_fetch_assoc($start);
-            
-            $password = $user_record["Password"];
+        
             //Password check
-            if($pwd == $password)
+            if($pwd == $password && $username == $user)
             {
-                session_start();
-                $_SESSION["username"]=$user_record["username"];
+                
                 echo '<div class="alert alert-success" role="alert">
             giriş yapıldı!
             </div>';
@@ -53,11 +41,11 @@ if(isset($_POST["login"]))
             
         }
 
-        mysqli_close($connection);
+    
 
     }
 
-}
+
 
 ?>
 
