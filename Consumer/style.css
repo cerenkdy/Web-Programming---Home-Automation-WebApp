@@ -165,7 +165,7 @@ ul li a {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: calc(100% - 35px);
+    width: calc(100% - 40px);
     margin-top: 5px;
     margin-left: 5px;
     margin-bottom: 10px;
@@ -186,7 +186,7 @@ ul li a {
 .temp-mode{
     display: flex;
     justify-content: space-between;
-    width: calc(100% - 35px);
+    width: calc(100% - 40px);
 }
 
 /* Switch */
