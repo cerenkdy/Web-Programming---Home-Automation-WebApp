@@ -34,6 +34,7 @@ header .button i {
 .wrapper{
     display: flex;
     gap: 40px;
+    justify-content: space-between;
 }
 
 ul li {
@@ -57,8 +58,8 @@ ul li a {
 
 .content-container{
     border: 2px solid #fefff83f;
-    padding: 20px 10px;
-    width: 100%;
+    padding: 40px 40px;
+    width: 85%;
 }
 
 .user-container{
@@ -132,8 +133,7 @@ ul li a {
     height: auto;
 }
 
-.control-body03{
-    display: flex;
+.control-body07{
     display: flex;
     align-items: center;
     justify-content: space-around;
@@ -162,6 +162,8 @@ ul li a {
     align-items: center;
     justify-content: space-between;
     width: calc(100% - 35px);
+    margin-top: 5px;
+    margin-left: 5px;
 }
 
 .up-down{
@@ -171,7 +173,7 @@ ul li a {
 
 }
 
-.d-w-item, .device-item{
+.d-w-item, .device-item, .on-off{
     display: flex;
     justify-content: space-between;
 }
@@ -418,4 +420,34 @@ input:checked + .slider:before {
 
 .fa-sort-up{
     margin-top: 10px;
+}
+
+.tv1-audio-control, .blind-position{
+    margin-left: 20px;
+}
+
+.channels{
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.on-off{
+    width: 50%;
+    margin-left: 20px;
+}
+
+.radio-item{
+    margin-top: 20px;
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.icon-item{
+    margin-left: 40px;
+}
+
+.phone{
+    margin-left: 27px;
 }

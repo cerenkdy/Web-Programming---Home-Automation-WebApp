@@ -60,88 +60,28 @@
 
             </div>
 
-            <div class="look-control control-item">
-                <div class="control-head02 head-item">
-                    <a><i class="fa-solid fa-house-lock"></i>Lock Control</a>
-                </div>
-
-                <div class="control-body02">
-                    <div class="doors">
-                        <div class="door01 d-w-item">
-                            <div class="header-item">
-                                <a><i class="fa-solid fa-caret-right"></i>door 1</a>
-                            </div>
-
-                            <div class="lock-switch">
-                                <div class="lock-container">
-                                    <span class="lock" onclick="toggleUnlock(this)"></span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="door02 d-w-item">
-                            <div class ="header-item">
-                                <a><i class="fa-solid fa-caret-right"></i>door 2</a>
-                            </div>
-
-                            <div class="lock-switch">
-                                <div class="lock-container">
-                                    <span class="lock" onclick="toggleUnlock(this)"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="windows d-w-item">
-                        <div class ="header-item">
-                            <a><i class="fa-solid fa-caret-right"></i>windows</a>
-                        </div>
-
-                        <div class="lock-switch">
-                            <div class="lock-container">
-                                <span class="lock" onclick="toggleUnlock(this)"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="fire-detection control-item">
-                <div class="control-head03 head-item">
-                    <a><i class="fa-solid fa-house-fire"></i>Fire/CO detection</a>
-                </div>
-
-                <div class="control-body03">
-                    <div class="alarm">
-                        <i class="fa-solid fa-fire"></i></i>
-                    </div>
-
-                    <div class="alarm-info">
-                        Smoke Detected
-                    </div>
-                </div>
-            </div>
-
             <div class="heating-control control-item">
-                <div class="control-head04 head-item">
+                <div class="control-head02 head-item">
                     <div>
                         <a><i class="fa-solid fa-temperature-three-quarters"></i>Heating Control</a>
                     </div>
 
-                    <div class="heating-auto auto-item">
-                        <div class="switch">
+                    <div class="heating-auto">
+                        <div class="switch auto-switch">
                             <label>
+                                <div class="auto-label">
+                                    Auto
+                                </div>
                                 <input type="checkbox" checked>
                                 <span class="slider round"></span>
                             </label>
                         </div>
-
                     </div>
                 </div>
 
-                <div class="control-body04">
-                    <div class="control-body04-1">
-                        <div class="control-body04-1-header header-item">
+                <div class="control-body02">
+                    <div class="control-body02-1">
+                        <div class="control-body02-1-rt">
                             <a><i class="fa-solid fa-caret-right"></i>Room Temp</a>
                         </div>
 
@@ -185,7 +125,7 @@
                         </div>
                     </div>
 
-                    <div class="control-body04-2">
+                    <div class="control-body02-2">
                         <div class="control-body04-2-header header-item">
                             <a><i class="fa-solid fa-caret-right"></i>Air conditioner</a>
                         </div>
@@ -236,7 +176,7 @@
             </div>
 
             <div class="humidity-control control-item">
-                <div class="control-head05 head-item">
+                <div class="control-head03 head-item">
                     <div>
                         <a><i class="fa-solid fa-droplet"></i>Humidity Control</a>
                     </div>
@@ -254,8 +194,8 @@
                     </div>
                 </div>
 
-                <div class="control-body05">
-                    <div class="control-body05-header header-item">
+                <div class="control-body03">
+                    <div class="control-body03-header header-item">
                         <a><i class="fa-solid fa-caret-right"></i>Humidifie</a>
                     </div>
 
@@ -282,14 +222,60 @@
                 </div>
             </div>
 
+            <div class="look-control control-item">
+                <div class="control-head04 head-item">
+                    <a><i class="fa-solid fa-house-lock"></i>Lock Control</a>
+                </div>
+
+                <div class="control-body04">
+                    <div class="doors">
+                        <div class="door01 d-w-item">
+                            <div class="header-item">
+                                <a><i class="fa-solid fa-caret-right"></i>door 1</a>
+                            </div>
+
+                            <div class="lock-switch">
+                                <div class="lock-container">
+                                    <span class="lock" onclick="toggleUnlock(this)"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="door02 d-w-item">
+                            <div class ="header-item">
+                                <a><i class="fa-solid fa-caret-right"></i>door 2</a>
+                            </div>
+
+                            <div class="lock-switch">
+                                <div class="lock-container">
+                                    <span class="lock" onclick="toggleUnlock(this)"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="windows d-w-item">
+                        <div class ="header-item">
+                            <a><i class="fa-solid fa-caret-right"></i>windows</a>
+                        </div>
+
+                        <div class="lock-switch">
+                            <div class="lock-container">
+                                <span class="lock" onclick="toggleUnlock(this)"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="lightining-control control-item">
-                <div class="control-head06 head-item">
+                <div class="control-head05 head-item">
                     <div>
                         <a><i class="fa-regular fa-lightbulb"></i>Lightining Control</a>
                     </div>
                 </div>
 
-                <div class="control-body02">
+                <div class="control-body05">
                     <div class="devices-light">
                         <div class="device-l-01 device-item">
                             <div class ="header-item">
@@ -334,13 +320,13 @@
             </div>
 
             <div class="multimedia-control control-item">
-                <div class="control-head07 head-item">
+                <div class="control-head06 head-item">
                     <div>
                         <a><i class="fa-solid fa-clapperboard"></i>Multimedia Control</a>
                     </div>
                 </div>
 
-                <div class="control-body07">
+                <div class="control-body06">
                     <div class="devices-tv">
                         <div class="device-tv1 device-item">
                             <div class="header-item">
@@ -360,10 +346,9 @@
                         </div>
                     </div>
 
-                    <div>
-                        <div class="channels">
-
-
+                    <div class="channels">
+                        <div >
+                            channel name
                         </div>
 
                         <div class="channel-change">
@@ -374,18 +359,94 @@
                 </div>
             </div>
 
+            <div class="fire-detection control-item">
+                <div class="control-head07 head-item">
+                    <a><i class="fa-solid fa-house-fire"></i>Fire/CO detection</a>
+                </div>
+
+                <div class="control-body07">
+                    <div class="alarm">
+                        <i class="fa-solid fa-fire"></i></i>
+                    </div>
+
+                    <div class="alarm-info">
+                        Smoke Detected
+                    </div>
+                </div>
+            </div>
+
             <div class="shading-control control-item">
-                <div class="control-head09 head-item">
+                <div class="control-head08 head-item">
                     <div>
                         <a><i class="fa-solid fa-bars"></i>Shading Control</a>
+                    </div>
+                </div>
+
+                <div class="control-body08">
+                    <div class="header-item">
+                        <a><i class="fa-solid fa-caret-right"></i>blinds' position</a>
+                    </div>
+
+                    <div class="blind">
+                        <div class="on-off">
+                            <a>
+                                ON
+                            </a>
+                            <a>
+                                OFF
+                            </a>
+                        </div>
+
+                        <div class="blind-position">
+                            <input type="range" min="1" max="100" value="50">
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="audio-control control-item">
-                <div class="control-head10 head-item">
+                <div class="control-head09 head-item">
                     <div>
                         <a><i class="fa-solid fa-headphones"></i>Audio Control</a>
+                    </div>
+                    <div class="switch auto-switch">
+                        <label>
+                            <input type="checkbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="control-body09 header-item">
+                    <div>
+                        <div class="radio-item">
+                            <div>
+                                <input type="radio" id="html" name="fav_language" value="HTML">
+                                <label for="html">TV 1</label><br>
+                            </div>
+                            <div class="icon-item">
+                                <i class="fa-solid fa-tv"></i>
+                            </div>
+                        </div>
+                        <div class="tv1-audio-control">
+                            <input type="range" min="1" max="100" value="50">
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="radio-item">
+                            <div>
+                                <input type="radio" id="html" name="fav_language" value="HTML">
+                                <label for="html">Phone</label><br>
+                            </div>
+                            <div class="phone icon-item">
+                                <i class="fa-solid fa-mobile-screen-button"></i>
+                                <i class="fa-solid fa-battery-full"></i>
+                            </div>
+                        </div>
+                        <div class="tv1-audio-control">
+                            <input type="range" min="1" max="100" value="50">
+                        </div>
                     </div>
                 </div>
             </div>
