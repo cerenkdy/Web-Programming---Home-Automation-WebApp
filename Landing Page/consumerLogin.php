@@ -19,12 +19,7 @@ if(isset($_POST["login"]))
             if($pwd == $password && $username == $user)
             {
                 
-                echo '<div class="alert alert-success" role="alert">
-            giriş yapıldı!
-            </div>';
-
-            //When producer page been made that needs to be updated
-            header('Location: https://www.youtube.com/watch?v=Tm6BlRMEny0');
+            header('Location: ../Consumer/livingroom.html ');
             }
             else
             {
