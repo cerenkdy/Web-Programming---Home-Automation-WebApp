@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style-p.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="app.js"></script>
+</head>
+
+<body>
+    <header>
+        <div>
+            <ul id="main-menu" class="menu-buttons">
+                <li class="button"><a href="#"><i class="fa-solid fa-gear"></i>Control</a></li>
+            </ul>
+        </div>
+
+        
+        <div class="main-menu-right">
+            <div class="log-out">
+                <ul id="main-menu" class="menu-buttons">
+                    <li class="button"><a href="#">log out</a></li>
+                </ul>
+            </div>
+
+            <div class=user-container>
+                <i class="fa-solid fa-circle-user"></i>
+            </div>
+        </div>
+    </header>
+
+
+    <div class="wrapper">
+        <div class="left-menu">
+            <ul id="buttons01" class="buttons">
+                <li class="button"><a href="livingroom-p.html"> Living Room </a></li>
+                <li class="button"><a href="kitchen-p.html">Kitchen</a></li>
+                <li class="button"><a href="bedroom-p.html">Bedroom</a></li>
+                <li class="button"><a href="kidsroom-p.html">Kids Room</a></li>
+                <li class="button"><a href="guestroom-p.html">Guest Room</a></li>
+                <li class="button"><a href="bathroom-p.html">Bathroom</a></li>
+                <li class="button button-current"><a href="garden-p.html">Garden</a></li>
+                <li class="button"><a href="garage-p.html">Garage</a></li>
+            </ul>
+        </div>
+
+        <div class="content-container grid-container">
+            <div class="security-control control-item">
+                <div class="control-head01 head-item">
+                        <a><i class="fa-solid fa-video"></i>Security Control</a>
+                </div>
+
+                <div class="info-item">
+
+                    <div>
+                        <a>Security Camera</a>
+                    </div>
+
+                    <div class="security-check">
+                        <div class="switch auto-switch">
+                            <label>
+                                <div class="auto-label">
+                                    ON
+                                </div>
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="look-control control-item">
+                <div class="control-head04 head-item">
+                    <a><i class="fa-solid fa-house-lock"></i>Lock Control</a>
+                </div>
+
+                <div class="control-body04">
+                    <div class="doors">
+                        <div class="door01 d-w-item">
+                            <div class="header-item">
+                                <a><i class="fa-solid fa-caret-right"></i>door 1</a>
+                            </div>
+
+                            <div class="lock-switch">
+                                <div class="lock-container">
+                                    <span class="lock" onclick="toggleUnlock(this)"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="door02 d-w-item">
+                            <div class ="header-item">
+                                <a><i class="fa-solid fa-caret-right"></i>door 2</a>
+                            </div>
+
+                            <div class="lock-switch">
+                                <div class="lock-container">
+                                    <span class="lock" onclick="toggleUnlock(this)"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lightining-control control-item">
+                <div class="control-head05 head-item">
+                    <div>
+                        <a><i class="fa-regular fa-lightbulb"></i>Lightining Control</a>
+                    </div>
+                </div>
+
+                <div class="control-body05">
+                    <div class="devices-light">
+                        <div class="device-l-01 device-item">
+                            <div class ="header-item">
+                                <a><i class="fa-solid fa-caret-right"></i>device 1</a>
+                            </div>
+
+                            <div class="device-l-01-switch">
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="device-l-02 device-item">
+                            <div class ="header-item">
+                                <a><i class="fa-solid fa-caret-right"></i>device 2</a>
+                            </div>
+
+                            <div class="device-l-02-switch">
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fire-detection control-item">
+                <div class="control-head07 head-item">
+                    <a><i class="fa-solid fa-house-fire"></i>Fire/CO detection</a>
+                </div>
+
+                <div class="control-body07">
+                    <div class="alarm">
+                        <i class="fa-solid fa-fire"></i></i>
+                    </div>
+                    <div>
+                        <div class="alarm-info">
+                            No Smoke Detected
+                        </div>
+                        <div class="alarm-form">
+                            <form action="">
+                                <input type="text" value="Enter the status"><br><br>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
