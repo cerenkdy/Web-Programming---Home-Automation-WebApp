@@ -30,6 +30,7 @@
     box-shadow: 0 0 20px 9px rgba(115, 72, 72, 0.54);
     border-radius: 8%;
     margin:  10% auto;
+    font-family: 'Quicksand', sans-serif;
 }
 
 /* 
@@ -40,6 +41,7 @@
     color: white;
     text-align: center;
     padding: 20px;
+    font-family: 'Quicksand', sans-serif;
 }
 
 /*
@@ -59,6 +61,12 @@
     cursor: pointer;
     top: 15%;
     left: 25%; 
+    font-family: 'Quicksand', sans-serif;
+    margin-left: 5%;
+}
+
+.button-producer{
+    padding: 20px 52px;
 }
 
 /* 
@@ -71,6 +79,7 @@
     width: 200px;
     color: gray;
     margin: auto 5px ;
+    font-family: 'Quicksand', sans-serif;
     
 }
 
@@ -84,6 +93,7 @@
     border: 1px solid;
     margin: 10px 40%;
     background: lightblue;
+    font-family: 'Quicksand', sans-serif;
 }
 
 /* 
@@ -101,6 +111,6 @@
     font-size: 12px;
     font-weight: bold;
     cursor: pointer;
-    margin: 5px 50%
+    margin: 5px 60%
 }
 
