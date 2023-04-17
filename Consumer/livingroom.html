@@ -409,43 +409,65 @@
                     <div>
                         <a><i class="fa-solid fa-headphones"></i>Audio Control</a>
                     </div>
-                    <div class="switch auto-switch">
-                        <label>
-                            <input type="checkbox" checked>
-                            <span class="slider round"></span>
-                        </label>
+                    <div class="audio-switch">
+                        <div class="switch auto-switch">
+                            <label>
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="control-body09 header-item">
                     <div>
-                        <div class="radio-item">
-                            <div>
-                                <input type="radio" id="html" name="fav_language" value="HTML">
-                                <label for="html">TV 1</label><br>
+                        <div>
+                            <div class="radio-item">
+                                <div>
+                                    <input type="radio" id="html" name="fav_language" value="HTML">
+                                    <label for="html">TV 1</label><br>
+                                </div>
+                                <div class="icon-item">
+                                    <i class="fa-solid fa-tv"></i>
+                                </div>
                             </div>
-                            <div class="icon-item">
-                                <i class="fa-solid fa-tv"></i>
+                            <div class="tv1-audio-control">
+                                <input type="range" min="1" max="100" value="50">
                             </div>
                         </div>
-                        <div class="tv1-audio-control">
-                            <input type="range" min="1" max="100" value="50">
+    
+                        <div>
+                            <div class="radio-item">
+                                <div>
+                                    <input type="radio" id="html" name="fav_language" value="HTML">
+                                    <label for="html">Phone</label><br>
+                                </div>
+                                <div class="phone icon-item">
+                                    <i class="fa-solid fa-mobile-screen-button"></i>
+                                    <i class="fa-solid fa-battery-full"></i>
+                                </div>
+                            </div>
+                            <div class="tv1-audio-control">
+                                <input type="range" min="1" max="100" value="50">
+                            </div>
                         </div>
                     </div>
-
-                    <div>
-                        <div class="radio-item">
+                    <div class="song-player">
+                        <div class="player-item">
                             <div>
-                                <input type="radio" id="html" name="fav_language" value="HTML">
-                                <label for="html">Phone</label><br>
+                                <i class="fa-solid fa-backward"></i>
                             </div>
-                            <div class="phone icon-item">
-                                <i class="fa-solid fa-mobile-screen-button"></i>
-                                <i class="fa-solid fa-battery-full"></i>
+                            <div>
+                                <i class="fa-solid fa-circle-play"></i>
+                            </div>
+                            <div>
+                                <i class="fa-solid fa-forward"></i>
                             </div>
                         </div>
-                        <div class="tv1-audio-control">
-                            <input type="range" min="1" max="100" value="50">
+                        <div class="song-bar">
+                            <div class="bar">
+                                <input type="range" min="1" max="100" value="50">
+                            </div>
                         </div>
                     </div>
                 </div>
