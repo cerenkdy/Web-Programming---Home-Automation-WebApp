@@ -456,3 +456,19 @@ input:checked + .slider:before {
 .phone{
     margin-left: 27px;
 }
+
+.player-item{
+    display: flex;
+    gap:10px;
+    margin-left:27px;
+    padding-right: 80px;
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+.song-player{
+    margin-left: 20px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
