@@ -17,29 +17,13 @@ if(isset($_POST["login"]))
             if($pwd == $password && $username == $user)
             {
                 
-                echo '<div class="alert alert-success" role="alert">
-            giriş yapıldı!
-            </div>';
-
-            //When producer page been made that needs to be updated
-            header('Location: https://www.youtube.com/watch?v=Tm6BlRMEny0');
+                header('Location: ../Consumer/livingroom.html ');
             }
             else
             {
-                echo '<div class="alert alert-failed" role="alert">
-            The password is incorrect!
-            </div>';
+            $error_msg="The password or username is incorrect!";
             }
         }
-        else 
-        {
-            echo '<div class="alert alert-failed" role="alert">
-            The username is incorrect!
-            </div>';
-            
-        }
-
-
 
     }
 
@@ -67,7 +51,9 @@ if(isset($_POST["login"]))
             </form>
             <div style="position: absolute; bottom: 23px; right: 35% ;">
                 <button class="button-link" onclick="window.location.href='landingPage.html';"> Back to Landing Page</button>
-
+                <?php if (isset($error_msg)): ?> 
+                    <p class="error"   color="red"><?php echo $error_msg; ?></p>
+                <?php endif ?>
             </div>
             
         </div>
