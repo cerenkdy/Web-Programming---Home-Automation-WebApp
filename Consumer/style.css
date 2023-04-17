@@ -472,3 +472,8 @@ input:checked + .slider:before {
     display: flex;
     flex-direction: column;
 }
+
+.main-menu-right{
+    display: flex;
+    flex-direction: row;
+}
