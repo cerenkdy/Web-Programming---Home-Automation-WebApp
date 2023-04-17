@@ -57,7 +57,6 @@
     outline: none;
     color: rgba(255, 255, 255, 0.933);
     font-size: 12px;
-    font-weight: bold;
     cursor: pointer;
     top: 15%;
     left: 25%; 
@@ -109,8 +108,8 @@
     outline: none;
     color: rgba(255, 255, 255, 0.933);
     font-size: 12px;
-    font-weight: bold;
     cursor: pointer;
-    margin: 5px 60%
+    margin: 5px 60%;
+    font-family: 'Quicksand', sans-serif;
 }
 
