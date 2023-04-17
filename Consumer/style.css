@@ -89,6 +89,10 @@ ul li a {
     border: 2px solid #E2F58A;
     color: #E2F58A;
   }
+.button-current{
+    color: #E2F58A;
+    border: 2px solid #E2F58A;
+}
 
 .buttons {
     cursor: default;
@@ -164,6 +168,7 @@ ul li a {
     width: calc(100% - 35px);
     margin-top: 5px;
     margin-left: 5px;
+    margin-bottom: 10px;
 }
 
 .up-down{
