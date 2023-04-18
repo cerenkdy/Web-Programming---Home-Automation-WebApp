@@ -23,7 +23,7 @@ if(isset($_POST["login"]))
             }
             else
             {
-            $error_msg="The password or username is incorrect!";
+            $error_msg="Invalid username or password";
             }
         }
 }
