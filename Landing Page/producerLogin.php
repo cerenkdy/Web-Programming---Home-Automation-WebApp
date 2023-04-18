@@ -17,7 +17,7 @@ if(isset($_POST["login"]))
             if($pwd == $password && $username == $user)
             {
                 
-                header('Location: ../Consumer/livingroom.html ');
+                header('Location: ../Producer/livingroom-p.html ');
             }
             else
             {
