@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style-p.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="app.js"></script>
+</head>
+
+<body>
+    <header>
+        <div>
+            <ul id="main-menu" class="menu-buttons">
+                <li class="button"><a href="#"><i class="fa-solid fa-gear"></i>Control</a></li>
+            </ul>
+        </div>
+
+        
+        <div class="main-menu-right">
+            <div class="log-out">
+                <ul id="main-menu" class="menu-buttons">
+                    <li class="button"><a href="#">log out</a></li>
+                </ul>
+            </div>
+
+            <div class=user-container>
+                <i class="fa-solid fa-circle-user"></i>
+            </div>
+        </div>
+    </header>
+
+
+    <div class="wrapper">
+        <div class="left-menu">
+            <ul id="buttons01" class="buttons">
+                <li class="button"><a href="livingroom-p.html"> Living Room </a></li>
+                <li class="button  button-current"><a href="kitchen-p.html">Kitchen</a></li>
+                <li class="button"><a href="bedroom-p.html">Bedroom</a></li>
+                <li class="button"><a href="kidsroom-p.html">Kids Room</a></li>
+                <li class="button"><a href="guestroom-p.html">Guest Room</a></li>
+                <li class="button"><a href="bathroom-p.html">Bathroom</a></li>
+                <li class="button"><a href="garden-p.html">Garden</a></li>
+                <li class="button"><a href="garage-p.html">Garage</a></li>
+            </ul>
+        </div>
+
+        <div class="content-container grid-container">
+            <div class="security-control control-item">
+                <div class="control-head01 head-item">
+                        <a><i class="fa-solid fa-video"></i>Security Control</a>
+                </div>
+
+                <div class="info-item">
+
+                    <div>
+                        <a>Security Camera</a>
+                    </div>
+
+                    <div class="security-check">
+                        <div class="switch auto-switch">
+                            <label>
+                                <div class="auto-label">
+                                    ON
+                                </div>
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="heating-control control-item">
+                <div class="control-head02 head-item">
+                    <div>
+                        <a><i class="fa-solid fa-temperature-three-quarters"></i>Heating Control</a>
+                    </div>
+
+                    <div class="heating-auto">
+                        <div class="switch auto-switch">
+                            <label>
+                                <div class="auto-label">
+                                    Auto
+                                </div>
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-body02">
+                    <div class="control-body02-1">
+                        <div class="control-body02-1-rt header-item">
+                            <a><i class="fa-solid fa-caret-right"></i>Room Temp</a>
+                        </div>
+
+                        <div class="room-temp">
+                            <div class="temp-input">
+                                <div class="temp">
+                                    <div class="temp-value">
+                                        25
+                                    </div>
+                                    <div class="temp-unit">
+                                        <div class="celsius">
+                                            <ul>
+                                                <li><a>&deg;C</a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="celsius">
+                                            <ul>
+                                                <li><a>|</a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="fahrenheit">
+                                            <ul>
+                                                <li><a>&deg;F</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="heating-value-form">
+
+                                </div>
+
+                                <form action="">
+                                    <input type="text" value="Enter a valid value"><br><br>
+                                </form>
+
+                            </div>
+                            
+                            
+                            <div class="actions-item">
+                                <div class="up-down">
+                                    <i class="fa-solid fa-sort-up"></i>
+                                    <i class="fa-solid fa-sort-down"></i>
+                                </div>
+                                
+    
+                                <div class="heating-switch">
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-body02-2">
+                        <div class="control-body04-2-header header-item">
+                            <a><i class="fa-solid fa-caret-right"></i>Air conditioner</a>
+                        </div>
+
+
+                        <div class="conditioner">
+                            <div class="temp-mode">
+                               <div class="conditioner-input">
+                                <div class="temp">
+                                    <div class="temp-value">
+                                        <a>25</a>
+                                    </div>
+    
+                                    <div class="temp-unit">
+                                        <div class="celsius">
+                                            <div>&deg;C</div>
+                                        </div>
+                                        <div class="celsius">
+                                            <a>|</a>
+                                        </div>
+                                        <div class="fahrenheit">
+                                            <div>&deg;F</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="conditioner-value-form">
+                                    <form action="">
+                                        <input type="text" value="Enter a valid value"><br><br>
+                                    </form>
+                                </div>
+                               </div>
+                                
+                                <div class="mode">
+                                    Mode
+                                    <i class="fa-solid fa-sun"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="actions-item">
+                                <div class="up-down">
+                                    <i class="fa-solid fa-sort-up"></i>
+                                    <i class="fa-solid fa-sort-down"></i>
+                                </div>
+    
+                                <div class="heating-switch">
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="humidity-control control-item">
+                <div class="control-head03 head-item">
+                    <div>
+                        <a><i class="fa-solid fa-droplet"></i>Humidity Control</a>
+                    </div>
+
+                    <div class="humidity-auto">
+                        <div class="switch auto-switch">
+                            <label>
+                                <div class="auto-label">
+                                    Auto
+                                </div>
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-body03">
+                    <div class="control-body03-header header-item">
+                        <a><i class="fa-solid fa-caret-right"></i>Humidifie</a>
+                    </div>
+
+                    <div class="humidity">
+                        <div class="humidity-value">
+                            % 30
+                        </div>
+
+                        <div class="humidity-value-form">
+                            <form action="">
+                                <input type="text" value="Enter a valid value"><br><br>
+                            </form>
+                        </div>
+
+                        <div class="actions-item">
+                            <div class="up-down">
+                                <i class="fa-solid fa-sort-down"></i>
+                                <i class="fa-solid fa-sort-up"></i>
+                            </div>
+    
+                            <div class="humidty-switch">
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="look-control control-item">
+                <div class="control-head04 head-item">
+                    <a><i class="fa-solid fa-house-lock"></i>Lock Control</a>
+                </div>
+
+                <div class="control-body04">
+                    <div class="doors">
+                        <div class="door01 d-w-item">
+                            <div class="header-item">
+                                <a><i class="fa-solid fa-caret-right"></i>door 1</a>
+                            </div>
+
+                            <div class="lock-switch">
+                                <div class="lock-container">
+                                    <span class="lock" onclick="toggleUnlock(this)"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="door02 d-w-item">
+                            <div class ="header-item">
+                                <a><i class="fa-solid fa-caret-right"></i>balcony door</a>
+                            </div>
+
+                            <div class="lock-switch">
+                                <div class="lock-container">
+                                    <span class="lock" onclick="toggleUnlock(this)"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="windows d-w-item">
+                        <div class ="header-item">
+                            <a><i class="fa-solid fa-caret-right"></i>windows</a>
+                        </div>
+
+                        <div class="lock-switch">
+                            <div class="lock-container">
+                                <span class="lock" onclick="toggleUnlock(this)"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lightining-control control-item">
+                <div class="control-head05 head-item">
+                    <div>
+                        <a><i class="fa-regular fa-lightbulb"></i>Lightining Control</a>
+                    </div>
+                </div>
+
+                <div class="control-body05">
+                    <div class="devices-light">
+                        <div class="device-l-01 device-item">
+                            <div class ="header-item">
+                                <a><i class="fa-solid fa-caret-right"></i>device 1</a>
+                            </div>
+
+                            <div class="device-l-01-switch">
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="device-l-02 device-item">
+                            <div class ="header-item">
+                                <a><i class="fa-solid fa-caret-right"></i>device 2</a>
+                            </div>
+
+                            <div class="device-l-02-switch">
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="device-l-03 device-item">
+                            <div class="header-item">
+                                <a><i class="fa-solid fa-caret-right"></i>device 3</a>
+                            </div>
+
+                            <div class="device-l-03-switch">
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="multimedia-control control-item">
+                <div class="control-head06 head-item">
+                    <div>
+                        <a><i class="fa-solid fa-clapperboard"></i>Multimedia Control</a>
+                    </div>
+                </div>
+
+                <div class="control-body06">
+                    <div class="devices-tv">
+                        <div class="device-tv1 device-item">
+                            <div class="header-item">
+                                <a><i class="fa-solid fa-tv"></i>TV 1</a>
+                            </div>
+
+                            <div class="device-tv1-switch">
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="tv1-audio-control">
+                                <input type="range" min="1" max="100" value="50">
+                            </div>
+                            <div class="form-item">
+                                <form action="">
+                                    <input type="text" value="Set the volume"><br><br>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="channels">
+                            <div >
+                                channel name
+                            </div>
+    
+                            <div class="channel-change">
+                                <div class="leftbutton"><a><i class="fa-solid fa-caret-left"></i></a> </div>
+                                <div class="rightbutton"><a><i class="fa-solid fa-caret-right"></i></a></div>
+                            </div>
+                        </div>
+                        <div class="form-item">
+                            <form action="">
+                                <input type="text" value="Set the volume"><br><br>
+                            </form>
+                        </div>
+                    </div> 
+                </div>
+            </div>
+
+            <div class="fire-detection control-item">
+                <div class="control-head07 head-item">
+                    <a><i class="fa-solid fa-house-fire"></i>Fire/CO detection</a>
+                </div>
+
+                <div class="control-body07">
+                    <div class="alarm">
+                        <i class="fa-solid fa-fire"></i></i>
+                    </div>
+                    <div>
+                        <div class="alarm-info">
+                            Smoke Detected
+                        </div>
+                        <div class="alarm-form">
+                            <form action="">
+                                <input type="text" value="Enter the status"><br><br>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="shading-control control-item">
+                <div class="control-head08 head-item">
+                    <div>
+                        <a><i class="fa-solid fa-bars"></i>Shading Control</a>
+                    </div>
+                </div>
+
+                <div class="control-body08">
+                    <div class="header-item">
+                        <a><i class="fa-solid fa-caret-right"></i>blinds' position</a>
+                    </div>
+
+                    <div>
+                        <div class="blind">
+                            <div class="on-off">
+                                <a>
+                                    ON
+                                </a>
+                                <a>
+                                    OFF
+                                </a>
+                            </div>
+    
+                            <div class="blind-position">
+                                <input type="range" min="1" max="100" value="50">
+                            </div>
+                        </div>
+    
+                        <div class="form-item">
+                            <form action="">
+                                <input type="text" value="Enter blind position"><br><br>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="audio-control control-item">
+                <div class="control-head09 head-item">
+                    <div>
+                        <a><i class="fa-solid fa-headphones"></i>Audio Control</a>
+                    </div>
+                    <div class="switch auto-switch">
+                        <label>
+                            <input type="checkbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="control-body09 header-item">
+                    <div>
+                        <div>
+                            <div class="radio-item">
+                                <div>
+                                    <input type="radio" id="html" name="fav_language" value="HTML">
+                                    <label for="html">TV 1</label><br>
+                                </div>
+                                <div class="icon-item">
+                                    <i class="fa-solid fa-tv"></i>
+                                </div>
+                            </div>
+    
+                            <div>
+                                <div class="tv1-audio-control">
+                                    <input type="range" min="1" max="100" value="50">
+                                </div>
+                                <div class="form-item">
+                                    <form action="">
+                                        <input type="text" value="Set the volume"><br><br>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="song-player">
+                        <div class="player-item">
+                            <div>
+                                <i class="fa-solid fa-backward"></i>
+                            </div>
+                            <div>
+                                <i class="fa-solid fa-circle-play"></i>
+                            </div>
+                            <div>
+                                <i class="fa-solid fa-forward"></i>
+                            </div>
+                        </div>
+                        <div class="song-bar">
+                            <div class="bar">
+                                <input type="range" min="1" max="100" value="50">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
