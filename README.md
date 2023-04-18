@@ -7,5 +7,5 @@
 - Mehmet Bulut 20200808008  
 
 producer consumer login : 
-user: admin
+username: admin
 password: 1234
