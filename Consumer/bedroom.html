@@ -85,94 +85,125 @@
                 </div>
 
                 <div class="control-body02">
-                    <div class="control-body02-1">
-                        <div class="control-body02-1-rt header-item">
-                            <a><i class="fa-solid fa-caret-right"></i>Room Temp</a>
-                        </div>
-
-                        <div class="room-temp">
-                            <div class="temp">
-                                <div class="temp-value">
-                                    25
-                                </div>
-                                <div class="temp-unit">
-                                    <div class="celsius">
-                                        <ul>
-                                            <li><a>&deg;C</a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="celsius">
-                                        <ul>
-                                            <li><a>|</a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="fahrenheit">
-                                        <ul>
-                                            <li><a>&deg;F</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="actions-item">
-                                <div class="up-down">
-                                    <i class="fa-solid fa-sort-up"></i>
-                                    <i class="fa-solid fa-sort-down"></i>
-                                </div>
-    
-                                <div class="heating-switch">
-                                    <label class="switch">
-                                        <input type="checkbox" checked>
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="line-chart">
+                        <div>
+                            <canvas id="myChart"></canvas>
+                          </div>
+                          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                          <script>
+                            const ctx = document.getElementById('myChart');
+                          
+                            new Chart(ctx, {
+                              type: 'line',
+                              data: {
+                                labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Yesterday', 'Today'],
+                                datasets: [{
+                                  label: 'temperature',
+                                  data: [26, 24, 23, 24, 23, 27, 25],
+                                  borderWidth: 2,
+                                  borderColor: 'rgb(75, 192, 192)',
+                                }]
+                              },
+                              options: {
+                                scales: {
+                                  y: {
+                                    beginAtZero: true
+                                  }
+                                }
+                              }
+                            });
+                          </script>
                     </div>
-
-                    <div class="control-body02-2">
-                        <div class="control-body04-2-header header-item">
-                            <a><i class="fa-solid fa-caret-right"></i>Air conditioner</a>
-                        </div>
-
-
-                        <div class="conditioner">
-                            <div class="temp-mode">
+                    
+                    <div>
+                        <div class="control-body02-1">
+                            <div class="control-body02-1-rt header-item">
+                                <a><i class="fa-solid fa-caret-right"></i>Room Temp</a>
+                            </div>
+    
+                            <div class="room-temp">
                                 <div class="temp">
                                     <div class="temp-value">
-                                        <a>25</a>
+                                        25
                                     </div>
-    
                                     <div class="temp-unit">
                                         <div class="celsius">
-                                            <div>&deg;C</div>
+                                            <ul>
+                                                <li><a>&deg;C</a></li>
+                                            </ul>
                                         </div>
                                         <div class="celsius">
-                                            <a>|</a>
+                                            <ul>
+                                                <li><a>|</a></li>
+                                            </ul>
                                         </div>
                                         <div class="fahrenheit">
-                                            <div>&deg;F</div>
+                                            <ul>
+                                                <li><a>&deg;F</a></li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <div class="mode">
-                                    Mode
-                                    <i class="fa-solid fa-sun"></i>
+                                <div class="actions-item">
+                                    <div class="up-down">
+                                        <i class="fa-solid fa-sort-down"></i>
+                                        <i class="fa-solid fa-sort-up"></i>
+                                    </div>
+        
+                                    <div class="heating-switch">
+                                        <label class="switch">
+                                            <input type="checkbox" checked>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
-                            
-                            <div class="actions-item">
-                                <div class="up-down">
-                                    <i class="fa-solid fa-sort-up"></i>
-                                    <i class="fa-solid fa-sort-down"></i>
-                                </div>
+                        </div>
     
-                                <div class="heating-switch">
-                                    <label class="switch">
-                                        <input type="checkbox" checked>
-                                        <span class="slider round"></span>
-                                    </label>
+                        <div class="control-body02-2">
+                            <div class="control-body04-2-header header-item">
+                                <a><i class="fa-solid fa-caret-right"></i>Air conditioner</a>
+                            </div>
+    
+                            <div class="conditioner">
+                                <div class="temp-mode">
+                                    <div class="temp">
+                                        <div class="temp-value">
+                                            <a>25</a>
+                                        </div>
+        
+                                        <div class="temp-unit">
+                                            <div class="celsius">
+                                                <div>&deg;C</div>
+                                            </div>
+                                            <div class="celsius">
+                                                <a>|</a>
+                                            </div>
+                                            <div class="fahrenheit">
+                                                <div>&deg;F</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mode">
+                                        Mode
+                                        <i class="fa-solid fa-sun"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="actions-item">
+                                    <div class="up-down">
+                                        <i class="fa-solid fa-sort-down"></i>
+                                        <i class="fa-solid fa-sort-up"></i>
+                                    </div>
+        
+                                    <div class="heating-switch">
+                                        <label class="switch">
+                                            <input type="checkbox" checked>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -200,13 +231,43 @@
                 </div>
 
                 <div class="control-body03">
+                    <div class="line-chart">
+                        <div>
+                            <canvas id="myChart2"></canvas>
+                          </div>
+                          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                          <script>                     
+                            new Chart('myChart2', {
+                              type: 'bar',
+                              
+                              data: {
+                                labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Yesterday', 'Today'],
+                                datasets: [{
+                                  label: 'humidity',
+                                  data: [62, 64, 63, 45, 60, 50, 65],
+                                  borderWidth: 2,
+                                  borderColor: 'rgb(75, 192, 192)',
+                                  backgroundColor: 'rgb(75, 192, 192, 0.2)'
+                                }]
+                              },
+                              options: {
+                                scales: {
+                                  y: {
+                                    beginAtZero: true
+                                  }
+                                }
+                              }
+                            });
+                          </script>
+                    </div>
+
                     <div class="control-body03-header header-item">
                         <a><i class="fa-solid fa-caret-right"></i>Humidifie</a>
                     </div>
 
                     <div class="humidity">
                         <div class="humidity-value">
-                            % 30
+                            % 65
                         </div>
 
                         <div class="actions-item">

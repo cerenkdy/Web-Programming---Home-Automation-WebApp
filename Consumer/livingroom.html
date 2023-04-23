@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <script src="app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 </head>
 
 <body>
@@ -90,10 +91,8 @@
                             <canvas id="myChart"></canvas>
                           </div>
                           <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-                          <script>
-                            const ctx = document.getElementById('myChart');
-                          
-                            new Chart(ctx, {
+                          <script>                     
+                            new Chart('myChart', {
                               type: 'line',
                               data: {
                                 labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Yesterday', 'Today'],
@@ -147,8 +146,8 @@
                                 
                                 <div class="actions-item">
                                     <div class="up-down">
-                                        <i class="fa-solid fa-sort-up"></i>
                                         <i class="fa-solid fa-sort-down"></i>
+                                        <i class="fa-solid fa-sort-up"></i>
                                     </div>
         
                                     <div class="heating-switch">
@@ -170,7 +169,7 @@
                                 <div class="temp-mode">
                                     <div class="temp">
                                         <div class="temp-value">
-                                            <a>25</a>
+                                            <a>26</a>
                                         </div>
         
                                         <div class="temp-unit">
@@ -194,8 +193,8 @@
                                 
                                 <div class="actions-item">
                                     <div class="up-down">
-                                        <i class="fa-solid fa-sort-up"></i>
                                         <i class="fa-solid fa-sort-down"></i>
+                                        <i class="fa-solid fa-sort-up"></i>
                                     </div>
         
                                     <div class="heating-switch">
@@ -231,13 +230,39 @@
                 </div>
 
                 <div class="control-body03">
-                    <div class="control-body03-header header-item">
-                        <a><i class="fa-solid fa-caret-right"></i>Humidifie</a>
+                    <div class="line-chart">
+                        <div>
+                            <canvas id="myChart2"></canvas>
+                          </div>
+                          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                          <script>                     
+                            new Chart('myChart2', {
+                              type: 'bar',
+                              
+                              data: {
+                                labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Yesterday', 'Today'],
+                                datasets: [{
+                                  label: 'humidity',
+                                  data: [62, 64, 63, 45, 60, 50, 65],
+                                  borderWidth: 2,
+                                  borderColor: 'rgb(75, 192, 192)',
+                                  backgroundColor: 'rgb(75, 192, 192, 0.2)'
+                                }]
+                              },
+                              options: {
+                                scales: {
+                                  y: {
+                                    beginAtZero: true
+                                  }
+                                }
+                              }
+                            });
+                          </script>
                     </div>
 
                     <div class="humidity">
                         <div class="humidity-value">
-                            % 30
+                            % 65
                         </div>
 
                         <div class="actions-item">
