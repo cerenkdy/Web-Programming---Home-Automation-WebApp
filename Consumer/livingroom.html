@@ -122,9 +122,10 @@
     
                             <div class="room-temp">
                                 <div class="temp">
-                                    <div class="temp-value">
+                                    <div id ="room-temp-value" class="temp-value">
                                         25
                                     </div>
+
                                     <div class="temp-unit">
                                         <div class="celsius">
                                             <ul>
@@ -145,9 +146,10 @@
                                 </div>
                                 
                                 <div class="actions-item">
+
                                     <div class="up-down">
-                                        <i class="fa-solid fa-sort-down"></i>
-                                        <i class="fa-solid fa-sort-up"></i>
+                                        <i class="fa-solid fa-sort-down" onclick="decreaseRoomTemp()"></i>
+                                        <i class="fa-solid fa-sort-up" onclick="increaseRoomTemp()"></i>
                                     </div>
         
                                     <div class="heating-switch">
@@ -168,7 +170,7 @@
                             <div class="conditioner">
                                 <div class="temp-mode">
                                     <div class="temp">
-                                        <div class="temp-value">
+                                        <div id= "air-con-temp" class="temp-value">
                                             <a>26</a>
                                         </div>
         
@@ -193,8 +195,8 @@
                                 
                                 <div class="actions-item">
                                     <div class="up-down">
-                                        <i class="fa-solid fa-sort-down"></i>
-                                        <i class="fa-solid fa-sort-up"></i>
+                                        <i class="fa-solid fa-sort-down" onclick="decreaseAirConTemp()"></i>
+                                        <i class="fa-solid fa-sort-up" onclick="increaseAirConTemp()"></i>
                                     </div>
         
                                     <div class="heating-switch">
@@ -262,13 +264,19 @@
 
                     <div class="humidity">
                         <div class="humidity-value">
-                            % 65
+                            <div class="percent">
+                                % 
+                            </div>
+
+                            <div  id = "humidity-value">
+                                65
+                            </div>
                         </div>
 
                         <div class="actions-item">
                             <div class="up-down">
-                                <i class="fa-solid fa-sort-down"></i>
-                                <i class="fa-solid fa-sort-up"></i>
+                                <i class="fa-solid fa-sort-down" onclick="decreaseHumidity()"></i>
+                                <i class="fa-solid fa-sort-up" onclick="increaseHumidity()"></i>
                             </div>
     
                             <div class="humidty-switch">
