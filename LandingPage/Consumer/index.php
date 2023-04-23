@@ -21,7 +21,7 @@
                 <?php endif ?>
                 <input type="text" name="username" class="input-field" placeholder="Enter Username">
                 <input type="password" name="password" class="input-field" placeholder="Enter Password">
-                <button type="submit" name="login" class="submit-btn" href='producerLogin.php'> Login </button>
+                <button type="submit" name="login" class="submit-btn" href='consumerLogin.php'> Login </button>
             </form>
             <div class="buttons">
                 <button class="button-link" onclick="window.location.href='../';"> Back to Landing Page</button>
