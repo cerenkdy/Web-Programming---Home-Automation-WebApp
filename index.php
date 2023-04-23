@@ -15,7 +15,7 @@
             <h2>Home Automation System</h2>
             <div class="buttons nav">
                 <button class="button-link" onclick="window.location.href='LandingPage/consumerLogin.php';">Consumer</button>
-                <button class="button-link button-producer" onclick="window.location.href='LandingPAge/producerLogin.php';">Producer</button>
+                <button class="button-link button-producer" onclick="window.location.href='LndingPAge/producerLogin.php';">Producer</button>
             </div>
         </div>
     </div>
