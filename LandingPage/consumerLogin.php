@@ -1,29 +1,11 @@
 <?php
 
-$user="admin";
-$password="1234";
+//We will not considering security at the moment
 
 if(isset($_POST["login"])) 
 {
 
-// Taking username and password from HTML form    
-    $username = $_POST["username"];  
-    $pwd=$_POST["password"];  
-
-    if(isset($username) && isset($pwd)) 
-    {
-        
-            //Password check
-            if($pwd == $password && $username == $user)
-            {
-                
-            header('Location: ../Consumer/livingroom.html ');
-            }
-            else
-            {
-            $error_msg="Invalid username or password";
-            }
-        }
+    header('Location: ../Consumer/livingroom.html ');
 }
 
 ?>
@@ -45,8 +27,8 @@ if(isset($_POST["login"]))
                 <?php if (isset($error_msg)): ?> 
                     <p class="error"   color="red"><?php echo $error_msg; ?></p>
                 <?php endif ?>
-                <input type="text" name="username" class="input-field" placeholder="Enter Username" required>
-                <input type="password" name="password" class="input-field" placeholder="Enter Password" required>
+                <input type="text" name="username" class="input-field" placeholder="Enter Username">
+                <input type="password" name="password" class="input-field" placeholder="Enter Password">
                 <button type="submit" name="login" class="submit-btn" href='producerLogin.php'> Login </button>
             </form>
             <div class="buttons">
