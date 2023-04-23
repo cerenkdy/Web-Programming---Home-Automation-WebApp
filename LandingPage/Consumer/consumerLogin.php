@@ -12,7 +12,7 @@
 if(isset($_POST["login"])) 
 {
 
-    header('Location: ../Consumer/livingroom.html ');
+    header('Location: ../../Consumer/livingroom.html ');
 }
 
 ?>
