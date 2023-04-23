@@ -507,3 +507,7 @@ input:checked + .slider:before {
 .percent{
     margin-right: 10px;
 }
+
+.alarm .fa-solid {
+    color: #ff9092;
+}
