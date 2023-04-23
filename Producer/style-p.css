@@ -337,11 +337,6 @@ input:checked + .slider:before {
 }
 
 /* Alarm */
-.alarm{
-
-    color: #fefff8;
-}
-   
 
 .alarm i{
     font-size: 45px;
@@ -511,6 +506,7 @@ input:checked + .slider:before {
 .alarmy .fa-solid {
     color: #9dff94;
 }
+
 .alarmr .fa-solid {
     color: #ff9092;
 }
