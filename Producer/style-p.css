@@ -176,7 +176,11 @@ ul li a {
     display: flex;
     gap: 10px;
     font-size: 20px;
+}
 
+.up-down .fa-solid{
+    cursor: pointer;
+    padding: 5px;
 }
 
 .d-w-item, .device-item, .on-off{
@@ -498,4 +502,8 @@ input:checked + .slider:before {
 .main-menu-right{
     display: flex;
     flex-direction: row;
+}
+
+.percent{
+    margin-right: 10px;
 }
