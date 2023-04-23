@@ -26,9 +26,6 @@ if(isset($_POST["login"]))
         }
 
     }
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -45,17 +42,16 @@ if(isset($_POST["login"]))
         <div class="form-box">
             <h2>Producer Log in </h2>
             <form class="input-group" action="producerLogin.php" method="POST">
-                <input type="text" name="username" class="input-field" placeholder="Enter Username" required>
-                <input type="password" name="password" class="input-field" placeholder="Enter Password" required>
-                <button type="submit" name="login" class="submit-btn"> Login </button>
-            </form>
-            <div style="position: absolute; bottom: 23px; right: 35% ;">
-                <button class="button-link" onclick="window.location.href='landingPage.html';"> Back to Landing Page</button>
-                <?php if (isset($error_msg)): ?> 
+                 <?php if (isset($error_msg)): ?> 
                     <p class="error"   color="red"><?php echo $error_msg; ?></p>
                 <?php endif ?>
+                <input type="text" name="username" class="input-field" placeholder="Enter Username" required>
+                <input type="password" name="password" class="input-field" placeholder="Enter Password" required>
+                <button type="submit" name="login" class="submit-btn" href='producerLogin.php'> Login </button>
+            </form>
+            <div class="buttons">
+                <button class="button-link" onclick="window.location.href='landingPage.html';"> Back to Landing Page</button>
             </div>
-            
         </div>
     </div>
 </body>

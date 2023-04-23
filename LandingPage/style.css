@@ -1,0 +1,152 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Quicksand', sans-serif;
+}
+
+/* Background image */
+
+.main {
+    width: 100%;
+    height: 100%;
+    background-image: url(landingpage.jpg);
+    position: absolute;
+    background-position: center center;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+/* 
+    Form box colors 
+    Colors may change! 
+*/
+
+.form-box {
+    display: flex;
+    flex-direction: column;
+    width: 380px;
+    height: 480px;
+    position: relative;
+    background: #3734438f;
+    border-radius: 8px;
+    margin: 10% auto;
+    padding-bottom: 20px;
+}
+
+/* 
+    Form box title
+*/
+.form-box h2 {
+    font-size: 26px;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+/*
+    Landing page buttons
+*/
+
+.button-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    position: relative;
+    padding: 20px 50px;
+    border: none;
+    border-radius: 4px;
+    background:#000C1C;
+    outline: none;
+    color: rgba(255, 255, 255, 0.933);
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.1s ease;
+}
+
+.button-producer{
+    padding: 20px 52px;
+}
+
+/* 
+    Fields and log in button padding etc.
+*/
+
+.input-group {
+    top: 100px;
+    color: gray;
+    margin: auto 5px;
+    text-align: center;
+}
+
+/* 
+    Username and password fields
+*/
+
+.input-field {
+    display: block;
+    width: 210px;
+    padding: 10px;
+    border: 1px solid;
+    margin: 10px auto 20px auto;
+    background: #fff;
+    border-radius: 4px;
+    transition: background-color 0.1s ease;
+}
+
+/* 
+    Log in button
+*/
+.submit-btn {
+    display: block;
+    position: relative;
+    padding: 20px 50px;
+    border: none;
+    border-radius: 4px;
+    background: rgba(0, 12, 28, 0.6);
+    outline: none;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 5px auto;
+    transition: background-color 0.1s ease;
+}
+
+.submit-btn:hover, 
+.button-link:hover {
+    background: rgba(0, 12, 28, 0.5);
+}
+
+/*
+    nav - back buttons
+*/
+.buttons {
+    position: relative;
+    margin-top: auto;
+    margin: auto 10% 10% 10%;
+    text-align: center;
+    
+}
+.buttons.nav {
+    margin-bottom: auto;
+}
+
+.error {
+    margin: 0 auto;
+    display: inline-block;
+    font-weight: 400;
+    line-height: 1.5;
+    box-sizing: border-box;
+    position: relative;
+    color: #842029;
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+    padding: 6px 4px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
