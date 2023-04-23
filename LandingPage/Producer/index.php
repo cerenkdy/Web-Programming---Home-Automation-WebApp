@@ -1,16 +1,4 @@
-<?php
-
-
-
-//We will not considering security at the moment
-
-if(isset($_POST["login"])) 
-{
-
-    header('Location: ../Consumer/livingroom.html ');
-}
-
-?>
+<!-- index for producer page -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -34,7 +22,7 @@ if(isset($_POST["login"]))
                 <button type="submit" name="login" class="submit-btn" href='producerLogin.php'> Login </button>
             </form>
             <div class="buttons">
-                <button class="button-link" onclick="window.location.href='landingPage.html';"> Back to Landing Page</button>
+                <button class="button-link" onclick="window.location.href='../';"> Back to Landing Page</button>
             </div>
         </div>
     </div>
