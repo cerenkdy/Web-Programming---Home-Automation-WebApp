@@ -95,7 +95,7 @@
                         <div class="room-temp">
                             <div class="temp-input">
                                 <div class="temp">
-                                    <div class="temp-value">
+                                    <div id ="room-temp-value" class="temp-value">
                                         25
                                     </div>
                                     <div class="temp-unit">
@@ -129,8 +129,8 @@
                             
                             <div class="actions-item">
                                 <div class="up-down">
-                                    <i class="fa-solid fa-sort-up"></i>
-                                    <i class="fa-solid fa-sort-down"></i>
+                                    <i class="fa-solid fa-sort-down" onclick="decreaseRoomTemp()"></i>
+                                    <i class="fa-solid fa-sort-up" onclick="increaseRoomTemp()"></i>
                                 </div>
                                 
     
@@ -172,7 +172,13 @@
 
                     <div class="humidity">
                         <div class="humidity-value">
-                            % 30
+                            <div class="percent">
+                                % 
+                            </div>
+
+                            <div  id = "humidity-value">
+                                65
+                            </div>
                         </div>
 
                         <div class="humidity-value-form">
@@ -183,8 +189,8 @@
 
                         <div class="actions-item">
                             <div class="up-down">
-                                <i class="fa-solid fa-sort-down"></i>
-                                <i class="fa-solid fa-sort-up"></i>
+                                <i class="fa-solid fa-sort-down" onclick="decreaseHumidity()"></i>
+                                <i class="fa-solid fa-sort-up" onclick="increaseHumidity()"></i>
                             </div>
     
                             <div class="humidty-switch">
