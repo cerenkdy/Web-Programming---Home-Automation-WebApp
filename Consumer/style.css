@@ -178,6 +178,11 @@ ul li a {
 
 }
 
+.up-down .fa-solid{
+    cursor: pointer;
+    padding: 5px;
+}
+
 .d-w-item, .device-item, .on-off{
     display: flex;
     justify-content: space-between;
@@ -483,4 +488,8 @@ input:checked + .slider:before {
     flex-direction: row;
     justify-content: center;
     align-items: center;
+}
+
+.percent{
+    margin-right: 10px;
 }
