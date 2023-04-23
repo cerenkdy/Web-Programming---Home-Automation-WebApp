@@ -508,6 +508,9 @@ input:checked + .slider:before {
     margin-right: 10px;
 }
 
-.alarm .fa-solid {
+.alarmy .fa-solid {
+    color: #9dff94;
+}
+.alarmr .fa-solid {
     color: #ff9092;
 }
