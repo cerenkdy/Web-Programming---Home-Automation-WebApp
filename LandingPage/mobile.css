@@ -1,0 +1,21 @@
+@media only screen and (max-width: 800px){
+    .form-box{
+        height: 360px;
+        width: 300px;
+    }
+    
+    .form-box h2{
+        font-size:20px;
+        margin: 1% auto;
+    }
+
+    .button-producer{
+        padding: 16px 36px;
+    }
+
+    .button-link {
+        padding: 16px 36px;
+        font-size: 16px;
+       
+    }
+}
