@@ -1,3 +1,24 @@
+<?php
+// database connection and session 
+require_once 'dbconfig.php';
+
+// if user is logged in, redirect to myhome.php
+
+if (isset($_SESSION['user'])) {
+    hearder("Location: myhome.php");
+    exit;
+}
+
+// if login form has been submitted, process it
+if (isset($_POST['username']) && isset($_POST['password'])) {
+
+    // getting username and password
+    $username = isset($_POST['username']) ? $_POST['username'] : '';
+    $password = isset($_POST['password']) ? $_POST['password'] : '';
+
+}
+
+?>
 
 
 <!DOCTYPE html>
