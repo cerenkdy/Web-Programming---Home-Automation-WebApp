@@ -10,7 +10,17 @@ CREATE TABLE users (
     PRIMARY KEY (id)
 );
 
--- inserting users data
+-- inserting mock data for demo users
 
 INSERT INTO users (id, username, password, name, email, type) VALUES (1, 'admin', 'Admin Demo', 'admin@localhost.com', 'admin');
 INSERT INTO users (id, username, password, name, email, type) VALUES (2, 'user', 'User Demo', 'user', 'User Demo', 'user@localhost', 'user');
+
+-- table for rooms information
+
+CREATE TABLE rooms (
+    id INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    user_id INT NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
