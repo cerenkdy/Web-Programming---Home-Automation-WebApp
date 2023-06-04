@@ -57,3 +57,11 @@ CREATE TABLE sensor_data (
     PRIMARY KEY (id),
     FOREIGN KEY (device_id) REFERENCES devices(id)
 );
+
+-- mock sensor data for demo
+INSERT INTO sensor_data (device_id, temperature,humidity) VALUES (1, 24, 50);
+INSERT INTO sensor_data (device_id, temperature,humidity) VALUES (1, 25, 51);
+INSERT INTO sensor_data (device_id, temperature,humidity) VALUES (1, 22, 50);
+INSERT INTO sensor_data (device_id, temperature,humidity) VALUES (1, 24, 49);
+INSERT INTO sensor_data (device_id, temperature,humidity) VALUES (1, 25, 50);
+INSERT INTO sensor_data (device_id, temperature,humidity) VALUES (1, 24, 50);
