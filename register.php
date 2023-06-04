@@ -22,6 +22,35 @@
         $stmt = $db->prepare("SELECT * FROM users WHERE username = ? OR email = ? LIMIT 1");
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->execute([$username, $email]);
+
+        if (empty($username) || empty($email) || empty($password) || empty($name)) {
+            $error = 'Please fill in all fields.';
+        } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $error = 'Please enter a valid email address.';
+        }
+
+        // if username or email already exists, show error message
+    if ($stmt->rowCount() > 0) {
+        $error = 'Username or email already exists.';
+    } else if (!isset($error)) {
+        // prepare, bind and execute INSERT statement
+        $stmt = $db->prepare("INSERT INTO users (username, password, email, name) VALUES (?, ?, ?, ?)");
+        if ($stmt->execute([
+            $username,
+            $password,
+            $email,
+            $name,
+        ])) {
+            // if register is successful, auth and redirect to home
+            $_SESSION['user'] = $username;
+            $_SESSION['type'] = 'user';
+            header("Location: myhome.php");
+            exit;
+        } else {
+            // if register is not successful, show error message
+            $error = 'Something went wrong. Please try again later.';
+        }
+    }
     }
 ?>
 
