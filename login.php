@@ -16,7 +16,28 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     $username = isset($_POST['username']) ? $_POST['username'] : '';
     $password = isset($_POST['password']) ? $_POST['password'] : '';
 
-}
+    // database select statement
+    $stmt = $db->prepare("SELECT * FROM users WHERE username = ? AND password = ? LIMIT 1");
+    $stmt->setFetchMode(PDO::FETCH_ASSOC);
+    $stmt->execute([$username, $password]);
+
+    // if username and password are correct, set session variables
+    
+    if ($stmt->rowCount() >0) {
+        
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $_SESSION['user'] = $row['id'];
+        $_SESSION['type'] = $row['type'];
+
+        // redirect to myhome.php
+        header("Location: myhome.php");
+        exit;
+    } else (
+        // if username or password are not correct, show error message
+        $error = 'Username or password is incorrect' ;
+    )
+}   
 
 ?>
 
