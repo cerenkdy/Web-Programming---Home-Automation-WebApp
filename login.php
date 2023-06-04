@@ -33,10 +33,10 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
         // redirect to myhome.php
         header("Location: myhome.php");
         exit;
-    } else (
+    } else {
         // if username or password are not correct, show error message
         $error = 'Username or password is incorrect' ;
-    )
+    }
 }   
 
 ?>
