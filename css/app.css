@@ -122,6 +122,10 @@ input.apple-switch:checked:after {
     max-width: 100% !important;
 }
 
+.mw-50px {
+    min-width: 50px !important;
+}
+
 .horizontal-scrollable {
     overflow-x: auto;
     white-space: nowrap;
@@ -187,5 +191,40 @@ input.apple-switch:checked:after {
         overflow-x: hidden;
         z-index: 1000;
         background: #fff !important;
+    }
+
+    .mw-50px {
+        min-width: fit-content !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .sidebar-toggle .sidebar {
+        width: 80px;
+    }
+
+    @media (min-width: 768px) {
+        .sidebar-toggle main {
+            padding-left: 80px;
+        }
+
+        .sidebar-toggle .sidebar .dropdown {
+            padding-bottom: 28px;
+        }
+
+
+        .sidebar-toggle .sidebar .dropdown .text-dark.ms-auto.me-2 {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            margin-left: -10px !important;
+            margin-right: 0;
+        }
+
+        .sidebar-toggle .sidebar .fs-5,
+        .sidebar-toggle .sidebar .nav-item .nav-link>span,
+        .sidebar-toggle .sidebar .nav-item a>strong {
+            display: none;
+        }
     }
 }
