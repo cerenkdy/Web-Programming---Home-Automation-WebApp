@@ -12,7 +12,7 @@ main {
     min-height: 100vh;
     max-width: 100%;
     background: #b1bccf;
-    background: linear-gradient(#c8d6eb, #e6bdc8);
+    background: linear-gradient(#bac7da, #e6bdc8);
     overflow-x: hidden;
 }
 
