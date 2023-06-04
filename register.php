@@ -1,4 +1,29 @@
+<?php 
+    // database connection and session
+    require_once 'dbconfig.php';
 
+    // if user is logged in, redirect to myhome.php
+    if (isset($_SESSION['user'])) {
+        header("Location: myhome.php");
+        exit;
+    }
+
+    // if register form has been submitted
+    if (isset($_POST['username']) && isset($_POST['email']) &&  isset($_POST['password'])) {
+
+        // get username, email and password
+        $username = isset($_POST['username']) ? $_POST['username'] : '';
+        $email = isset($_POST['email']) ? $_POST['email'] : '';
+        $password = isset($_POST['password']) ? $_POST['password'] : '';
+        $name = isset($_POST['name']) ? $_POST['name'] : '';
+
+
+        // check if username or email already exists
+        $stmt = $db->prepare("SELECT * FROM users WHERE username = ? OR email = ? LIMIT 1");
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute([$username, $email]);
+    }
+?>
 
 <!DOCTYPE html>
 <html lang="en">
