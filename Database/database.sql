@@ -65,3 +65,14 @@ INSERT INTO sensor_data (device_id, temperature,humidity) VALUES (1, 22, 50);
 INSERT INTO sensor_data (device_id, temperature,humidity) VALUES (1, 24, 49);
 INSERT INTO sensor_data (device_id, temperature,humidity) VALUES (1, 25, 50);
 INSERT INTO sensor_data (device_id, temperature,humidity) VALUES (1, 24, 50);
+
+-- table for logs   
+CREATE TABLE logs (
+    id INT NOT NULL AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    device_id INT NOT NULL,
+    action VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (device_id) REFERENCES devices (id)
+);
