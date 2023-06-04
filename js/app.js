@@ -119,12 +119,117 @@ $(function () {
                             display: false
                         }
                     }]
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
                 }
             }
         });
         $(window).resize(function () {
             if ($('#consumptionChart').length) {
                 consumptionChart.resize();
+            }
+        });
+    }
+
+    if ($('#temperatureChart').length) {
+        var temperatureChartCanvas = document.getElementById('temperatureChart').getContext('2d');
+        var temperatureChart = new Chart(temperatureChartCanvas, {
+            type: 'line',
+            data: {
+                labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                datasets: [
+                    {
+                        label: 'Temperature',
+                        data: [
+                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
+                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
+                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
+                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
+                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
+                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
+                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30)
+                        ],
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 2,
+                        fill: false,
+                        pointRadius: 0,
+                        pointHoverRadius: 0,
+                        pointHitRadius: 0,
+                        pointBorderWidth: 0,
+                        pointStyle: 'rectRounded'
+                    }
+                ]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                legend: {
+                    display: false
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+        $(window).resize(function () {
+            if ($('#temperatureChart').length) {
+                temperatureChart.resize();
+            }
+        });
+    }
+
+    if ($('#humidityChart').length) {
+        var humidityChartCanvas = document.getElementById('humidityChart').getContext('2d');
+        var humidityChart = new Chart(humidityChartCanvas, {
+            type: 'line',
+            data: {
+                labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                datasets: [
+                    {
+                        label: 'Humidity',
+                        data: [
+                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
+                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
+                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
+                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
+                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
+                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
+                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30)
+                        ],
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 2,
+                        fill: false,
+                        pointRadius: 0,
+                        pointHoverRadius: 0,
+                        pointHitRadius: 0,
+                        pointBorderWidth: 0,
+                        pointStyle: 'rectRounded'
+                    }
+                ]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                legend: {
+                    display: false
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+        $(window).resize(function () {
+            if ($('#humidityChart').length) {
+                humidityChart.resize();
             }
         });
     }
