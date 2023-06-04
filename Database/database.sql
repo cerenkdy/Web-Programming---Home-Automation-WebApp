@@ -9,3 +9,8 @@ CREATE TABLE users (
     type enum('admin', 'user') NOT NULL DEFAULT 'user',
     PRIMARY KEY (id)
 );
+
+-- inserting users data
+
+INSERT INTO users (id, username, password, name, email, type) VALUES (1, 'admin', 'Admin Demo', 'admin@localhost.com', 'admin');
+INSERT INTO users (id, username, password, name, email, type) VALUES (2, 'user', 'User Demo', 'user', 'User Demo', 'user@localhost', 'user');
