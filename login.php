@@ -61,6 +61,12 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     <main class="d-flex justify-content-center align-items-center lrform">
         <form class="p-5 rounded shadow bg-white mw-400">
             <h1 class="text-center mb-4">Sign In</h1>
+            <!-- ERROR MESSAGE -->
+            <?php if(isset($error)) { ?>
+                <div class="alert alert-danger mb-3" role="alert">
+                <?php echo $error; ?>
+            </div>
+            <?php } ?>
             <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
                 <input class="form-control" type="text" name="username" id="username" required>
