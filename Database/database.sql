@@ -38,3 +38,10 @@ CREATE TABLE devices (
     PRIMARY KEY (id),
     FOREIGN KEY (room_id) REFERENCES rooms(id)
 );
+
+-- inserting the data of living room devices 
+INSERT INTO devices (id, name, room_id, type, status, data) VALUES (1, 'Sensor', '1', 0, '{temperature: 24, humidity: 50}');
+INSERT INTO devices (id, name, room_id, type, status, data) VALUES (2, 'Light', 0, '{color: #ffffff}');
+INSERT INTO devices (id, name, room_id, type, status, data) VALUES (3, 'Air Conditioner', 1, 'air_conditioner', 0, '{auto_start: 25}');
+INSERT INTO devices (id, name, room_id, type, status, data) VALUES (4, 'TV', 1, 'tv', 0, '{channel: 1, volume: 50}');
+
