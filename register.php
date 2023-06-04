@@ -72,6 +72,12 @@
     <main class="d-flex justify-content-center align-items-center lrform">
         <form class="p-5 rounded shadow bg-white mw-400">
             <h1 class="text-center mb-4">Sign Up</h1>
+            <!-- error message -->
+            <?php if (isset($error)) {?>
+                <div class="alert alert-danger mb-3" role="alert">
+                    <?php echo $error; ?>
+                </div>
+            <?php }?>
             <div class="mb-3">
                 <label for="name" class="form-label">Full Name</label>
                 <input class="form-control" type="text" name="name" id="name" required>
