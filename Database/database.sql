@@ -45,3 +45,15 @@ INSERT INTO devices (id, name, room_id, type, status, data) VALUES (2, 'Light', 
 INSERT INTO devices (id, name, room_id, type, status, data) VALUES (3, 'Air Conditioner', 1, 'air_conditioner', 0, '{auto_start: 25}');
 INSERT INTO devices (id, name, room_id, type, status, data) VALUES (4, 'TV', 1, 'tv', 0, '{channel: 1, volume: 50}');
 
+-- table for sensor data 
+
+CREATE TABLE sensor_data (
+    id INT NOT NULL AUTO_INCREMENT,
+    user_id INT NOT NULL AUTO_INCREMENT,
+    device_id INT NOT NULL,
+    temperature decimal(2,1) NOT NULL,
+    humidity INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (device_id) REFERENCES devices(id)
+);
