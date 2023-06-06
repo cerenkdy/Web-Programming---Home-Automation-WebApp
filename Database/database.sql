@@ -101,6 +101,6 @@ CREATE TABLE logs (
 );
 
 -- mock log data for demo
-INSERT INTO logs (user_id, device_id, action) VALUES (1, 1, 'Smart TV turned on');
-INSERT INTO logs (user_id, device_id, action) VALUES (1, 3, 'Air Conditioner turned off');
-INSERT INTO logs (user_id, device_id, action) VALUES (1, 2, 'Lamps turned off');
+INSERT INTO logs (user_id, user_type, device_id, action) VALUES (1, 'consumers', 1, 'Smart TV turned on');
+INSERT INTO logs (user_id, user_type, device_id, action) VALUES (1, 'consumers', 3, 'Air Conditioner turned off');
+INSERT INTO logs (user_id, user_type, device_id, action) VALUES (1, 'consumers', 2, 'Lamps turned off');
