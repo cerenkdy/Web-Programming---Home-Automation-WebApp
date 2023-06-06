@@ -69,7 +69,6 @@ INSERT INTO devices (id, name, room_id, type, status, data) VALUES (3, 'Air Cond
 INSERT INTO devices (id, name, room_id, type, status, data) VALUES (4, 'TV', 1, 'tv', 0, '{channel: 1, volume: 50}');
 
 -- table for sensor data 
-
 CREATE TABLE sensor_data (
     id INT NOT NULL AUTO_INCREMENT,
     user_id INT NOT NULL AUTO_INCREMENT,
@@ -93,6 +92,7 @@ INSERT INTO sensor_data (device_id, temperature,humidity) VALUES (1, 24, 50);
 CREATE TABLE logs (
     id INT NOT NULL AUTO_INCREMENT,
     user_id INT NOT NULL,
+    user_type VARCHAR(255) NOT NULL DEFAULT 'consumers',
     device_id INT NOT NULL,
     action VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
