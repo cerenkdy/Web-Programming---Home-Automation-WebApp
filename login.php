@@ -5,8 +5,11 @@ require_once 'dbconfig.php';
 // if user is logged in, redirect to myhome.php
 
 if (isset($_SESSION['user'])) {
-    hearder("Location: myhome.php");
-    exit;
+    if (isset($_SESSION['type']) && $_SESSION['type'] == 'producers') {
+        header("Location: producer.php");
+    } else {
+        header("Location: myhome.php");
+    }
 }
 
 // if login form has been submitted, process it
