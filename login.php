@@ -15,12 +15,15 @@ if (isset($_SESSION['user'])) {
 // if login form has been submitted, process it
 if (isset($_POST['username']) && isset($_POST['password'])) {
 
+    // login type
+    $type = (isset($_GET['type']) && $_GET['type'] == 'producers') ? 'producers' : 'consumers';
+
     // getting username and password
     $username = isset($_POST['username']) ? $_POST['username'] : '';
     $password = isset($_POST['password']) ? $_POST['password'] : '';
 
     // database select statement
-    $stmt = $db->prepare("SELECT * FROM users WHERE username = ? AND password = ? LIMIT 1");
+    $stmt = $db->prepare("SELECT * FROM " . $type . " WHERE username = ? AND password = ? LIMIT 1");
     $stmt->setFetchMode(PDO::FETCH_ASSOC);
     $stmt->execute([$username, $password]);
 
