@@ -34,14 +34,23 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         $_SESSION['user'] = $row['id'];
-        $_SESSION['type'] = $row['type'];
+        $_SESSION['type'] = $type;
+        $_SESSION['name'] = $row['name'];
+        $_SESSION['email'] = $row['email'];
+        $_SESSION['username'] = $row['username'];
+        $_SESSION['settings'] = json_decode($row['settings'], true);
 
-        // redirect to myhome.php
-        header("Location: myhome.php");
+        if ($_SESSION['type'] == 'producers') {
+            // if user is producer, redirect to producer.php
+            header("Location: producer.php");
+        } else {
+            // if user is consumer, redirect to myhome.php
+            header("Location: myhome.php");
+        }
         exit;
     } else {
-        // if username or password are not correct, show error message
-        $error = 'Username or password is incorrect' ;
+        // if username and password are not correct, show error message
+        $error = 'Username or password are incorrect.';
     }
 }   
 
