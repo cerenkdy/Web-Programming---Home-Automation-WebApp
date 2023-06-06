@@ -1,14 +1,33 @@
--- table for users informations
-
-CREATE TABLE users (
+-- table for consumers
+CREATE TABLE consumers (
     id INT NOT NULL AUTO_INCREMENT,
     username VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    type enum('admin', 'user') NOT NULL DEFAULT 'user',
+    settings text NOT NULL DEFAULT '{}',
     PRIMARY KEY (id)
 );
+
+-- inserting mock data for consumers
+
+INSERT INTO consumers (id, username, password, name, email, settings) VALUES (1, 'demouser', 'Who0808', 'User Demo', 'user@localhost', '{"theme": "light", "language": "en", "notifications": true}');
+
+-- table for producers
+CREATE TABLE producers (
+    id INT NOT NULL AUTO_INCREMENT,
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    settings text NOT NULL DEFAULT '{}',
+    PRIMARY KEY (id)
+);
+
+-- inserting mock data for producers
+
+INSERT INTO producers (id, username, password, name, email, settings) VALUES (1, 'demoadmin', 'Who0808', 'Admin Demo', 'admin@localhost', '{"theme": "light", "language": "en", "notifications": true}');
+
 
 -- inserting mock data for demo users
 
