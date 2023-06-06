@@ -44,7 +44,12 @@ CREATE TABLE rooms (
 );
 
 -- inserting rooms information
+INSERT INTO rooms (id, name, user_id, data) VALUES (1, 'Living room', 1, '{"temperature": 24, "humidity": 51}');
+INSERT INTO rooms (id, name, user_id, data) VALUES (2, 'Bedroom', 1, '{"temperature": 23, "humidity": 45}');
+INSERT INTO rooms (id, name, user_id, data) VALUES (3, 'Kitchen', 1, '{"temperature": 25, "humidity": 55}');
+INSERT INTO rooms (id, name, user_id, data) VALUES (4, 'Bathroom', 1, '{"temperature": 23, "humidity": 65}');
 
+-- table for devices
 CREATE TABLE devices (
     id INT NOT NULL AUTO_INCREMENT,
     user_id INT NOT NULL,
