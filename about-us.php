@@ -12,38 +12,9 @@
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
-    <header>
-        <a href="home.html">
-            <img src="img/logo.png">
-        </a>
-        <nav class="d-flex align-items-center">
-            <ul class="mb-0">
-                <li>
-                    <a href="home.html">
-                        Home
-                    </a>
-                </li>
-                <li>
-                    <a href="about-us.html">
-                        About Us
-                    </a>
-                </li>
-                <li>
-                    <a href="contact-us.html">
-                        Contact Us
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        <ul class="d-flex align-items-center ms-auto right mb-0">
-            <li>
-                <a href="select.html">
-                    Sign In
-                </a>
-            </li>
-        </ul>
-    </header>
+    <?php include 'components/header.php'; ?>
 
     <main>
         <div class="h-50">
