@@ -28,26 +28,21 @@ CREATE TABLE producers (
 
 INSERT INTO producers (id, username, password, name, email, settings) VALUES (1, 'demoadmin', 'Who0808', 'Admin Demo', 'admin@localhost', '{"theme": "light", "language": "en", "notifications": true}');
 
-
--- inserting mock data for demo users
-
-INSERT INTO users (id, username, password, name, email, type) VALUES (1, 'admin', 'Admin Demo', 'admin@localhost.com', 'admin');
-INSERT INTO users (id, username, password, name, email, type) VALUES (2, 'user', 'User Demo', 'user', 'User Demo', 'user@localhost', 'user');
-
 -- table for rooms information
 
 CREATE TABLE rooms (
     id INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
     user_id INT NOT NULL,
+    data text NOT NULL DEFAULT '{}',
     PRIMARY KEY (id),
 );
 
 -- inserting rooms information
-INSERT INTO rooms (id, name, user_id, data) VALUES (1, 'Living room', 1, '{"temperature": 24, "humidity": 51}');
-INSERT INTO rooms (id, name, user_id, data) VALUES (2, 'Bedroom', 1, '{"temperature": 23, "humidity": 45}');
-INSERT INTO rooms (id, name, user_id, data) VALUES (3, 'Kitchen', 1, '{"temperature": 25, "humidity": 55}');
-INSERT INTO rooms (id, name, user_id, data) VALUES (4, 'Bathroom', 1, '{"temperature": 23, "humidity": 65}');
+INSERT INTO rooms (id, name, user_id, data) VALUES (1, 'Living room', 1, '{"temperature": 24, "humidity": 51, "temperature_status":"1","humidity_status":"1"}');
+INSERT INTO rooms (id, name, user_id, data) VALUES (2, 'Bedroom', 1, '{"temperature": 23, "humidity": 45, "temperature_status":"1","humidity_status":"1"}');
+INSERT INTO rooms (id, name, user_id, data) VALUES (3, 'Kitchen', 1, '{"temperature": 25, "humidity": 55, "temperature_status":"1","humidity_status":"1"}');
+INSERT INTO rooms (id, name, user_id, data) VALUES (4, 'Bathroom', 1, '{"temperature": 23, "humidity": 65, "temperature_status":"1","humidity_status":"1"}');
 
 -- table for devices
 CREATE TABLE devices (
