@@ -71,17 +71,41 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
         integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="css/app.css" rel="stylesheet">
-</head>
-<body>
+    <body>
     <main class="d-flex justify-content-center align-items-center lrform">
-        <form class="p-5 rounded shadow bg-white mw-400">
-            <h1 class="text-center mb-4">Sign In</h1>
-            <!-- ERROR MESSAGE -->
-            <?php if(isset($error)) { ?>
-                <div class="alert alert-danger mb-3" role="alert">
-                <?php echo $error; ?>
+        <?php
+        if (!isset($_GET['type']) || ($_GET['type'] != 'consumers' && $_GET['type'] != 'producers')) {
+        ?>
+        <main class="d-flex justify-content-center align-items-center ps-0 mw-400">
+            <div class="p-5 rounded shadow bg-white mw-400">
+                <div class="d-flex justify-content-center align-items-center">
+                    <h4>Sign in as</h4>
+                </div>  
+                <div class="mb-4 d-grid mt-5">
+                    <a href="login.php?type=producers" class="btn p-2 btn-sh btn-lg">Producer</a>
+                </div>
+                <div class="d-grid mb-5">
+                    <a href="login.php?type=consumers" class="btn p-2 btn-sh btn-lg">Consumer</a>
+                </div>
             </div>
-            <?php } ?>
+        </main>
+        <?php
+        } else {
+        ?>
+        <form class="p-5 rounded shadow bg-white mw-400" action="" method="post">
+            <?php
+            if (isset($_GET['type']) && $_GET['type'] == 'producers') {
+                echo '<h1 class="text-center mb-4 h3">Producer Sign In</h1>';
+            } else {
+                echo '<h1 class="text-center mb-4 h3">Consumer Sign In</h1>';
+            }
+            ?>
+            <!-- ERROR MESSAGE -->
+            <?php if (isset($error)) {?>
+                <div class="alert alert-danger mb-3" role="alert">
+                    <?php echo $error; ?>
+                </div>
+            <?php }?>
             <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
                 <input class="form-control" type="text" name="username" id="username" required>
@@ -93,9 +117,22 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
             <div class="mb-4 d-grid">
                 <button class="btn p-2 btn-sh" type="submit">Sign In</button>
             </div>
-            <p class="text-center">Don't have an account? <a href="register.html">Sign Up</a></p>
+            <!-- back to sign in type -->
+            <p class="text-center mb-0">
+                <?php
+                if (isset($_GET['type']) && $_GET['type'] == 'producers') {
+                    echo 'Not a producer? <a href="login.php?type=consumers">Sign in as consumer</a>';
+                } else {
+                    echo 'Not a consumer? <a href="login.php?type=producers">Sign in as producer</a>';
+                }
+                ?>
+            </p>
+            <!-- back to home -->
+            <p class="text-center mt-3">Back to <a href="./">Home</a></p>
         </form>
+        <?php
+        }
+        ?>
     </main>
 </body>
-
 </html>
