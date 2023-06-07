@@ -183,3 +183,14 @@ try {
 
 // session starting
 session_start();
+
+// if logout has been clicked, logout and redirect to login.php
+if (isset($_GET['logout'])) {
+    session_destroy();
+    unset($_SESSION['user']);
+    unset($_SESSION['type']);
+    unset($_SESSION['name']);
+    unset($_SESSION['email']);
+    header("Location: login.php");
+    exit;
+}
