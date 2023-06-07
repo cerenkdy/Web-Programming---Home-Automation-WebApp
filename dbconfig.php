@@ -194,3 +194,23 @@ if (isset($_GET['logout'])) {
     header("Location: login.php");
     exit;
 }
+
+// functions
+function diffForHumans($date) {
+    $diff = MYSQL_TIME - strtotime($date);
+    if ($diff < 60) {
+        return $diff . ' seconds ago';
+    } else if ($diff < 3600) {
+        return round($diff / 60) . ' minutes ago';
+    } else if ($diff < 86400) {
+        return round($diff / 3600) . ' hours ago';
+    } else if ($diff < 604800) {
+        return round($diff / 86400) . ' days ago';
+    } else if ($diff < 2592000) {
+        return round($diff / 604800) . ' weeks ago';
+    } else if ($diff < 31536000) {
+        return round($diff / 2592000) . ' months ago';
+    } else {
+        return round($diff / 31536000) . ' years ago';
+    }
+}
