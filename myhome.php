@@ -265,7 +265,7 @@
                         <div class="card bg-white-50 rounded-4 h-100">
                             <div class="d-flex justify-content-between align-items-center p-2 px-3">
                                 <h2 class="h5 pb-0">History</h2>
-                                <a href="#" class="text-dark text-decoration-none">View All</a>
+                                <a href="#" class="text-dark text-decoration-none" data-bs-toggle="modal" data-bs-target="#historyModal">View All</a>
                             </div>
                             <div class="card-body">
                                 <ul class="list-unstyled mb-0">
@@ -338,6 +338,8 @@
             </div>
         </div>
     </main>
+
+    <?php include 'components/historyModal.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"
         integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>

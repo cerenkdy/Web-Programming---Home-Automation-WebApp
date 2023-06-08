@@ -181,6 +181,10 @@ try {
     echo "Connection failed: " . $e->getMessage();
 }
 
+$query = $db->query("SELECT NOW() AS timestamp");
+$timestamp = $query->fetch(PDO::FETCH_ASSOC)['timestamp'];
+define('MYSQL_TIME' , strtotime($timestamp));
+
 // session starting
 session_start();
 
