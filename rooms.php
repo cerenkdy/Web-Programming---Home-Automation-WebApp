@@ -212,23 +212,7 @@
         </div>
     </main>
 
-    <div id="addRoomModal" class="modal fade" tabindex="-1">
-        <div class="modal-dialog">
-            <form class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add Room</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body px-4">
-                    <label for="roomName" class="form-label fw-bold">Room Name</label>
-                    <input type="text" class="form-control" id="roomName" placeholder="Enter room name">
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-sh">Add</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <?php include './components/addRoomModal.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
