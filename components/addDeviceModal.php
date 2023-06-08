@@ -60,7 +60,6 @@ if(!isset($rooms)) {
                 <div class="mb-3">
                     <label for="deviceStatus" class="form-label">Device Status</label>
                     <select class="form-select" id="deviceStatus" name="status">
-                        <option selected disabled>Select device status</option>
                         <option value="1" selected>On</option>
                         <option value="0">Off</option>
                     </select>

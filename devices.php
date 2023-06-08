@@ -22,6 +22,9 @@
             <div class="devices w-100">
                 <div class="d-flex align-items-center">
                     <h4 class="flex-grow-1 mr-2 mb-0 text-white">Devices</h4>
+                    <button class="btn btn-sm text-white" data-bs-toggle="modal" data-bs-target="#addRoomModal">
+                        <i class="fas fa-plus fa-lg"></i>
+                    </button>
                 </div>
                 <!-- Living room -->
                 <div class="d-flex flex-column mt-4">
@@ -514,6 +517,8 @@
 
     <?php
     include 'components/addDeviceModal.php';
+    include 'components/editDeviceModal.php';
+    include 'components/addRoomModal.php';
     ?>
 
     <script src=" https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
