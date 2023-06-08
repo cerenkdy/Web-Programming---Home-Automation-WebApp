@@ -512,64 +512,9 @@
         </div>
     </main>
 
-    <!-- Add Device Modal -->
-    <div class="modal fade" id="addDeviceModal">
-        <div class="modal-dialog">
-            <form class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add Device</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Device Type -->
-                    <div class="mb-3">
-                        <label for="deviceType" class="form-label">Device Type</label>
-                        <select class="form-select" id="deviceType">
-                            <option selected disabled>Select device type</option>
-                            <option value="1">Lamp</option>
-                            <option value="2">Vacuum Cleaner</option>
-                            <option value="3">Air Conditioner</option>
-                            <option value="4">Television</option>
-                            <option value="5">Refrigerator</option>
-                            <option value="6">Washing Machine</option>
-                        </select>
-                    </div>
-
-                    <!-- Device Name -->
-                    <div class="mb-3">
-                        <label for="deviceName" class="form-label">Device Name</label>
-                        <input type="text" class="form-control" id="deviceName" placeholder="Enter device name">
-                    </div>
-
-                    <!-- Device Location -->
-                    <div class="mb-3">
-                        <label for="deviceLocation" class="form-label">Device Location</label>
-                        <select class="form-select" id="deviceLocation">
-                            <option selected disabled>Select device location</option>
-                            <option value="1">Living Room</option>
-                            <option value="2">Bedroom</option>
-                            <option value="3">Kitchen</option>
-                            <option value="4">Bathroom</option>
-                        </select>
-                    </div>
-
-                    <!-- Device Status -->
-                    <div class="mb-3">
-                        <label for="deviceStatus" class="form-label">Device Status</label>
-                        <select class="form-select" id="deviceStatus">
-                            <option selected disabled>Select device status</option>
-                            <option value="1">On</option>
-                            <option value="2">Off</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary me-auto" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-sh">Add Device</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <?php
+    include 'components/addDeviceModal.php';
+    ?>
 
     <script src=" https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous">
