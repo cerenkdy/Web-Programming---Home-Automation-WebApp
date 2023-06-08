@@ -11,7 +11,7 @@ CREATE TABLE consumers (
 
 -- inserting mock data for consumers
 
-INSERT INTO consumers (id, username, password, name, email, settings) VALUES (1, 'demouser', 'Who0808', 'User Demo', 'user@localhost', '{"theme": "light", "language": "en", "notifications": true}');
+INSERT INTO consumers (id, username, password, name, email, settings) VALUES (1, 'demouser', 'Who0808', 'Consumer Demo', 'user@localhost', '{"theme": "light", "language": "en", "notifications": true}');
 
 -- table for producers
 CREATE TABLE producers (
@@ -26,7 +26,7 @@ CREATE TABLE producers (
 
 -- inserting mock data for producers
 
-INSERT INTO producers (id, username, password, name, email, settings) VALUES (1, 'demoadmin', 'Who0808', 'Admin Demo', 'admin@localhost', '{"theme": "light", "language": "en", "notifications": true}');
+INSERT INTO producers (id, username, password, name, email, settings) VALUES (1, 'demoadmin', 'Who0808', 'Producer Demo', 'admin@localhost', '{"theme": "light", "language": "en", "notifications": true}');
 
 -- table for rooms information
 
@@ -35,7 +35,7 @@ CREATE TABLE rooms (
     name VARCHAR(255) NOT NULL,
     user_id INT NOT NULL,
     data text NOT NULL DEFAULT '{}',
-    PRIMARY KEY (id),
+    PRIMARY KEY (id)
 );
 
 -- inserting rooms information
@@ -52,9 +52,11 @@ CREATE TABLE devices (
     name VARCHAR(255) NOT NULL,
     type VARCHAR(255) NOT NULL DEFAULT 'sensor',
     status INT NOT NULL DEFAULT 0,
+    electricity INT NOT NULL DEFAULT 0,
+    water INT NOT NULL DEFAULT 0,
+    gas INT NOT NULL DEFAULT 0,
     data text NOT NULL DEFAULT '{}',
-    PRIMARY KEY (id),
-    FOREIGN KEY (room_id) REFERENCES rooms(id)
+    PRIMARY KEY (id)
 );
 
 -- inserting the data of living room devices 
