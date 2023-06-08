@@ -308,36 +308,10 @@
         </div>
     </main>
 
-    <!-- Edit Lamp modal -->
-    <div class="modal fade" id="editLampModal">
-        <div class="modal-dialog">
-            <form action="" class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit Lamp</h5>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="lampName" class="form-label">Lamp Name</label>
-                        <input type="text" class="form-control" id="lampName" placeholder="Enter lamp name">
-                    </div>
-                    <div class="mb-3">
-                        <label for="lampColor" class="form-label">Lamp Color</label>
-                        <input type="color" class="form-control" id="lampColor">
-                    </div>
-                    <div class="mb-3">
-                        <label for="lampBrightness" class="form-label">Lamp Brightness</label>
-                        <input type="range" class="form-range" min="0" max="100" step="1" value="100"
-                            id="lampBrightness">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-outline-secondary ml-auto" data-bs-dismiss="modal">Cancel</button>
-                    <button class="btn btn-sh">Save</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <?php
+    include 'components/editLampModal.php';
+    include 'components/addDeviceModal.php';
+    ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
