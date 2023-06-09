@@ -92,7 +92,14 @@ $page = 'myhome';
                                         <h2 class="h6 pb-0">Electricity Usage</h2>
                                         <span class="fs-4 m-auto">
                                             <i class="fas fa-bolt fa-lg text-warning"></i>
-                                            5 KWh
+                                            <span class="electricity-usage">
+                                            <?php
+                                            $query = "SELECT COUNT(*) FROM devices WHERE user_id = ? AND status = 1 AND electricity = 1";
+                                            $stmt = $db->prepare($query);
+                                            $stmt->execute([$_SESSION['user']]);
+                                            echo $stmt->fetchColumn() . ' KWh';
+                                            ?>
+                                            </span>
                                         </span>
                                     </div>
                                 </div>
@@ -104,7 +111,7 @@ $page = 'myhome';
                                         <h2 class="h6 pb-0">Water Usage</h2>
                                         <span class="fs-4 m-auto">
                                             <i class="fas fa-lg text-primary fa-tint"></i>
-                                            10 L
+                                            <span class="water-usage"><?php echo rand(1, 5) ?> L</span>
                                         </span>
                                     </div>
                                 </div>
@@ -116,7 +123,7 @@ $page = 'myhome';
                                         <h2 class="h6 pb-0">Gas Usage</h2>
                                         <span class="fs-4 m-auto">
                                             <i class="fas fa-lg text-danger fa-fire"></i>
-                                            5 M3
+                                            <span class="gas-usage"><?php echo rand(1, 5) ?> m<sup>3</sup></span>
                                         </span>
                                     </div>
                                 </div>

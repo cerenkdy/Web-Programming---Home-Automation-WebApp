@@ -8,6 +8,18 @@ if (!isset($_SESSION['user'])) {
     exit;
 }
 
+// get room datas
+$user_id = intval($_SESSION['user']);
+$stmt = $db->prepare("SELECT data FROM rooms WHERE user_id = ?");
+$stmt->execute([$user_id]);
+$temperatures = [];
+while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    $data = json_decode($row['data'], true);
+    if(isset($data['temperature']) && $data['temperature'] > 0 && isset($data['temperature_status']) && $data['temperature_status'] == '1') {
+        $temperatures[] = $data['temperature'];
+    }
+}
+
 // page
 $page = 'analytics';
 ?>
@@ -59,7 +71,14 @@ $page = 'analytics';
                                 <h2 class="h6 pb-0">Electricity Usage</h2>
                                 <span class="fs-4 m-auto">
                                     <i class="fas fa-bolt fa-lg text-warning"></i>
-                                    5 KWh
+                                    <span class="electricity-usage">
+                                    <?php
+                                    $query = "SELECT COUNT(*) FROM devices WHERE user_id = ? AND status = 1 AND electricity = 1";
+                                    $stmt = $db->prepare($query);
+                                    $stmt->execute([$_SESSION['user']]);
+                                    echo $stmt->fetchColumn() . ' KWh';
+                                    ?>
+                                    </span>
                                 </span>
                             </div>
                         </div>
@@ -71,7 +90,7 @@ $page = 'analytics';
                                 <h2 class="h6 pb-0">Water Usage</h2>
                                 <span class="fs-4 m-auto">
                                     <i class="fas fa-lg text-primary fa-tint"></i>
-                                    10 L
+                                    <span class="water-usage"><?php echo rand(0, 5) . ' m<sup>3</sup>'; ?></span>
                                 </span>
                             </div>
                         </div>
@@ -83,7 +102,7 @@ $page = 'analytics';
                                 <h2 class="h6 pb-0">Gas Usage</h2>
                                 <span class="fs-4 m-auto">
                                     <i class="fas fa-lg text-danger fa-fire"></i>
-                                    5 L
+                                    <span class="gas-usage"><?php echo rand(0, 5) . ' m<sup>3</sup>'; ?></span>
                                 </span>
                             </div>
                         </div>
@@ -95,7 +114,9 @@ $page = 'analytics';
                                 <h2 class="h6 pb-0">Temperature</h2>
                                 <span class="fs-4 m-auto">
                                     <i class="fas fa-lg text-info fa-thermometer-half"></i>
-                                    25 °C
+                                    <?php
+                                    echo round(array_sum($temperatures) / count($temperatures), 1) . '&deg;C';
+                                    ?>
                                 </span>
                             </div>
                         </div>
