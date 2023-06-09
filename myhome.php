@@ -8,6 +8,23 @@ if (!isset($_SESSION['user'])) {
     exit;
 }
 
+// get room datas
+$user_id = intval($_SESSION['user']);
+$stmt = $db->prepare("SELECT data FROM rooms WHERE user_id = ?");
+$stmt->execute([$user_id]);
+$temperatures = [];
+$humidities = [];
+
+while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    $data = json_decode($row['data'], true);
+    if(isset($data['temperature']) && $data['temperature'] > 0 && isset($data['temperature_status']) && $data['temperature_status'] == '1') {
+        $temperatures[] = $data['temperature'];
+    }
+    if(isset($data['humidity']) && $data['humidity'] > 0 && isset($data['humidity_status']) && $data['humidity_status'] == '1') {
+        $humidities[] = $data['humidity'];
+    }
+}
+
 // page
 $page = 'myhome';
 ?>
@@ -34,12 +51,35 @@ $page = 'myhome';
         <div class="d-flex flex-fill p-3 px-md-4 px-sm-2">
             <div class="dashboard w-100">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h4 class="text-white">My Home</h4>
+                    <h4 class="h2 text-light">My Home</h4>
                     <!-- Weather -->
                     <span class="fs-4">
-                        <span class="me-2">Istanbul</span>
-                        <i class="fas fa-sun fa-lg text-warning"></i>
-                        25&deg;C
+                        <span class="me-2">Antalya</span>
+                        <?php
+                        $randomWeather = rand(1, 5);
+                        switch ($randomWeather) {
+                            case 1:
+                                echo '<i class="fas fa-cloud fa-lg text-white me-2"></i>';
+                                echo '25 &deg;C';
+                                break;
+                            case 2:
+                                echo '<i class="fas fa-cloud-sun fa-lg text-white me-2"></i>';
+                                echo '30 &deg;C';
+                                break;
+                            case 3:
+                                echo '<i class="fas fa-cloud-sun-rain fa-lg text-white me-2"></i>';
+                                echo '20 &deg;C';
+                                break;
+                            case 4:
+                                echo '<i class="fas fa-cloud-showers-heavy fa-lg text-white me-2"></i>';
+                                echo '15 &deg;C';
+                                break;
+                            case 5:
+                                echo '<i class="fas fa-sun fa-lg text-white me-2"></i>';
+                                echo '35 &deg;C';
+                                break;
+                        }
+                        ?>
                     </span>
                 </div>
                 <div class="row d-flex flex-wrap">
@@ -95,36 +135,46 @@ $page = 'myhome';
                             </div>
                             <div class="col-lg-6 mt-1">
                                 <!-- Indoor Temperature -->
-                                <div class="card bg-white-50 rounded-4 h-100">
+                                <div class="card bg-white-50 rounded-4 h-100 indoor-temperature">
                                     <div class="d-flex justify-content-between align-items-center p-2 px-3">
                                         <h2 class="h5 pb-0">Indoor Temperature</h2>
                                         <span class="fs-4">
                                             <i class="fas fa-thermometer-half fa-lg text-warning"></i>
-                                            25&deg;C
+                                            <span class="text">
+                                                <?php
+                                                $temperature = count($temperatures) > 0 ? round(array_sum($temperatures) / count($temperatures), 1) : 0;
+                                                echo $temperature;
+                                                ?> &deg;C
+                                            </span>
                                         </span>
                                     </div>
                                     <div class="card-body">
                                         <div class="progress mt-3">
-                                            <div class="progress-bar bg-warning" role="progressbar" style="width: 25%"
-                                                aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                            <div class="progress-bar bg-warning btn-sh" role="progressbar" style="width: <?php echo $temperature; ?>%"
+                                                aria-valuenow="<?php echo $temperature; ?>" aria-valuemin="0" aria-valuemax="50"></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-6 mt-1">
                                 <!-- Humidifier -->
-                                <div class="card bg-white-50 rounded-4 h-100">
+                                <div class="card bg-white-50 rounded-4 h-100 indoor-humidifier">
                                     <div class="d-flex justify-content-between align-items-center p-2 px-3">
                                         <h2 class="h5 pb-0">Humidifier</h2>
                                         <span class="fs-4">
                                             <i class="fas fa-tint fa-lg text-primary"></i>
-                                            50%
+                                            <span class="text">
+                                                <?php
+                                                $humidity = count($humidities) > 0 ? round(array_sum($humidities) / count($humidities), 1) : '0';
+                                                echo $humidity;
+                                                ?> %
+                                            </span>
                                         </span>
                                     </div>
                                     <div class="card-body">
                                         <div class="progress mt-3">
-                                            <div class="progress-bar bg-primary" role="progressbar" style="width: 50%"
-                                                aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                            <div class="progress-bar bg-primar btn-sh" role="progressbar" style="width: <?php echo $humidity; ?>%" 
+                                                aria-valuenow="<?php echo $humidity; ?>%" aria-valuemin="0" aria-valuemax="100"></div>
                                         </div>
                                     </div>
                                 </div>
