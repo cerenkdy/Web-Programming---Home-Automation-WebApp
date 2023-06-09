@@ -519,6 +519,7 @@
     include 'components/addDeviceModal.php';
     include 'components/editDeviceModal.php';
     include 'components/addRoomModal.php';
+    include 'components/editRoomModal.php';
     ?>
 
     <script src=" https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
