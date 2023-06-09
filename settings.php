@@ -7,6 +7,9 @@ if (!isset($_SESSION['user'])) {
     header("Location: login.php");
     exit;
 }
+
+// page
+$page = 'settings';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -24,7 +27,7 @@ if (!isset($_SESSION['user'])) {
     <link href="css/app.css" rel="stylesheet">
 </head>
 
-<body>
+<body <?php if(isset($_COOKIE['sidebar-toggle']) && $_COOKIE['sidebar-toggle'] == '1') { echo ' class="sidebar-toggle"'; } ?>>
     <main class="d-flex flex-nowrap">
         <?php include 'components/sidebar.php';?>   
         <!-- Settings -->
