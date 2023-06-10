@@ -239,31 +239,23 @@ $page = 'myhome';
                                 <h2 class="h5">Lamps Control</h2>
                                 <i class="fas fa-lightbulb fa-lg text-dark"></i>
                             </div>
-                            <ul class="list-unstyled">
-                                <li class="d-flex justify-content-between align-items-center p-2 px-3">
-                                    <span class="fs-5">Main Lamp</span>
-                                    <label class="switch">
-                                        <input type="checkbox" class="apple-switch" checked>
+                            <ul class="list-unstyled overflow-auto" style="max-height: 210px">
+                                <?php
+                                $stmt = $db->prepare("SELECT * FROM devices WHERE type = 'light' AND user_id = ?");
+                                $stmt->execute([$user_id]);
+                                $devices = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                foreach ($devices as $device) {
+                                    $device_id = $device['id'];
+                                    $device_name = $device['name'];
+                                    $device_status = $device['status'];
+                                    ?>
+                                <li class="d-flex align-items-center p-2 px-3">
+                                    <span class="fs-5 mr-2"><?php echo $device_name; ?></span>
+                                    <label class="switch ms-auto">
+                                        <input type="checkbox" class="apple-switch sh-switch" <?php if($device_status == 1) echo "checked"; ?>>
                                     </label>
                                 </li>
-                                <li class="d-flex justify-content-between align-items-center p-2 px-3">
-                                    <span class="fs-5">Bedroom Lamp</span>
-                                    <label class="switch">
-                                        <input type="checkbox" class="apple-switch">
-                                    </label>
-                                </li>
-                                <li class="d-flex justify-content-between align-items-center p-2 px-3">
-                                    <span class="fs-5">Kitchen Lamp</span>
-                                    <label class="switch">
-                                        <input type="checkbox" class="apple-switch" checked>
-                                    </label>
-                                </li>
-                                <li class="d-flex justify-content-between align-items-center p-2 px-3">
-                                    <span class="fs-5">Bathroom Lamp</span>
-                                    <label class="switch">
-                                        <input type="checkbox" class="apple-switch">
-                                    </label>
-                                </li>
+                                <?php }?>
                             </ul>
                         </div>
                     </div>
@@ -346,42 +338,42 @@ $page = 'myhome';
                             </div>
                             <div class="card-body">
                                 <ul class="list-unstyled mb-0">
-                                    <!-- action 1 -->
+                                    <?php
+                                    $stmt = $db->prepare("SELECT * FROM logs INNER JOIN devices ON logs.device_id = devices.id WHERE devices.user_id = ? ORDER BY logs.id DESC LIMIT 4");
+                                    $stmt->execute([$user_id]);
+                                    $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                    $logs_user = [
+                                        'producers' => [],
+                                        'consumers' => [],
+                                    ];
+                                    foreach ($logs as $log) {
+                                        $device_name = $log['name'];
+                                        $device_type = $log['type'];
+                                        $device_status = $log['status'];
+                                        $log_action = $log['action'];
+                                        $log_user_id = $log['user_id'];
+                                        $log_table = $log['user_type'] =='producers' ? 'producers' : 'consumers';
+                                        if ($log_action == 1) {
+                                            $log_action_text = "turned on";
+                                        } else {
+                                            $log_action_text = "turned off";
+                                        }
+                                        if(!isset($logs_user[$log_table][$log_user_id])) {
+                                            $stmt = $db->prepare("SELECT * FROM `".$log_table."` WHERE id = ?");
+                                            $stmt->execute([$log_user_id]);
+                                            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                                            $logs_user[$log_table][$log_user_id] = $user['name'];
+                                        }
+                                        ?>
                                     <li class="d-flex mb-2 align-items-start">
-                                        <span><i class="fas fa-circle fa-sm text-success me-2"></i></span>
+                                        <span class="me-2 text-<?php echo ($log_action == 1) ? "sh" : "light"; ?> shadow-sm"><i class="fas fa-circle fa-sm"></i></span>
                                         <div class="d-flex flex-column justify-content-center">
-                                            <strong>Smart TV</strong>
-                                            <div>turned on by <span class="text-muted">Test User</span></div>
+                                            <strong><?php echo $device_name; ?></strong>
+                                            <div><?php echo $log_action_text; ?> by <span class="text-muted"><?php echo $logs_user[$log_table][$log_user_id]; ?></span></div>
                                         </div>
-                                        <date class="ms-auto text-secondary">2 day ago</date>
+                                        <date class="ms-auto text-secondary"><?php echo diffForHumans($log['created_at']); ?></date>
                                     </li>
-                                    <!-- action 2 -->
-                                    <li class="d-flex mb-2 align-items-start">
-                                        <span><i class="fas fa-circle fa-sm text-success me-2"></i></span>
-                                        <div class="d-flex flex-column justify-content-center">
-                                            <strong>Smart TV</strong>
-                                            <div>turned on by <span class="text-muted">Test User</span></div>
-                                        </div>
-                                        <date class="ms-auto text-secondary">2 day ago</date>
-                                    </li>
-                                    <!-- action 3 -->
-                                    <li class="d-flex mb-2 align-items-start">
-                                        <span><i class="fas fa-circle fa-sm text-danger me-2"></i></span>
-                                        <div class="d-flex flex-column">
-                                            <strong>Air Conditioner</strong>
-                                            <div>turned off by <span class="text-muted">Test User</span></div>
-                                        </div>
-                                        <date class="ms-auto text-secondary">2 day ago</date>
-                                    </li>
-                                    <!-- action 4 -->
-                                    <li class="d-flex align-items-start">
-                                        <span><i class="fas fa-circle fa-sm text-danger me-2"></i></span>
-                                        <div class="d-flex flex-column">
-                                            <strong>Lamps</strong>
-                                            <div>turned off by <span class="text-muted">Test User</span></div>
-                                        </div>
-                                        <date class="ms-auto text-secondary">2 day ago</date>
-                                    </li>
+                                    <?php } ?>
                                 </ul>
                             </div>
                         </div>
