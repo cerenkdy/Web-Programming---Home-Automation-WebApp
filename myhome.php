@@ -252,7 +252,7 @@ $page = 'myhome';
                                 <li class="d-flex align-items-center p-2 px-3">
                                     <span class="fs-5 mr-2"><?php echo $device_name; ?></span>
                                     <label class="switch ms-auto">
-                                        <input type="checkbox" class="apple-switch sh-switch" <?php if($device_status == 1) echo "checked"; ?>>
+                                        <input type="checkbox" class="apple-switch sh-switch" onchange="deviceStatus(<?php echo $device_id; ?>, this.checked)" <?php if($device_status == 1) echo "checked"; ?>>
                                     </label>
                                 </li>
                                 <?php }?>
@@ -289,7 +289,19 @@ $page = 'myhome';
                         </div>
                     </div>
                     <div class="col-lg-4 mb-3">
-                        <div class="card bg-white-50 rounded-4 h-100 speaker">
+                        <?php
+                        $have_speaker = false;
+                        $stmt = $db->prepare("SELECT * FROM devices WHERE type = 'speaker' AND user_id = ? ORDER BY id ASC LIMIT 1");
+                        $stmt->execute([$user_id]);
+                        if ($stmt->rowCount() > 0) {
+                            $speaker = $stmt->fetch(PDO::FETCH_ASSOC);
+                            $speaker_data = @json_decode($speaker['data'], true);
+                            $speaker_id = $speaker['id'];
+                            $speaker_status = $speaker_data['status'];
+                            $speaker_volume = $speaker_data['volume'];
+                        }
+                        ?>
+                        <div class="card bg-white-50 rounded-4 h-100 speaker position-relative">
                             <div class="d-flex justify-content-between align-items-center p-2 px-3">
                                 <h2 class="h5">Speaker</h2>
                                 <i class="fas fa-music fa-lg text-dark"></i>
@@ -309,8 +321,8 @@ $page = 'myhome';
                                             class="fas fa-random fs-5"></i></button>
                                     <button class="btn btn-sm rounded-4 my-auto d-flex align-items-center btn-prev"><i
                                             class="fas fa-backward fs-5"></i></button>
-                                    <button class="btn btn-sm fa-2x btn-play">
-                                        <i class="fas fa-play-circle fa-2x text-sh"></i>
+                                    <button class="btn btn-sm fa-2x btn-play" data-id="<?php echo isset($speaker_id) ? $speaker_id : 0; ?>">
+                                        <i class="fas fa-2x text-sh <?php if(isset($speaker_volume) && $speaker_status == 1) { echo "fa-pause-circle"; } else { echo "fa-play-circle"; } ?>"></i>
                                     </button>
                                     <button class="btn btn-sm rounded-4 my-auto d-flex align-items-center btn-next"><i
                                             class="fas fa-forward fs-5"></i></button>
@@ -319,12 +331,23 @@ $page = 'myhome';
                                 </div>
                                 <div class="d-flex align-items-center justify-content-center">
                                     <button class="btn btn-sm rounded-circle mr-2 btn-mute">
-                                        <i class="fas fa-volume-up"></i>
+                                        <i class="fas fa-lg <?php if(isset($speaker_volume) && $speaker_volume < 1) { echo "fa-volume-mute"; } else { echo "fa-volume-up"; } ?>"></i>
                                     </button>
-                                    <input type="range" class="form-range volume-range" min="0" max="100" value="50"
-                                        style="max-width: 220px">
+                                    <input type="range" class="form-range volume-range" min="0" max="100" data-id="<?php echo isset($speaker_id) ? $speaker_id : 0; ?>" value="<?php echo (isset($speaker_volume)) ? $speaker_volume : 100; ?>" step="1" style="max-width: 220px">
                                 </div>
                             </div>
+                            <?php if(!isset($speaker)) { ?>
+                                <div class="bg-light opacity-75 shadow rounded-4 text-dark d-flex flex-column align-items-center justify-content-center w-100 h-100 position-absolute top-0 bottom-0">
+                                    <p>
+                                        <i class="fas fa-exclamation-circle fa-md me-1"></i>
+                                        <span>Device not plugged</span>
+                                    </p>
+                                    <a href="devices.php" class="rounded-1 btn btn-sm btn-sh mt-0">
+                                        <i class="fas fa-plug fa-lg me-2"></i>
+                                        <span>Plug device</span>
+                                    </a>
+                                </div>
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
