@@ -25,6 +25,22 @@ while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     }
 }
 
+// get camera datas
+$cameras = [];
+$stmt = $db->prepare("SELECT name FROM devices WHERE user_id = ? AND type = 'camera' AND status = '1'");
+$stmt->execute([$user_id]);
+$camCounter = 0;
+while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    $camCounter++;
+    $cameras[] = [
+        'name' => $row['name'],
+        'src' => 'img/camera'.$camCounter.'.jpg',
+    ];
+    if ($camCounter == 3) {
+        $camCounter = 0;
+    }
+}
+
 // page
 $page = 'myhome';
 ?>
@@ -190,27 +206,14 @@ $page = 'myhome';
                     </div>
                     <!-- Security Cam -->
                     <div class="col-lg-4 rounded-4 position-relative mb-3">
-                        <div class="d-flex security-cam" data-cams="[
-                        {
-                            &quot;name&quot;: &quot;Camera 1&quot;,
-                            &quot;src&quot;: &quot;img/camera1.jpg&quot;
-                        },
-                        {
-                            &quot;name&quot;: &quot;Camera 2&quot;,
-                            &quot;src&quot;: &quot;img/camera2.jpg&quot;
-                        },
-                        {
-                            &quot;name&quot;: &quot;Camera 3&quot;,
-                            &quot;src&quot;: &quot;img/camera3.jpg&quot;
-                        }
-                        ]">
+                        <div class="d-flex security-cam" data-cams="<?php echo htmlentities(json_encode($cameras)); ?>">
                             <div class="position-absolute too-0 start-0 mt-2 ms-4">
                                 <span class="badge bg-white-50">
                                     <i class="fas fa-video fa-lg text-dark"></i>
-                                    <span class="text-dark">Camera 1</span>
+                                    <span class="text-dark"><?php echo (isset($cameras[0]) && isset($cameras[0]['name'])) ? $cameras[0]['name'] : 'No Camera'; ?></span>
                                 </span>
                             </div>
-                            <img src="img/camera.jpg" alt="" class="w-100 rounded-4">
+                            <img src="img/camera.jpg" alt="" class="w-100 rounded-4<?php echo (isset($cameras[0]) && isset($cameras[0]['name'])) ? '' : ' invisible'; ?>">
                         </div>
                     </div>
                 </div>
