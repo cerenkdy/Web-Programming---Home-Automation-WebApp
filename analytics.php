@@ -52,14 +52,41 @@ $page = 'analytics';
                         <button class="btn btn-sm btn-sh dropdown-toggle" type="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
                             <i class="fas fa-calendar-alt fa-lg me-2"></i>
-                            <span>Period</span>
+                            <span>
+                                <?php
+                                if(!isset($_GET['period'])) {
+                                    $_GET['period'] = 'all';
+                                }
+                                switch ($_GET['period']) {
+                                    case 'today':
+                                        echo 'Today';
+                                        break;
+                                    case 'yesterday':
+                                        echo 'Yesterday';
+                                        break;
+                                    case 'week':
+                                        echo 'This Week';
+                                        break;
+                                    case 'month':
+                                        echo 'This Month';
+                                        break;
+                                    case 'year':
+                                        echo 'This Year';
+                                        break;
+                                    default:
+                                        echo 'Period';
+                                        $_GET['period'] = 'all';
+                                        break;
+                                    }
+                                ?>
+                            </span>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Today</a></li>
-                            <li><a class="dropdown-item" href="#">Yesterday</a></li>
-                            <li><a class="dropdown-item" href="#">This Week</a></li>
-                            <li><a class="dropdown-item" href="#">This Month</a></li>
-                            <li><a class="dropdown-item" href="#">This Year</a></li>
+                            <li><a class="dropdown-item<?php if($_GET['period'] == 'today') { echo ' active'; } ?>" href="analytics.php?period=today">Today</a></li>
+                            <li><a class="dropdown-item<?php if($_GET['period'] == 'yesterday') { echo ' active'; } ?>" href="analytics.php?period=yesterday">Yesterday</a></li>
+                            <li><a class="dropdown-item<?php if($_GET['period'] == 'week') { echo ' active'; } ?>" href="analytics.php?period=week">This Week</a></li>
+                            <li><a class="dropdown-item<?php if($_GET['period'] == 'month') { echo ' active'; } ?>" href="analytics.php?period=month">This Month</a></li>
+                            <li><a class="dropdown-item<?php if($_GET['period'] == 'all') { echo ' active'; } ?>" href="analytics.php">This Year</a></li>
                         </ul>
                     </div>
                 </div>
@@ -144,7 +171,7 @@ $page = 'analytics';
                                 </ul>
                             </div>
                             <div class="card-body">
-                                <canvas id="consumptionChart" width="100%" height="400"></canvas>
+                                <canvas id="consumptionChart" width="100%" height="400" data-period="<?php echo htmlentities($_GET['period']); ?>"></canvas>
                             </div>
                         </div>
                     </div>
