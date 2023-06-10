@@ -8,6 +8,9 @@ if (!isset($_SESSION['user'])) {
     exit;
 }
 
+// vars
+$user_id = intval($_SESSION['user']);
+
 // page
 $page = 'rooms';
 ?>
@@ -41,185 +44,66 @@ $page = 'rooms';
                     </button>
                 </div>
                 <div class="row">
-                    <div class="col-md-12 col-lg-6 mb-3">
-                        <a href=""
-                            class="d-flex flex-column p-3 rounded text-dark text-decoration-none bg-white-50 mw-100">
+                    <?php
+                    $stmt = $db->prepare("SELECT * FROM rooms WHERE user_id = ?");
+                    $stmt->execute([$user_id]);
+                    $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    foreach ($rooms as $room) {
+                        $stmt = $db->prepare("SELECT * FROM devices WHERE room_id = ?");
+                        $stmt->execute([$room['id']]);
+                        $devices = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                        $data = json_decode($room['data'], true);
+
+                        $usedDevices = [];
+                        foreach ($devices as $device) {
+                            if (in_array($device['type'], $usedDevices)) {
+                                continue;
+                            }
+                            $usedDevices[] = $device['type'];
+                        }
+                        ?>
+                    
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <a href="room.php?id=<?php echo $room['id']; ?>" class="d-flex flex-column p-3 rounded text-dark text-decoration-none bg-white-50 mw-100 h-100 box-shadow">
                             <div class="d-flex align-items-center">
                                 <div class="flex-grow-1">
                                     <div class="d-flex">
-                                        <h5 class="mb-0">Living Room</h5>
-                                        <div class="d-flex flex-row ms-auto">
-                                            <div class="ms-3">
-                                                <i class="fas fa-thermometer-half me-1"></i>
-                                                <span>25°C</span>
-                                            </div>
-                                            <div class="ms-3">
-                                                <i class="fas fa-tint me-1"></i>
-                                                <span>50%</span>
-                                            </div>
-                                        </div>
+                                        <h5 class="mb-0"><?php echo $room['name']; ?></h5>
                                     </div>
-                                    <p class="mb-0 text-muted">11 devices</p>
+                                    <p class="text-muted"><?php echo count($usedDevices); ?> device group, <?php echo count($devices); ?> devices</p>
+                                    <div class="d-flex flex-row mt-auto">
+                                        <?php if (isset($data['temperature']) && isset($data['temperature_status']) && $data['temperature_status'] == '1') { ?>
+                                        <div class="me-3">
+                                            <i class="fas fa-thermometer-half me-1"></i>
+                                            <span><?php echo $data['temperature']; ?>°C</span>
+                                        </div>
+                                        <?php
+                                        }
+                                        if (isset($data['humidity']) && isset($data['humidity_status']) && $data['humidity_status'] == '1') {
+                                        ?>
+                                        <div class="me-3">
+                                            <i class="fas fa-tint me-1"></i>
+                                            <span><?php echo $data['humidity']; ?>%</span>
+                                        </div>
+                                        <?php
+                                        }
+                                        if (isset($data['fireco']) && $data['fireco'] == '1' && isset($data['fireco_status']) && $data['fireco_status'] == '1') { 
+                                        ?>
+                                        <div class="me-3">
+                                            <i class="fas fa-fire me-1 text-danger"></i>
+                                        </div>
+                                        <?php
+                                        }
+                                        ?>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="d-flex flex-nowrap mt-3 gap-2 horizontal-scrollable">
-                                <div class="d-flex flex-column align-items-center card p-2 py-3 mw-50px">
-                                    <i class="fas fa-lightbulb fa-1x"></i>
-                                    <span>Lights</span>
-                                </div>
-                                <div class="d-flex flex-column align-items-center card p-2 py-3 mw-50px">
-                                    <i class="fas fa-wind fa-1x"></i>
-                                    <span>Air C.</span>
-                                </div>
-                                <div class="d-flex flex-column align-items-center card p-2 py-3 mw-50px">
-                                    <i class="fas fa-wind fa-1x"></i>
-                                    <span>Shading</span>
-                                </div>
-                                <div class="d-flex flex-column align-items-center card p-2 py-3 mw-50px">
-                                    <i class="fas fa-wifi fa-1x"></i>
-                                    <span>Wifi</span>
-                                </div>
-                                <div class="d-flex flex-column align-items-center card p-2 py-3 mw-50px">
-                                    <i class="fas fa-camera fa-1x"></i>
-                                    <span>Camera</span>
-                                </div>
-                                <div class="d-flex flex-column align-items-center card p-2 py-3 mw-50px">
-                                    <i class="fas fa-fire fa-1x"></i>
-                                    <span>Fire Det.</span>
-                                </div>
-                                <div class="d-flex flex-column align-items-center card p-2 py-3 mw-50px">
-                                    <i class="fas fa-tv fa-1x"></i>
-                                    <span>TV</span>
-                                </div>
-                                <div class="d-flex flex-column align-items-center card p-2 py-3 mw-50px">
-                                    <i class="fas fa-music fa-1x"></i>
-                                    <span>Speaker</span>
-                                </div>
-                                <div class="d-flex flex-column align-items-center card p-2 py-3 mw-50px">
-                                    <i class="fas fa-robot fa-1x"></i>
-                                    <span>Cleaner</span>
+                                <div class="ms-3">
+                                    <i class="fas fa-chevron-right fa-2x text-secondary text-sh"></i>
                                 </div>
                             </div>
                         </a>
                     </div>
-                    <!-- Bedroom-->
-                    <div class="col-md-12 col-lg-6 mb-3">
-                        <a href=""
-                            class="d-flex flex-column p-3 rounded text-dark text-decoration-none bg-white-50 mw-100">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-grow-1">
-                                    <div class="d-flex">
-                                        <h5 class="mb-0">Bedroom</h5>
-                                        <div class="d-flex flex-row ms-auto">
-                                            <div class="ms-3">
-                                                <i class="fas fa-thermometer-half me-1"></i>
-                                                <span>23°C</span>
-                                            </div>
-                                            <div class="ms-3">
-                                                <i class="fas fa-tint me-1"></i>
-                                                <span>48%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <p class="mb-0 text-muted">4 devices</p>
-                                </div>
-                            </div>
-                            <div class="d-flex flex-nowrap mt-3 gap-2 horizontal-scrollable">
-                                <div class="d-flex flex-column align-items-center card p-2 py-3 mw-50px">
-                                    <i class="fas fa-lightbulb fa-1x"></i>
-                                    <span>Lights</span>
-                                </div>
-                                <div class="d-flex flex-column align-items-center card p-2 py-3 mw-50px">
-                                    <i class="fas fa-wind fa-1x"></i>
-                                    <span>Air C.</span>
-                                </div>
-                                <div class="d-flex flex-column align-items-center card p-2 py-3 mw-50px">
-                                    <i class="fas fa-tv fa-1x"></i>
-                                    <span>TV</span>
-                                </div>
-                                <div class="d-flex flex-column align-items-center card p-2 py-3 mw-50px">
-                                    <i class="fas fa-music fa-1x"></i>
-                                    <span>Speaker</span>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <!-- Kitchen-->
-                    <div class="col-md-12 col-lg-6 mb-3">
-                        <a href=""
-                            class="d-flex flex-column p-3 rounded text-dark text-decoration-none bg-white-50 mw-100">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-grow-1">
-                                    <div class="d-flex">
-                                        <h5 class="mb-0">Kitchen</h5>
-                                        <div class="d-flex flex-row ms-auto">
-                                            <div class="ms-3">
-                                                <i class="fas fa-thermometer-half me-1"></i>
-                                                <span>25°C</span>
-                                            </div>
-                                            <div class="ms-3">
-                                                <i class="fas fa-tint me-1"></i>
-                                                <span>50%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <p class="mb-0 text-muted">5 devices</p>
-                                </div>
-                            </div>
-                            <div class="d-flex flex-nowrap mt-3 gap-2 horizontal-scrollable">
-                                <div class="d-flex flex-column align-items-center card p-2 py-3 mw-50px">
-                                    <i class="fas fa-lightbulb fa-1x"></i>
-                                    <span>Lights</span>
-                                </div>
-                                <div class="d-flex flex-column align-items-center card p-2 py-3 mw-50px">
-                                    <i class="fas fa-wind fa-1x"></i>
-                                    <span>Air C.</span>
-                                </div>
-                                <div class="d-flex flex-column align-items-center card p-2 py-3 mw-50px">
-                                    <i class="fas fa-tint fa-1x"></i>
-                                    <span>Shading</span>
-                                </div>
-                                <div class="d-flex flex-column align-items-center card p-2 py-3 mw-50px">
-                                    <i class="fas fa-fire fa-1x"></i>
-                                    <span>Fire Det.</span>
-                                </div>
-                                <div class="d-flex flex-column align-items-center card p-2 py-3 mw-50px">
-                                    <i class="fas fa-robot fa-1x"></i>
-                                    <span>Cleaner</span>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <!-- Bathroom-->
-                    <div class="col-md-12 col-lg-6 mb-3">
-                        <a href=""
-                            class="d-flex flex-column p-3 rounded text-dark text-decoration-none bg-white-50 mw-100">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-grow-1">
-                                    <div class="d-flex">
-                                        <h5 class="mb-0">Bathroom</h5>
-                                        <div class="d-flex flex-row ms-auto">
-                                            <div class="ms-3">
-                                                <i class="fas fa-thermometer-half me-1"></i>
-                                                <span>18°C</span>
-                                            </div>
-                                            <div class="ms-3">
-                                                <i class="fas fa-tint me-1"></i>
-                                                <span>65%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <p class="mb-0 text-muted">1 devices</p>
-                                </div>
-                            </div>
-                            <div class="d-flex flex-nowrap mt-3 gap-2 horizontal-scrollable">
-                                <div class="d-flex flex-column align-items-center card p-2 py-3 mw-50px">
-                                    <i class="fas fa-lightbulb fa-1x"></i>
-                                    <span>Lights</span>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
+                    <?php } ?>
                 </div>
             </div>
         </div>
@@ -227,10 +111,12 @@ $page = 'rooms';
 
     <?php include './components/addRoomModal.php'; ?>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src=" https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
         crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/app.js"></script>
 </body>
 
