@@ -146,12 +146,26 @@ $page = 'myhome';
                             </div>
                             <div class="col-lg-3 col-sm-6 mb-3">
                                 <!-- Outdoor Lock Status -->
-                                <div class="card bg-white-50 rounded-4 h-100">
+                                <div class="card bg-white-50 rounded-4 h-100 outdoor-lock">
+                                    <?php
+                                    $stmt = $db->prepare("SELECT data FROM home_configs WHERE user_id = ? AND type = 'outdoor_lock' LIMIT 1");
+                                    $stmt->execute([$_SESSION['user']]);
+                                    $outdoorLock = $stmt->fetch(PDO::FETCH_ASSOC);
+                                    $outdoorLock = json_decode($outdoorLock['data'], true);
+                                    $lock = $outdoorLock['status'];
+                                    ?>
                                     <div class="d-flex flex-column justify-content-center align-items-start p-3">
-                                        <h2 class="h6 pb-0">Outdoor Lock</h2>
+                                        <div class="d-flex flex-row w-100">
+                                            <h2 class="h6 pb-0 me-2">Outdoor Lock</h2>
+                                            <?php if($lock) { ?>
+                                            <button class="btn btn-sm ms-auto btn-secondary"><i class="fas fa-lg fa-lock"></i></button>
+                                            <?php } else { ?>
+                                            <button class="btn btn-sm ms-auto btn-sh"><i class="fas fa-lg fa-lock-open"></i></button>
+                                            <?php } ?>
+                                        </div>
                                         <span class="fs-4 m-auto">
-                                            <i class="fas fa-lg text-success fa-lock-open"></i>
-                                            Open
+                                            <i class="fas fa-lg text-dark lock-icon <?php echo $lock ? 'fa-lock' : 'fa-lock-open' ?>"></i>
+                                            <span class="lock-text"><?php echo $lock ? 'Locked' : 'Unlocked' ?></span>
                                         </span>
                                     </div>
                                 </div>
@@ -260,35 +274,25 @@ $page = 'myhome';
                                 <h2 class="h5">Doors Control</h2>
                                 <i class="fas fa-door-open fa-lg text-dark"></i>
                             </div>
-                            <ul class="list-unstyled">
+                            <ul class="list-unstyled overflow-auto" style="max-height: 210px">
+                                <?php
+                                $stmt = $db->prepare("SELECT * FROM home_configs WHERE type = 'door' AND user_id = ?");
+                                $stmt->execute([$user_id]);
+                                $devices = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                foreach ($devices as $device) {
+                                    $device_id = $device['id'];
+                                    $device = @json_decode($device['data'], true);
+                                    $device_name = $device['name'];
+                                    $device_status = $device['status'];
+                                    ?>
                                 <li class="d-flex justify-content-between align-items-center p-2 px-3">
-                                    <span class="fs-5">Main Door</span>
-                                    <span class="badge bg-success rounded-pill p-2">
-                                        <i class="fas fa-lock fa-lg"></i>
-                                        <span>Locked</span>
+                                    <span class="fs-5"><?php echo $device_name; ?></span>
+                                    <span class="badge rounded-pill p-2 <?php if($device_status == 1){ echo "bg-secondary"; } else { echo "btn-sh"; } ?>" data-device="<?php echo $device_id; ?>">
+                                        <i class="fas fa-lg <?php if($device_status == 1) { echo "fa-lock"; } else { echo "fa-lock-open"; } ?>"></i>
+                                        <span><?php echo ($device_status == 0) ? "Unlocked" : "Locked"; ?></span>
                                     </span>
                                 </li>
-                                <li class="d-flex justify-content-between align-items-center p-2 px-3">
-                                    <span class="fs-5">Exit Door</span>
-                                    <span class="badge bg-danger rounded-pill p-2">
-                                        <i class="fas fa-lock-open fa-lg"></i>
-                                        <span>Unlocked</span>
-                                    </span>
-                                </li>
-                                <li class="d-flex justify-content-between align-items-center p-2 px-3">
-                                    <span class="fs-5">Balcony Door</span>
-                                    <span class="badge bg-success rounded-pill p-2">
-                                        <i class="fas fa-lock fa-lg"></i>
-                                        <span>Locked</span>
-                                    </span>
-                                </li>
-                                <li class="d-flex justify-content-between align-items-center p-2 px-3">
-                                    <span class="fs-5">Garage Door</span>
-                                    <span class="badge bg-success rounded-pill p-2">
-                                        <i class="fas fa-lock fa-lg"></i>
-                                        <span>Locked</span>
-                                    </span>
-                                </li>
+                                <?php } ?>
                             </ul>
                         </div>
                     </div>
