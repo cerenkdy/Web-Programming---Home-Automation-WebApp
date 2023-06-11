@@ -93,8 +93,7 @@ CREATE TABLE sensor_data (
     temperature INT NOT NULL DEFAULT 0,
     humidity INT NOT NULL DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    FOREIGN KEY (room_id) REFERENCES rooms(id)
+    PRIMARY KEY (id)
 );
 
 -- mock sensor data for demo
@@ -114,11 +113,23 @@ CREATE TABLE logs (
     device_id INT NOT NULL,
     action INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    FOREIGN KEY (device_id) REFERENCES devices(id)
+    PRIMARY KEY (id)
 );
 
 -- mock log data for demo
-INSERT INTO logs (user_id, user_type, device_id, action) VALUES (1, 'consumers', 1, 1);
-INSERT INTO logs (user_id, user_type, device_id, action) VALUES (1, 'consumers', 3, 0);
 INSERT INTO logs (user_id, user_type, device_id, action) VALUES (1, 'consumers', 2, 0);
+INSERT INTO logs (user_id, user_type, device_id, action) VALUES (1, 'consumers', 3, 0);
+
+ALTER TABLE `rooms` ADD FOREIGN KEY (`user_id`) REFERENCES `consumers` (`id`);
+
+ALTER TABLE `devices` ADD FOREIGN KEY (`user_id`) REFERENCES `consumers` (`id`);
+
+ALTER TABLE `sensor_data` ADD FOREIGN KEY (`user_id`) REFERENCES `consumers` (`id`);
+
+ALTER TABLE `home_configs` ADD FOREIGN KEY (`user_id`) REFERENCES `consumers` (`id`);
+
+ALTER TABLE `devices` ADD FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`);
+
+ALTER TABLE `sensor_data` ADD FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`);
+
+ALTER TABLE `logs` ADD FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`);
