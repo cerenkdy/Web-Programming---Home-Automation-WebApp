@@ -4,6 +4,11 @@ if(!isset($device_group)) {
     exit;
 }
 
+// check user and get if not set
+if(!isset($user)) {
+    $user = $_SESSION['user'];
+}
+
 // Check rooms and get if not set
 if(!isset($rooms)) {
     $stmt = $db->prepare("SELECT * FROM rooms WHERE user_id = ?");
