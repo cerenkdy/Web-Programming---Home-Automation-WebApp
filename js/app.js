@@ -335,4 +335,153 @@ $(function () {
         }
     });
 
+    $('#addRoomModal form').submit(function (e) {
+        e.preventDefault();
+        $.post('api.php?action=addRoom', $(this).serialize(), function (data) {
+            if (data.status == 'success') {
+                $('#addRoomModal').modal('hide');
+                if (typeof data.id != 'undefined') {
+                    location.href = 'room.php?id=' + data.id;
+                } else {
+                    location.reload();
+                }
+            }
+        }, 'json');
+    });
+
+    $('.room-device .on-off-btn').click(function (e) {
+        e.preventDefault();
+        var deviceID = $(this).data('id');
+        var deviceDataStatus = !$(this).data('status');
+        $(this).closest('.room-device').find('span.text-muted').text(deviceDataStatus ? 'On' : 'Off');
+        $(this).data('status', deviceDataStatus);
+        deviceStatus(deviceID, deviceDataStatus);
+    });
+
+    $('.edit-device[data-id]').click(function (e) {
+        e.preventDefault();
+        var deviceID = $(this).data('id');
+        $.post('api.php?action=getDevice', {
+            id: deviceID
+        }, function (data) {
+            if (data.status == 'success') {
+                $('#editDeviceModal').modal('show');
+                $('#editDeviceModal form').attr('data-id', deviceID);
+                $('#editDeviceModal form #editDeviceId').val(deviceID);
+                $('#editDeviceModal form #editDeviceName').val(data.device.name);
+                $('#editDeviceModal form #editDeviceRoom').val(data.device.room_id);
+                $('#editDeviceModal form #editDeviceStatus').val(data.device.status);
+            }
+        }, 'json');
+    });
+
+    $('.delete-device').click(function (e) {
+        e.preventDefault();
+        if (!confirm('Are you sure you want to delete this device?')) {
+            return false;
+        }
+        var deviceID = $(this).data('id'),
+            deviceEl = $(this).closest('.room-device');
+        $.post('api.php?action=deleteDevice', {
+            id: deviceID
+        }, function (data) {
+            if (data.status == 'success') {
+                deviceEl.remove();
+            }
+        }, 'json');
+    });
+
+    $('.add-device-btn').click(function (e) {
+        e.preventDefault();
+        var roomID = $(this).data('room');
+        $('#addDeviceModal').modal('show');
+        $('#deviceRoom').val(roomID);
+    });
+
+    $('#addDeviceModal form').submit(function (e) {
+        e.preventDefault();
+        $.post('api.php?action=addDevice', $(this).serialize(), function (data) {
+            if (data.status == 'success') {
+                $('#addDeviceModal').modal('hide');
+                location.reload();
+            }
+        }, 'json');
+    });
+
+    $('#editDeviceModal form').submit(function (e) {
+        e.preventDefault();
+        $.post('api.php?action=editDevice', $(this).serialize(), function (data) {
+            if (data.status == 'success') {
+                $('#editDeviceModal').modal('hide');
+                location.reload();
+            }
+        }, 'json');
+    });
+
+    $('.edit-room-btn[data-id]').click(function (e) {
+        e.preventDefault();
+        var roomID = $(this).data('id');
+        $.post('api.php?action=getRoom', {
+            id: roomID
+        }, function (data) {
+            if (data.status == 'success') {
+                $('#editRoomModal').modal('show');
+                $('#editRoomModal form').attr('data-id', roomID);
+                $('#editRoomModal form #editRoomId').val(roomID);
+                $('#editRoomModal form #editRoomName').val(data.data.name);
+                if (typeof data.data.data.temperature != 'undefined' && parseInt(data.data.data.temperature) > 0) {
+                    $('#editRoomModal form #editRoomTemperature').attr('checked', true).val(data.data.data.temperature);
+                } else {
+                    $('#editRoomModal form #editRoomTemperature').attr('checked', false);
+                }
+                if (typeof data.data.data.temperature_status != 'undefined' && data.data.data.temperature_status == 0) {
+                    $('#editRoomModal form #editRoomTemperature').attr('checked', false);
+                }
+
+                if (typeof data.data.data.humidity != 'undefined' && parseInt(data.data.data.humidity) > 0) {
+                    $('#editRoomModal form #editRoomHumidity').attr('checked', true).val(data.data.data.humidity);
+                } else {
+                    $('#editRoomModal form #editRoomHumidity').attr('checked', false);
+                }
+                if (typeof data.data.data.humidity_status != 'undefined' && data.data.data.humidity_status == 0) {
+                    $('#editRoomModal form #editRoomHumidity').attr('checked', false);
+                }
+
+                if (typeof data.data.data.fireco != 'undefined' && parseInt(data.data.data.fireco) > 0) {
+                    $('#editRoomModal form #editRoomFireCo').attr('checked', true).val(data.data.data.fireco);
+                } else {
+                    $('#editRoomModal form #editRoomFireCo').attr('checked', false);
+                }
+                if (typeof data.data.data.fireco_status != 'undefined' && data.data.data.fireco_status == 0) {
+                    $('#editRoomModal form #editRoomFireCo').attr('checked', false);
+                }
+            }
+        }, 'json');
+    });
+
+    $('#editRoomModal form').submit(function (e) {
+        e.preventDefault();
+        $.post('api.php?action=editRoom', $(this).serialize(), function (data) {
+            if (data.status == 'success') {
+                $('#editRoomModal').modal('hide');
+                location.reload();
+            }
+        }, 'json');
+    });
+
+    $('.delete-room[data-id]').click(function (e) {
+        e.preventDefault();
+        if (!confirm('Are you sure you want to delete this room?')) {
+            return false;
+        }
+        var roomID = $(this).data('id'),
+            roomEl = $(this).closest('.room-area');
+        $.post('api.php?action=deleteRoom', {
+            id: roomID
+        }, function (data) {
+            if (data.status == 'success') {
+                roomEl.remove();
+            }
+        }, 'json');
+    });
 });

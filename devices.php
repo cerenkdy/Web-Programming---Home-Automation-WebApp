@@ -8,6 +8,13 @@ if (!isset($_SESSION['user'])) {
     exit;
 }
 
+$user = intval($_SESSION['user']);
+
+// get rooms
+$stmt = $db->prepare("SELECT * FROM rooms WHERE user_id = ?");
+$stmt->execute([$user]);
+$rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 // page
 $page = 'devices';
 ?>
@@ -39,11 +46,21 @@ $page = 'devices';
                         <i class="fas fa-plus fa-lg"></i>
                     </button>
                 </div>
-                <!-- Living room -->
-                <div class="d-flex flex-column mt-4">
+                <?php
+                foreach ($rooms as $room) {
+                    $room_id = intval($room['id']);
+                    $room_name = $room['name'];
+                    // get devices
+                    $stmt = $db->prepare("SELECT * FROM devices WHERE room_id = ?");
+                    $stmt->execute([$room_id]);
+                    $devices = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                ?>
+                <div class="d-flex flex-column mt-4 room-area" id="room-<?php echo $room_id; ?>">
                     <div class="d-flex align-items-center mb-3">
-                        <h5 class="flex-grow-1 mr-2 mb-0 text-white fw-bold h5">Living Room</h5>
-                        <button class="btn btn-sm text-white" data-bs-toggle="modal" data-bs-target="#addDeviceModal">
+                        <a href="room.php?id=<?php echo $room_id; ?>" class="text-decoration-none text-white flex-grow-1 mr-2 mb-0 text-white fw-bold h5">
+                            <h5 class="mb-0"><?php echo $room_name; ?></h5>
+                        </a>
+                        <button class="btn btn-sm text-white add-device-btn" data-room="<?php echo $room_id; ?>">
                             <i class="fas fa-plus fa-lg"></i>
                         </button>
                         <div class="dropdown ms-2">
@@ -52,219 +69,40 @@ $page = 'devices';
                                 <i class="fas fa-ellipsis-v fa-lg"></i>
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                        data-bs-target="#addDeviceModal">Add Device</a></li>
-                                <li><a class="dropdown-item" href="#">Edit</a></li>
-                                <li><a class="dropdown-item btn-delete" href="#">Delete</a></li>
+                                <li><a class="dropdown-item add-device-btn" href="#" data-room="<?php echo $room_id; ?>">Add Device</a></li>
+                                <li><a class="dropdown-item edit-room-btn" href="#" data-id="<?php echo $room_id; ?>">Edit</a></li>
+                                <li><a class="dropdown-item delete-room" href="#" data-id="<?php echo $room_id; ?>">Delete</a></li>
                             </ul>
                         </div>
                     </div>
-                    <!-- Device List -->
-                    <div class="d-flex flex-wrap flex-row gap-3 flex-space-between">
-                        <!-- Lamp -->
-                        <div class="bg-white-50 shadow p-3 rounded-4" style="width: 250px;">
-                            <div class="d-flex justify-content-center align-items-start mb-3">
-                                <div class="d-flex justify-content-center align-items-center rounded-circle btn-sh text-white me-2"
-                                    style="width: 50px; height: 50px;">
-                                    <i class="fas fa-lightbulb fa-lg"></i>
-                                </div>
-                                <button class="btn btn-sm text-dark ms-auto" type="button">
-                                    <i class="fas fa-power-off fa-lg"></i>
-                                </button>
-                            </div>
-                            <div class="d-flex">
-                                <div class="d-flex flex-column">
-                                    <span class="h5">Main Lamp</span>
-                                    <span class="text-muted">On</span>
-                                </div>
-                                <div class="dropdown ms-auto mt-auto">
-                                    <button class="btn btn-sm text-dark" type="button" id="dropdownMenuButton1"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v fa-lg"></i>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><a class="dropdown-item" href="#">Edit</a></li>
-                                        <li><a class="dropdown-item btn-delete" href="#">Delete</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Air Conditioner-->
-                        <div class="bg-white-50 shadow p-3 rounded-4" style="width: 250px;">
-                            <div class="d-flex justify-content-center align-items-start mb-3">
-                                <div class="d-flex justify-content-center align-items-center rounded-circle btn-sh text-white me-2"
-                                    style="width: 50px; height: 50px;">
-                                    <i class="fas fa-wind fa-lg"></i>
-                                </div>
-                                <button class="btn btn-sm text-dark ms-auto" type="button">
-                                    <i class="fas fa-power-off fa-lg"></i>
-                                </button>
-                            </div>
-                            <div class="d-flex">
-                                <div class="d-flex flex-column">
-                                    <span class="h5">Air Conditioner</span>
-                                    <span class="text-muted">Off</span>
-                                </div>
-                                <div class="dropdown ms-auto mt-auto">
-                                    <button class="btn btn-sm text-dark" type="button" id="dropdownMenuButton1"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v fa-lg"></i>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><a class="dropdown-item" href="#">Edit</a></li>
-                                        <li><a class="dropdown-item btn-delete" href="#">Delete</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Camera -->
-                        <div class="bg-white-50 shadow p-3 rounded-4" style="width: 250px;">
-                            <div class="d-flex justify-content-start align-items-start mb-3">
-                                <div class="d-flex justify-content-center align-items-center rounded-circle btn-sh text-white me-2"
-                                    style="width: 50px; height: 50px;">
-                                    <i class="fas fa-video fa-lg"></i>
-                                </div>
-                            </div>
-                            <div class="d-flex">
-                                <div class="d-flex flex-column">
-                                    <span class="h5">Camera 1</span>
-                                    <span class="text-muted">Recording</span>
-                                </div>
-                                <div class="dropdown ms-auto mt-auto">
-                                    <button class="btn btn-sm text-dark" type="button" id="dropdownMenuButton1"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v fa-lg"></i>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><a class="dropdown-item" href="#">Edit</a></li>
-                                        <li><a class="dropdown-item btn-delete" href="#">Delete</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- TV -->
-                        <div class="bg-white-50 shadow p-3 rounded-4" style="width: 250px;">
-                            <div class="d-flex justify-content-center align-items-start mb-3">
-                                <div class="d-flex justify-content-center align-items-center rounded-circle btn-sh text-white me-2"
-                                    style="width: 50px; height: 50px;">
-                                    <i class="fas fa-tv fa-lg"></i>
-                                </div>
-                                <button class="btn btn-sm text-dark ms-auto" type="button">
-                                    <i class="fas fa-power-off fa-lg"></i>
-                                </button>
-                            </div>
-                            <div class="d-flex">
-                                <div class="d-flex flex-column">
-                                    <span class="h5">TV</span>
-                                    <span class="text-muted">Channel: 1</span>
-                                </div>
-                                <div class="dropdown ms-auto mt-auto">
-                                    <button class="btn btn-sm text-dark" type="button" id="dropdownMenuButton1"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v fa-lg"></i>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><a class="dropdown-item" href="#">Edit</a></li>
-                                        <li><a class="dropdown-item btn-delete" href="#">Delete</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Speaker -->
-                        <div class="bg-white-50 shadow p-3 rounded-4" style="width: 250px;">
-                            <div class="d-flex justify-content-center align-items-start mb-3">
-                                <div class="d-flex justify-content-center align-items-center rounded-circle btn-sh text-white me-2"
-                                    style="width: 50px; height: 50px;">
-                                    <i class="fas fa-volume-up fa-lg"></i>
-                                </div>
-                                <button class="btn btn-sm text-dark ms-auto" type="button">
-                                    <i class="fas fa-stop fa-lg"></i>
-                                </button>
-                            </div>
-                            <div class="d-flex">
-                                <div class="d-flex flex-column">
-                                    <span class="h5">Speaker</span>
-                                    <span class="text-muted">Playing</span>
-                                </div>
-                                <div class="dropdown ms-auto mt-auto">
-                                    <button class="btn btn-sm text-dark" type="button" id="dropdownMenuButton1"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v fa-lg"></i>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><a class="dropdown-item" href="#">Edit</a></li>
-                                        <li><a class="dropdown-item btn-delete" href="#">Delete</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Vacuum Cleaner -->
-                        <div class="bg-white-50 shadow p-3 rounded-4" style="width: 250px;">
-                            <div class="d-flex justify-content-center align-items-start mb-3">
-                                <div class="d-flex justify-content-center align-items-center rounded-circle btn-sh text-white me-2"
-                                    style="width: 50px; height: 50px;">
-                                    <i class="fas fa-broom fa-lg"></i>
-                                </div>
-                                <button class="btn btn-sm text-dark ms-auto" type="button">
-                                    <i class="fas fa-play fa-lg"></i>
-                                </button>
-                            </div>
-                            <div class="d-flex">
-                                <div class="d-flex flex-column">
-                                    <span class="h5">Vacuum Cleaner</span>
-                                    <span class="text-muted">Charging</span>
-                                </div>
-                                <div class="dropdown ms-auto mt-auto">
-                                    <button class="btn btn-sm text-dark" type="button" id="dropdownMenuButton1"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v fa-lg"></i>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><a class="dropdown-item" href="#">Edit</a></li>
-                                        <li><a class="dropdown-item btn-delete" href="#">Delete</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Bedroom -->
-                <div class="d-flex flex-column mt-4">
-                    <div class="d-flex align-items-center mb-3">
-                        <h5 class="flex-grow-1 mr-2 mb-0 text-white fw-bold h5">Bedroom</h5>
-                        <button class="btn btn-sm text-white" data-bs-toggle="modal" data-bs-target="#addDeviceModal">
-                            <i class="fas fa-plus fa-lg"></i>
-                        </button>
-                        <div class="dropdown ms-2">
-                            <button class="btn btn-sm text-white" type="button" id="dropdownMenuButton1"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v fa-lg"></i>
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                        data-bs-target="#addDeviceModal">Add Device</a></li>
-                                <li><a class="dropdown-item" href="#">Edit</a></li>
-                                <li><a class="dropdown-item btn-delete" href="#">Delete</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <!-- Device List -->
                     <div class="d-flex flex-wrap flex-row gap-3">
-                        <!-- Lamp -->
-                        <div class="bg-white-50 shadow p-3 rounded-4" style="width: 250px;">
+                        <?php
+                        $deviceCounter = 0;
+                        foreach ($devices as $device) {
+                            $device_type = $device['type'];
+                            if ($device_type == 'door') {
+                                continue;
+                            }
+                            $device_id = intval($device['id']);
+                            $device_name = $device['name'];
+                            $device_status = $device['status'];
+                            $device = $device_group[$device_type];
+                            $deviceCounter++;
+                        ?>
+                        <div class="bg-white-50 shadow p-3 rounded-4 room-device d-flex flex-column" style="width: 250px;">
                             <div class="d-flex justify-content-center align-items-start mb-3">
                                 <div class="d-flex justify-content-center align-items-center rounded-circle btn-sh text-white me-2"
                                     style="width: 50px; height: 50px;">
-                                    <i class="fas fa-lightbulb fa-lg"></i>
+                                    <i class="<?php echo $device['icon']; ?> fa-lg"></i>
                                 </div>
-                                <button class="btn btn-sm text-dark ms-auto" type="button">
+                                <button class="btn btn-sm text-dark ms-auto on-off-btn" type="button" data-id="<?php echo $device_id; ?>" data-status="<?php echo $device_status; ?>">
                                     <i class="fas fa-power-off fa-lg"></i>
                                 </button>
                             </div>
-                            <div class="d-flex">
+                            <div class="d-flex h-100">
                                 <div class="d-flex flex-column">
-                                    <span class="h5">Bedroom Lamp</span>
-                                    <span class="text-muted">On</span>
+                                    <span class="h5"><?php echo $device_name; ?></span>
+                                    <span class="text-muted mt-auto"><?php echo ($device_status == 1) ? 'On' : 'Off'; ?></span>
                                 </div>
                                 <div class="dropdown ms-auto mt-auto">
                                     <button class="btn btn-sm text-dark" type="button" id="dropdownMenuButton1"
@@ -272,258 +110,23 @@ $page = 'devices';
                                         <i class="fas fa-ellipsis-v fa-lg"></i>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><a class="dropdown-item" href="#">Edit</a></li>
-                                        <li><a class="dropdown-item btn-delete" href="#">Delete</a></li>
+                                        <li><a class="dropdown-item edit-device" href="#" data-id="<?php echo $device_id; ?>">Edit</a></li>
+                                        <li><a class="dropdown-item delete-device" href="#" data-id="<?php echo $device_id; ?>">Delete</a></li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
-                        <!-- Air Conditioner -->
-                        <div class="bg-white-50 shadow p-3 rounded-4" style="width: 250px;">
-                            <div class="d-flex justify-content-center align-items-start mb-3">
-                                <div class="d-flex justify-content-center align-items-center rounded-circle btn-sh text-white me-2"
-                                    style="width: 50px; height: 50px;">
-                                    <i class="fas fa-wind fa-lg"></i>
-                                </div>
-                                <button class="btn btn-sm text-dark ms-auto" type="button">
-                                    <i class="fas fa-power-off fa-lg"></i>
-                                </button>
-                            </div>
-                            <div class="d-flex">
-                                <div class="d-flex flex-column">
-                                    <span class="h5">Air Conditioner</span>
-                                    <span class="text-muted">Off</span>
-                                </div>
-                                <div class="dropdown ms-auto mt-auto">
-                                    <button class="btn btn-sm text-dark" type="button" id="dropdownMenuButton1"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v fa-lg"></i>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><a class="dropdown-item" href="#">Edit</a></li>
-                                        <li><a class="dropdown-item btn-delete" href="#">Delete</a></li>
-                                    </ul>
-                                </div>
-                            </div>
+                        <?php
+                        }
+                        if ($deviceCounter == 0) {
+                        ?>
+                        <div class="bg-white-50 d-flex align-items-center justify-content-center shadow p-3 px-4 rounded-4 mr-auto" style="min-width: 250px;">
+                            <i class="fas fa-exclamation-circle fa-1x me-2 text-muted"></i> No device found
                         </div>
-                        <!-- TV -->
-                        <div class="bg-white-50 shadow p-3 rounded-4" style="width: 250px;">
-                            <div class="d-flex justify-content-center align-items-start mb-3">
-                                <div class="d-flex justify-content-center align-items-center rounded-circle btn-sh text-white me-2"
-                                    style="width: 50px; height: 50px;">
-                                    <i class="fas fa-tv fa-lg"></i>
-                                </div>
-                                <button class="btn btn-sm text-dark ms-auto" type="button">
-                                    <i class="fas fa-power-off fa-lg"></i>
-                                </button>
-                            </div>
-                            <div class="d-flex">
-                                <div class="d-flex flex-column">
-                                    <span class="h5">TV</span>
-                                    <span class="text-muted">Channel: 1</span>
-                                </div>
-                                <div class="dropdown ms-auto mt-auto">
-                                    <button class="btn btn-sm text-dark" type="button" id="dropdownMenuButton1"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v fa-lg"></i>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><a class="dropdown-item" href="#">Edit</a></li>
-                                        <li><a class="dropdown-item btn-delete" href="#">Delete</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Speaker -->
-                        <div class="bg-white-50 shadow p-3 rounded-4" style="width: 250px;">
-                            <div class="d-flex justify-content-center align-items-start mb-3">
-                                <div class="d-flex justify-content-center align-items-center rounded-circle btn-sh text-white me-2"
-                                    style="width: 50px; height: 50px;">
-                                    <i class="fas fa-volume-up fa-lg"></i>
-                                </div>
-                                <button class="btn btn-sm text-dark ms-auto" type="button">
-                                    <i class="fas fa-stop fa-lg"></i>
-                                </button>
-                            </div>
-                            <div class="d-flex">
-                                <div class="d-flex flex-column">
-                                    <span class="h5">Speaker</span>
-                                    <span class="text-muted">Playing</span>
-                                </div>
-                                <div class="dropdown ms-auto mt-auto">
-                                    <button class="btn btn-sm text-dark" type="button" id="dropdownMenuButton1"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v fa-lg"></i>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><a class="dropdown-item" href="#">Edit</a></li>
-                                        <li><a class="dropdown-item btn-delete" href="#">Delete</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                        <?php } ?>
                     </div>
                 </div>
-                <!-- Kitchen -->
-                <div class="d-flex flex-column mt-4">
-                    <div class="d-flex align-items-center mb-3">
-                        <h5 class="flex-grow-1 mr-2 mb-0 text-white fw-bold h5">Kitchen</h5>
-                        <button class="btn btn-sm text-white" data-bs-toggle="modal" data-bs-target="#addDeviceModal">
-                            <i class="fas fa-plus fa-lg"></i>
-                        </button>
-                        <div class="dropdown ms-2">
-                            <button class="btn btn-sm text-white" type="button" id="dropdownMenuButton1"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v fa-lg"></i>
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                        data-bs-target="#addDeviceModal">Add Device</a></li>
-                                <li><a class="dropdown-item" href="#">Edit</a></li>
-                                <li><a class="dropdown-item btn-delete" href="#">Delete</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <!-- Device List -->
-                    <div class="d-flex flex-wrap flex-row gap-3">
-                        <!-- Lamp -->
-                        <div class="bg-white-50 shadow p-3 rounded-4" style="width: 250px;">
-                            <div class="d-flex justify-content-center align-items-start mb-3">
-                                <div class="d-flex justify-content-center align-items-center rounded-circle btn-sh text-white me-2"
-                                    style="width: 50px; height: 50px;">
-                                    <i class="fas fa-lightbulb fa-lg"></i>
-                                </div>
-                                <button class="btn btn-sm text-dark ms-auto" type="button">
-                                    <i class="fas fa-power-off fa-lg"></i>
-                                </button>
-                            </div>
-                            <div class="d-flex">
-                                <div class="d-flex flex-column">
-                                    <span class="h5">Kitchen Lamp</span>
-                                    <span class="text-muted">Off</span>
-                                </div>
-                                <div class="dropdown ms-auto mt-auto">
-                                    <button class="btn btn-sm text-dark" type="button" id="dropdownMenuButton1"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v fa-lg"></i>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><a class="dropdown-item" href="#">Edit</a></li>
-                                        <li><a class="dropdown-item btn-delete" href="#">Delete</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Air Conditioner -->
-                        <div class="bg-white-50 shadow p-3 rounded-4" style="width: 250px;">
-                            <div class="d-flex justify-content-center align-items-start mb-3">
-                                <div class="d-flex justify-content-center align-items-center rounded-circle btn-sh text-white me-2"
-                                    style="width: 50px; height: 50px;">
-                                    <i class="fas fa-wind fa-lg"></i>
-                                </div>
-                                <button class="btn btn-sm text-dark ms-auto" type="button">
-                                    <i class="fas fa-power-off fa-lg"></i>
-                                </button>
-                            </div>
-                            <div class="d-flex">
-                                <div class="d-flex flex-column">
-                                    <span class="h5">Air Conditioner</span>
-                                    <span class="text-muted">Off</span>
-                                </div>
-                                <div class="dropdown ms-auto mt-auto">
-                                    <button class="btn btn-sm text-dark" type="button" id="dropdownMenuButton1"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v fa-lg"></i>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><a class="dropdown-item" href="#">Edit</a></li>
-                                        <li><a class="dropdown-item btn-delete" href="#">Delete</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Vacuum Cleaner -->
-                        <div class="bg-white-50 shadow p-3 rounded-4" style="width: 250px;">
-                            <div class="d-flex justify-content-center align-items-start mb-3">
-                                <div class="d-flex justify-content-center align-items-center rounded-circle btn-sh text-white me-2"
-                                    style="width: 50px; height: 50px;">
-                                    <i class="fas fa-broom fa-lg"></i>
-                                </div>
-                                <button class="btn btn-sm text-dark ms-auto" type="button">
-                                    <i class="fas fa-play fa-lg"></i>
-                                </button>
-                            </div>
-                            <div class="d-flex">
-                                <div class="d-flex flex-column">
-                                    <span class="h5">Vacuum Cleaner 2</span>
-                                    <span class="text-muted">Charging</span>
-                                </div>
-                                <div class="dropdown ms-auto mt-auto">
-                                    <button class="btn btn-sm text-dark" type="button" id="dropdownMenuButton1"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v fa-lg"></i>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><a class="dropdown-item" href="#">Edit</a></li>
-                                        <li><a class="dropdown-item btn-delete" href="#">Delete</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Bathroom -->
-                <div class="d-flex flex-column mt-4">
-                    <div class="d-flex align-items-center mb-3">
-                        <h5 class="flex-grow-1 mr-2 mb-0 text-white fw-bold h5">Bathroom</h5>
-                        <button class="btn btn-sm text-white" data-bs-toggle="modal" data-bs-target="#addDeviceModal">
-                            <i class="fas fa-plus fa-lg"></i>
-                        </button>
-                        <div class="dropdown ms-2">
-                            <button class="btn btn-sm text-white" type="button" id="dropdownMenuButton1"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v fa-lg"></i>
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                        data-bs-target="#addDeviceModal">Add Device</a></li>
-                                <li><a class="dropdown-item" href="#">Edit</a></li>
-                                <li><a class="dropdown-item btn-delete" href="#">Delete</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <!-- Device List -->
-                    <div class="d-flex flex-wrap flex-row gap-3">
-                        <!-- Lamp -->
-                        <div class="bg-white-50 shadow p-3 rounded-4" style="width: 250px;">
-                            <div class="d-flex justify-content-center align-items-start mb-3">
-                                <div class="d-flex justify-content-center align-items-center rounded-circle btn-sh text-white me-2"
-                                    style="width: 50px; height: 50px;">
-                                    <i class="fas fa-lightbulb fa-lg"></i>
-                                </div>
-                                <button class="btn btn-sm text-dark ms-auto" type="button">
-                                    <i class="fas fa-power-off fa-lg"></i>
-                                </button>
-                            </div>
-                            <div class="d-flex">
-                                <div class="d-flex flex-column">
-                                    <span class="h5">Bathroom Lamp</span>
-                                    <span class="text-muted">Off</span>
-                                </div>
-                                <div class="dropdown ms-auto mt-auto">
-                                    <button class="btn btn-sm text-dark" type="button" id="dropdownMenuButton1"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v fa-lg"></i>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><a class="dropdown-item" href="#">Edit</a></li>
-                                        <li><a class="dropdown-item btn-delete" href="#">Delete</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <?php } ?>
             </div>
         </div>
     </main>

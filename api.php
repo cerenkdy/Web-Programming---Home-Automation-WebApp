@@ -280,6 +280,192 @@ switch ($action) {
         echo json_encode([
             'status' => $result
         ]);
+        break;
+    case 'addRoom':
+        $name = $_POST['roomName'];
+        
+        $roomData = [
+            'temperature' => rand(15,30),
+            'temperature_status' => (isset($_POST['temperature'])) ? '1' : '0',
+            'humidity' => rand(30,80),
+            'humidity_status' => (isset($_POST['humidity'])) ? '1' : '0',
+            'fireco' => 0,
+            'fireco_status' => (isset($_POST['fireco'])) ? '1' : '0'
+        ];
+
+        $stmt = $db->prepare('INSERT INTO rooms (name, user_id, data) VALUES (?, ?, ?)');
+        $stmt->execute([$name, $user, json_encode($roomData)]);
+        $roomID = $db->lastInsertId();
+        
+        if ($roomID && isset($_POST['device']) && is_array($_POST['device']) && count($_POST['device']) > 0) {
+            $stmt = $db->prepare('INSERT INTO devices (name, user_id, room_id, type, data) VALUES (?, ?, ?, ?, ?)');
+            foreach ($_POST['device'] as $device) {
+                $deviceData = $device_group[$device];
+                if ($deviceData) {
+                    $stmt->execute([$name . ' ' . $deviceData['name'], $user, $roomID, $device, json_encode($deviceData['data'])]);
+                }
+            }
+        }
+        echo json_encode([
+            'status' => 'success',
+            'id' => $roomID
+        ]);
+        break;
+    case 'editRoom':
+        if (isset($_POST['id']) && isset($_POST['roomName']) && $_POST['roomName'] != '') {
+            
+            $stmt = $db->prepare('SELECT * FROM rooms WHERE id = ? AND user_id = ?');
+            $stmt->execute([$_POST['id'], $user]);
+            $room = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($room) {
+                $room['data'] = @json_decode($room['data'], true);
+                if (!$room['data']) {
+                    $room['data'] = [];
+                }
+                
+                if(isset($_POST['temperature'])) {
+                    if (!isset($room['data']['temperature'])) {
+                        $room['data']['temperature'] = 25;
+                    }
+                    $room['data']['temperature_status'] = '1';
+                } else {
+                    $room['data']['temperature_status'] = '0';
+                }
+                if(isset($_POST['humidity'])) {
+                    if (!isset($room['data']['humidity'])) {
+                        $room['data']['humidity'] = 50;
+                    }
+                    $room['data']['humidity_status'] = '1';
+                } else {
+                    $room['data']['humidity_status'] = '0';
+                }
+                if(isset($_POST['fireco'])) {
+                    if (!isset($room['data']['fireco'])) {
+                        $room['data']['fireco'] = 0;
+                    }
+                    $room['data']['fireco_status'] = '1';
+                } else {
+                    $room['data']['fireco_status'] = '0';
+                }
+
+                $name = $_POST['roomName'];
+                $stmt = $db->prepare('UPDATE rooms SET name = ?, data = ? WHERE id = ? AND user_id = ?');
+                $stmt->execute([$name, json_encode($room['data']), $_POST['id'], $user]);
+                echo json_encode([
+                    'status' => 'success'
+                ]);
+            } else {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Invalid room id'
+                ]);
+            }
+        } else {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Invalid room name'
+            ]);
+        }
+        break;
+    case 'deleteRoom':
+        // delete sensor data
+        $db->prepare('DELETE FROM sensor_data WHERE room_id = ? AND user_id = ?')->execute([$_POST['id'], $user]);
+        
+        // delete device logs each devices
+        $stmt = $db->prepare('SELECT id FROM devices WHERE room_id = ? AND user_id = ?');
+        $stmt->execute([$_POST['id'], $user]);
+        $devices = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if ($devices) {
+            $stmt = $db->prepare('DELETE FROM logs WHERE device_id = ?');
+            foreach ($devices as $device) {
+                $stmt->execute([$device['id']]);
+            }
+        }
+        $stmt = $db->prepare('DELETE FROM devices WHERE room_id = ? AND user_id = ?');
+        $stmt->execute([$_POST['id'], $user]);
+        $stmt = $db->prepare('DELETE FROM rooms WHERE id = ? AND user_id = ?');
+        $stmt->execute([$_POST['id'], $user]);
+        echo json_encode([
+            'status' => 'success'
+        ]);
+        break;
+    case 'getRoom':
+        $stmt = $db->prepare('SELECT * FROM rooms WHERE id = ? AND user_id = ?');
+        $stmt->execute([$_POST['id'], $user]);
+        $room = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($room) {
+            $stmt = $db->prepare('SELECT * FROM devices WHERE room_id = ? AND user_id = ?');
+            $stmt->execute([$_POST['id'], $user]);
+            $room['data'] = @json_decode($room['data'], true);
+            echo json_encode([
+                'status' => 'success',
+                'data' => $room
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Room not found'
+            ]);
+        }
+        break;
+    case 'addDevice':
+        if (isset($_POST['type']) && isset($device_group[$_POST['type']]) && !empty($_POST['name']) && !empty($_POST['room_id'])) {
+            $name = $_POST['name'];
+            $type = $_POST['type'];
+            $room_id = $_POST['room_id'];
+            $status = isset($_POST['status']) ? '1' : '0';
+            $device = $device_group[$type];
+
+            $stmt = $db->prepare("INSERT INTO devices (user_id, room_id, name, type, status, electricity, data) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$user, $room_id, $name, $type, $status, $device['electricity'], json_encode($device['data'])]);
+            $result = $stmt->rowCount() ? 'success' : 'error';
+
+            echo json_encode([
+                'status' => $result
+            ]);
+        }
 
         break;
+    case 'getDevice':
+        $id = intval($_POST['id']);
+        $stmt = $db->prepare("SELECT * FROM devices WHERE id = ? AND user_id = ? LIMIT 1");
+        $stmt->execute([$id, $user]);
+        $device = $stmt->fetch(PDO::FETCH_ASSOC);
+        $device['data'] = json_decode($device['data'], true);
+        echo json_encode([
+            'status' => 'success',
+            'device' => $device
+        ]);
+        break;
+    case 'editDevice':
+        $id = intval($_POST['id']);
+        $name = $_POST['name'];
+        $room_id = $_POST['room_id'];
+        $status = $_POST['status'];
+
+        $stmt = $db->prepare("UPDATE devices SET name = ?, room_id = ?, status = ? WHERE id = ? AND user_id = ? LIMIT 1");
+        $stmt->execute([$name, $room_id, $status, $id, $user]);
+        $result = $stmt->rowCount() ? 'success' : 'error';
+
+        echo json_encode([
+            'status' => $result
+        ]);
+        break;
+    case 'deleteDevice':
+        $id = intval($_POST['id']);
+
+        // delete device logs
+        $stmt = $db->prepare("DELETE FROM logs WHERE device_id = ? AND user_id = ?");
+        $stmt->execute([$id, $user]);
+
+        // delete device
+        $stmt = $db->prepare("DELETE FROM devices WHERE id = ? AND user_id = ? LIMIT 1");
+        $stmt->execute([$id, $user]);
+        
+        $result = $stmt->rowCount() ? 'success' : 'error';
+        echo json_encode([
+            'status' => $result
+        ]);
+        break;
 }
+?>
