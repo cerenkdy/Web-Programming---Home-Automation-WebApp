@@ -467,5 +467,64 @@ switch ($action) {
             'status' => $result
         ]);
         break;
+    case 'getLamp':
+        $id = intval($_POST['id']);
+        $stmt = $db->prepare("SELECT * FROM devices WHERE type = 'light' AND id = ? AND user_id = ? LIMIT 1");
+        $stmt->execute([$id, $user]);
+        $device = $stmt->fetch(PDO::FETCH_ASSOC);
+        $device['data'] = json_decode($device['data'], true);
+        echo json_encode([
+            'status' => 'success',
+            'device' => $device
+        ]);
+        break;
+    case 'addLamp':
+        $room_id = $_POST['id'];
+        $name = $_POST['name'];
+        $color = $_POST['color'];
+        $brightness = $_POST['brightness'];
+        $status = $_POST['status'];
+
+        $stmt = $db->prepare("INSERT INTO devices (user_id, room_id, name, type, status, electricity, data) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$user, $room_id, $name, 'light', $status, 1, json_encode(['status' => $status, 'color' => $color, 'brightness' => $brightness])]);
+        $result = $stmt->rowCount() ? 'success' : 'error';
+
+        echo json_encode([
+            'status' => $result
+        ]);
+        break;
+    case 'editLamp':
+        $id = intval($_POST['id']);
+        $name = $_POST['name'];
+        $data = [
+            'color' => $_POST['color'],
+            'brightness' => $_POST['brightness']
+        ];
+
+        $stmt = $db->prepare("UPDATE devices SET name = ?, data = ? WHERE id = ? AND user_id = ? LIMIT 1");
+
+        $stmt->execute([$name, json_encode($data), $id, $user]);
+        $result = $stmt->rowCount() ? 'success' : 'error';
+
+        echo json_encode([
+            'status' => $result
+        ]);
+        break;
+    case 'deleteLamp':
+        $id = intval($_POST['id']);
+
+        // delete device logs
+        $stmt = $db->prepare("DELETE FROM logs WHERE device_id = ? AND user_id = ?");
+        $stmt->execute([$id, $user]);
+
+        // delete device
+        $stmt = $db->prepare("DELETE FROM devices WHERE id = ? AND user_id = ? LIMIT 1");
+        $stmt->execute([$id, $user]);
+        
+        $result = $stmt->rowCount() ? 'success' : 'error';
+        echo json_encode([
+            'status' => $result
+        ]);
+        break;
 }
 ?>
