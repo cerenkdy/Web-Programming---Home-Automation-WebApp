@@ -747,4 +747,71 @@ $(function () {
             }
         }, 'json');
     });
+
+    if ($('.send-data-btn').length) {
+        var sendSensorData = function () {
+            var all_rooms = $('.send-data-btn').data('rooms'),
+                user_id = $('.send-data-btn').data('id'),
+                rooms = [];
+            all_rooms.forEach(function (room_id) {
+                var temperature = Math.floor(Math.random() * 20) + 18;
+                var humidity = Math.floor(Math.random() * 50) + 30;
+                rooms.push({
+                    room_id: room_id,
+                    temperature: temperature,
+                    humidity: humidity
+                });
+            });
+            $.post('api.php?action=sendData', {
+                rooms: rooms,
+                user_id: user_id
+            }, function (data) { }, 'json');
+        };
+        $('.send-data-btn').click(function (e) {
+            e.preventDefault();
+            $.post('api.php?action=getRoomsDataForm', {
+                id: $(this).data('id')
+            }, function (data) {
+                if (data.status == 'success') {
+                    $('#sendDataModal .modal-body').html(data.data);
+                    $('#sendDataModal').modal('show');
+                }
+            });
+        });
+        $('body').on('submit', '#sendDataModal form', function (e) {
+            e.preventDefault();
+            $.post('api.php?action=sendData', $(this).serialize(), function (data) {
+                if (data.status == 'success') {
+                    $('#sendDataModal').modal('hide');
+                    location.reload();
+                }
+            }, 'json');
+        });
+        setInterval(sendSensorData, 600000);
+    }
+
+    $('.edit-device-producer[data-id]').click(function (e) {
+        e.preventDefault();
+        var deviceID = $(this).data('id');
+        $.post('api.php?action=getDeviceDataForm', {
+            id: deviceID
+        }, function (data) {
+            if (data.status == 'success') {
+                $('#editDeviceDataModal .modal-body').html(data.data);
+                $('#editDeviceDataModal .modal-header h5').text(data.name);
+                $('#editDeviceDataModal #editDeviceId').val(deviceID);
+                $('#editDeviceDataModal').modal('show');
+            }
+        }, 'json');
+    });
+
+    $('body').on('submit', '#editDeviceDataModal form', function (e) {
+        e.preventDefault();
+        $.post('api.php?action=setDeviceDataMultiple', $(this).serialize(), function (data) {
+            if (data.status == 'success') {
+                $('#editDeviceDataModal').modal('hide');
+                location.reload();
+            }
+        }, 'json');
+    });
 });

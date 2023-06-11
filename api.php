@@ -526,5 +526,165 @@ switch ($action) {
             'status' => $result
         ]);
         break;
+    case 'setDeviceDataMultiple':
+        $id = intval($_POST['device_id']);
+        // get device
+        $stmt = $db->prepare("SELECT type, status, data FROM devices WHERE id = ? AND user_id = ?");
+        $stmt->execute([$id, $user]);
+        if (!$stmt->rowCount()) {
+            echo json_encode([
+                'status' => 'error'
+            ]);
+            break;
+        }
+        $device = $stmt->fetch(PDO::FETCH_ASSOC);
+        $data = @json_decode($device["data"], true);
+        $status = $device['status'];
+        foreach ($_POST as $config => $value) {
+            if ($config != 'device_id' && isset($data[$config]) || isset($device_groups[$device['type']][$config])) {
+                $data[$config] = $value;
+                if($config == 'status') {
+                    $status = $value;
+                }
+            }
+        }
+        $stmt = $db->prepare("UPDATE devices SET data = ?, status = ? WHERE id = ? AND user_id = ?");
+        $stmt->execute([json_encode($data), $status, $id, $user]);
+        $result = $stmt->rowCount() ? 'success' : 'error';
+        echo json_encode([
+            'status' => $result
+        ]);
+        break;
+    case 'getDeviceDataForm':
+        $stmt = $db->prepare('SELECT * FROM devices WHERE id = ? AND user_id = ?');
+        if ($stmt->execute([$_POST['id'], $user])) {
+            $device = $stmt->fetch(PDO::FETCH_ASSOC);
+            $device['data'] = @json_decode($device['data'], true);
+            $deviceData = $device_group[$device['type']];
+
+            $data = '';
+
+            if (isset($device['data']) && is_array($device['data']) && count($device['data']) > 0) {
+                foreach ($device['data'] as $deviceDataKey => $deviceDataValue) {
+                    $deviceDataKey = htmlentities($deviceDataKey);
+                    switch ($deviceDataKey) {
+                        case 'color':
+                            $data .= '<div class="form-group mb-3">
+                                <label for="device-data-' . $deviceDataKey . '">' . ucwords($deviceDataKey) . '</label>
+                                <input type="color" class="form-control" id="device-data-' . $deviceDataKey . '" name="' . $deviceDataKey . '" value="' . htmlentities($deviceDataValue) . '">
+                            </div>';
+                                break;
+                        case 'brightness':
+                        case 'shade':
+                            $data .= '<div class="mb-3">
+                                <label for="device-data-' . $deviceDataKey . '">' . ucwords($deviceDataKey) . '</label>
+                                <input type="range" class="form-range" id="device-data-' . $deviceDataKey . '" name="' . $deviceDataKey . '" value="' . htmlentities($deviceDataValue) . '" min="0" max="100">
+                            </div>';
+                            break;
+                        case 'status':
+                            $data .= '<div class="form-group mb-3">
+                                <label for="device-data-' . $deviceDataKey . '">' . ucwords($deviceDataKey) . '</label>
+                                <select class="form-control" id="device-data-' . $deviceDataKey . '" name="' . $deviceDataKey . '">
+                                    <option value="1" ' . ($deviceDataValue == 1 ? 'selected' : '') . '>On</option>
+                                    <option value="0" ' . ($deviceDataValue == 0 ? 'selected' : '') . '>Off</option>
+                                </select>
+                            </div>';
+                            break;
+                        default:
+                            $data .= '<div class="form-group mb-3">
+                                <label for="device-data-' . $deviceDataKey . '">' . ucwords($deviceDataKey) . '</label>
+                                <input type="text" class="form-control" id="device-data-' . $deviceDataKey . '" name="' . $deviceDataKey . '" value="' . htmlentities($deviceDataValue) . '">
+                            </div>';
+                            break;
+                    }
+                }
+            }
+
+            $name = $device['name'];
+            if ($deviceData['name'] != $name) {
+                $name = $deviceData['name'] . ' - ' . $name;
+            }
+
+            echo json_encode([
+                'status' => 'success',
+                'data' => $data,
+                'name' => $name
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Device not found'
+            ]);
+        }
+        break;
+    case 'getRoomsDataForm':
+        $stmt = $db->prepare('SELECT * FROM rooms WHERE user_id = ?');
+        if ($stmt->execute([$user])) {
+            $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $data = '<input type="hidden" name="user_id" value="' . $user . '">';
+            foreach ($rooms as $room) {
+                $room['data'] = @json_decode($room['data'], true);
+                $data .= '<div class="form-group mb-3">
+                    <input type="hidden" name="rooms[' . $room['id'] . '][room_id]" value="' . $room['id'] . '">
+                    <label for="room-data-' . $room['id'] . '">' . $room['name'] . '</label>
+                    <div class="row">
+                        <div class="col">
+                            <div class="input-group">
+                                <span class="input-group-text">Temp.</span>
+                                <input type="number" class="form-control" id="room-data-' . $room['id'] . '-temperature" name="rooms[' . $room['id'] . '][temperature]" value="' . (isset($room['data']['temperature']) ? htmlentities($room['data']['temperature']) : '') . '">
+                                <span class="input-group-text">°C</span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="input-group">
+                                <span class="input-group-text">Humidity</span>
+                                <input type="number" class="form-control" id="room-data-' . $room['id'] . '-humidity" name="rooms[' . $room['id'] . '][humidity]" value="' . (isset($room['data']['humidity']) ? htmlentities($room['data']['humidity']) : '') . '">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>';
+            }
+            echo json_encode([
+                'status' => 'success',
+                'data' => $data
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'error'
+            ]);
+        }
+        break;
+    case 'sendData':
+        $rooms = isset($_POST['rooms']) ? $_POST['rooms'] : [];
+        $user_id = @intval($_POST['user_id']);
+        if(is_array($rooms)) {
+            foreach ($rooms as $room) {
+                $room_id = intval($room['room_id']);
+                $temperature = intval($room['temperature']);
+                $humidity = intval($room['humidity']);
+                $stmt = $db->prepare('SELECT * FROM rooms WHERE id = ? AND user_id = ?');
+                if ($user_id && $room_id && $temperature && $humidity && $user_id > 0 && $room_id > 0 && $temperature > 0 && $humidity > 0 && $temperature < 100 && $humidity < 100 && $stmt->execute([$room_id, $user_id])) {
+                    $room = $stmt->fetch(PDO::FETCH_ASSOC);
+                    if ($room) {
+                        $room['data'] = @json_decode($room['data'], true);
+                        $room['data']['temperature'] = $temperature;
+                        $room['data']['humidity'] = $humidity;
+                        $stmt = $db->prepare('UPDATE rooms SET data = ? WHERE id = ? AND user_id = ?');
+                        $stmt->execute([json_encode($room['data']), $room_id, $user_id]);
+                        $stmt = $db->prepare('INSERT INTO sensor_data (user_id, room_id, temperature, humidity) VALUES (?, ?, ?, ?)');
+                        $stmt->execute([$user_id, $room_id, $temperature, $humidity]);
+                    }
+                }
+            }
+            echo json_encode([
+                'status' => 'success'
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'error'
+            ]);
+        }
+        break;
 }
 ?>
