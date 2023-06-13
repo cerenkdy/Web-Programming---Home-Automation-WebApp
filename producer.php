@@ -10,7 +10,7 @@ if (!isset($_SESSION['user'])) {
 
 if(isset($_GET['user']) && is_numeric($_GET['user']) && $_GET['user'] > 0) {
     // check user
-    $stmt = $db->prepare("SELECT * FROM producers WHERE id = ? LIMIT 1");
+    $stmt = $db->prepare("SELECT * FROM consumers WHERE id = ? LIMIT 1");
     $stmt->setFetchMode(PDO::FETCH_ASSOC);
     $stmt->execute([$_GET['user']]);
     if($stmt->rowCount() > 0) {
@@ -72,7 +72,7 @@ $page = 'devices';
                             $consumer_id = intval($consumer['id']);
                             $consumer_name = $consumer['name'];
                         ?>
-                        <option value="<?php echo $consumer_id; ?>"><?php echo $consumer_name; ?></option>
+                        <option value="<?php echo $consumer_id; ?>"<?php echo $consumer_id == $user_id ? ' selected' : ''; ?>><?php echo $consumer_name; ?></option>
                         <?php
                         }
                         ?>
