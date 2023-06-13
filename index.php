@@ -26,7 +26,7 @@
                 Get started with our smart home solutions today.
                 </br>
             </p>
-            <a href="" class="btn btn-primary btn-lg ms-auto rounded-0 mt-5">
+            <a href="register.php" class="btn btn-primary btn-lg ms-auto rounded-0 mt-5">
                 JOIN US
             </a>
         </div>

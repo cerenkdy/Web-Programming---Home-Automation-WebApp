@@ -1,49 +1,95 @@
 <?php 
-    // database connection and session
-    require_once 'dbconfig.php';
+// database connection and session
+require_once 'dbconfig.php';
 
-    // if user is logged in, redirect to myhome.php
-    if (isset($_SESSION['user'])) {
-        header("Location: myhome.php");
-        exit;
+// if user is logged in, redirect to myhome.php
+if (isset($_SESSION['user'])) {
+    header("Location: myhome.php");
+    exit;
+}
+
+// if register form has been submitted
+if (isset($_POST['username']) && isset($_POST['email']) &&  isset($_POST['password'])) {
+
+    // get username, email and password
+    $username = isset($_POST['username']) ? $_POST['username'] : '';
+    $email = isset($_POST['email']) ? $_POST['email'] : '';
+    $password = isset($_POST['password']) ? $_POST['password'] : '';
+    $name = isset($_POST['name']) ? $_POST['name'] : '';
+
+    // check if username or email already exists
+    $stmt = $db->prepare("SELECT * FROM consumers WHERE username = ? OR email = ? LIMIT 1");
+    $stmt->setFetchMode(PDO::FETCH_ASSOC);
+    $stmt->execute([$username, $email]);
+
+    if (empty($username) || empty($email) || empty($password) || empty($name)) {
+        $error = 'Please fill in all fields.';
+    } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = 'Please enter a valid email address.';
     }
 
-    // if register form has been submitted
-    if (isset($_POST['username']) && isset($_POST['email']) &&  isset($_POST['password'])) {
-
-        // get username, email and password
-        $username = isset($_POST['username']) ? $_POST['username'] : '';
-        $email = isset($_POST['email']) ? $_POST['email'] : '';
-        $password = isset($_POST['password']) ? $_POST['password'] : '';
-        $name = isset($_POST['name']) ? $_POST['name'] : '';
-
-
-        // check if username or email already exists
-        $stmt = $db->prepare("SELECT * FROM users WHERE username = ? OR email = ? LIMIT 1");
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $stmt->execute([$username, $email]);
-
-        if (empty($username) || empty($email) || empty($password) || empty($name)) {
-            $error = 'Please fill in all fields.';
-        } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $error = 'Please enter a valid email address.';
-        }
-
-        // if username or email already exists, show error message
+    // if username or email already exists, show error message
     if ($stmt->rowCount() > 0) {
         $error = 'Username or email already exists.';
     } else if (!isset($error)) {
         // prepare, bind and execute INSERT statement
-        $stmt = $db->prepare("INSERT INTO users (username, password, email, name) VALUES (?, ?, ?, ?)");
+        $stmt = $db->prepare("INSERT INTO consumers (username, password, email, name, settings) VALUES (?, ?, ?, ?, '{\"theme\": \"light\", \"language\": \"en\", \"notifications\": true}')");
         if ($stmt->execute([
             $username,
             $password,
             $email,
             $name,
         ])) {
-            // if register is successful, auth and redirect to home
-            $_SESSION['user'] = $username;
-            $_SESSION['type'] = 'user';
+            // if register is successful, auth and redirect to myhome.php
+            $user_id = $db->lastInsertId();
+            // insert doors for user
+            $stmt = $db->prepare("INSERT INTO home_configs (user_id, type, data) VALUES (?, ?, ?)");
+            $stmt->execute([
+                $user_id,
+                'outdoor_lock',
+                json_encode([
+                    'status' => '1',
+                ])
+            ]);
+            $stmt->execute([
+                $user_id,
+                'door',
+                json_encode([
+                    'name' => 'Main Door',
+                    'status' => '1',
+                ])
+            ]);
+            $stmt->execute([
+                $user_id,
+                'door',
+                json_encode([
+                    'name' => 'Exit Door',
+                    'status' => '1',
+                ])
+            ]);
+            $stmt->execute([
+                $user_id,
+                'door',
+                json_encode([
+                    'name' => 'Balcony Door',
+                    'status' => '1',
+                ])
+            ]);
+            $stmt->execute([
+                $user_id,
+                'door',
+                json_encode([
+                    'name' => 'Garage Door',
+                    'status' => '1',
+                ])
+            ]);
+
+            $_SESSION['user'] = $user_id;
+            $_SESSION['type'] = 'consumer';
+            $_SESSION['name'] = $name;
+            $_SESSION['email'] = $email;
+            $_SESSION['username'] = $username;
+            $_SESSION['settings'] = json_decode('{\"theme\": \"light\", \"language\": \"en\", \"notifications\": true}', true);
             header("Location: myhome.php");
             exit;
         } else {
@@ -51,7 +97,7 @@
             $error = 'Something went wrong. Please try again later.';
         }
     }
-    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -60,7 +106,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sign Up | Smart Home</title>
+    <title>Sign Up | <?php echo $name; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -70,7 +116,7 @@
 </head>
 <body>
     <main class="d-flex justify-content-center align-items-center lrform">
-        <form class="p-5 rounded shadow bg-white mw-400">
+        <form class="p-5 rounded shadow bg-white mw-400" method="post" action="register.php">
             <h1 class="text-center mb-4">Sign Up</h1>
             <!-- error message -->
             <?php if (isset($error)) {?>
@@ -97,7 +143,7 @@
             <div class="mb-4 d-grid">
                 <button class="btn p-2 btn-sh" type="submit">Sign Up</button>
             </div>
-            <p class="text-center">Already have an account? <a href="login.html">Sign In</a></p>
+            <p class="text-center">Already have an account? <a href="login.php">Sign In</a></p>
         </form>
     </main>
 </body>
