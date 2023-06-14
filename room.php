@@ -22,7 +22,7 @@ if (!$room['data']) {
 }
 
 // if room not found, redirect to rooms.php
-if (!$room) {
+if (!isset($room['id'])) {
     header("Location: rooms.php");
     exit;
 }
@@ -47,12 +47,13 @@ foreach ($devices as $device) {
 
 // get camera datas
 $cameras = [];
-$stmt = $db->prepare("SELECT name FROM devices WHERE user_id = ? AND type = 'camera' AND status = '1'");
+$stmt = $db->prepare("SELECT id, name FROM devices WHERE user_id = ? AND type = 'camera' AND status = '1'");
 $stmt->execute([$user_id]);
 $camCounter = 0;
 while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     $camCounter++;
     $cameras[] = [
+        'id' => $row['id'],
         'name' => $row['name'],
         'src' => 'img/camera'.$camCounter.'.jpg',
     ];
