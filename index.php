@@ -19,10 +19,10 @@
     <main class="bg">
         <div class="container h-100 d-flex flex-column justify-content-center">
             <p class="sentence ms-auto mt-5">
-                <br class="">
+                <br>
                 Embrace the future of home technology.
                 </br>
-                <br class="">
+                <br>
                 Get started with our smart home solutions today.
                 </br>
             </p>

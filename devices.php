@@ -3,7 +3,7 @@
 require_once 'dbconfig.php';
 
 // if user is not logged in, redirect to login.php
-if (!isset($_SESSION['user'])) {
+if (!isset($_SESSION['consumer_login'])) {
     header("Location: login.php");
     exit;
 }

@@ -3,7 +3,7 @@
 require_once 'dbconfig.php';
 
 // if user is not logged in, redirect to login.php?type=producers
-if (!isset($_SESSION['user'])) {
+if (!isset($_SESSION['producer_login'])) {
     header("Location: login.php?type=producers");
     exit;
 }

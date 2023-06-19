@@ -3,9 +3,12 @@
 require_once 'dbconfig.php';
 
 // if user is logged in, redirect to myhome.php
-if (isset($_SESSION['user'])) {
-    header("Location: myhome.php");
-    exit;
+if (isset($_SESSION['consumer_login']) || isset($_SESSION['producer_login'])) {
+    if (isset($_SESSION['type']) && $_SESSION['type'] == 'producers') {
+        header("Location: producer.php");
+    } else {
+        header("Location: myhome.php");
+    }
 }
 
 // if register form has been submitted
@@ -143,7 +146,12 @@ if (isset($_POST['username']) && isset($_POST['email']) &&  isset($_POST['passwo
             <div class="mb-4 d-grid">
                 <button class="btn p-2 btn-sh" type="submit">Sign Up</button>
             </div>
-            <p class="text-center">Already have an account? <a href="login.php">Sign In</a></p>
+            <div class="d-flex">
+                <hr class="flex-grow-1">
+                <span class="mx-2">OR</span>
+                <hr class="flex-grow-1">
+            </div>
+            <p class="text-center mt-3">Already have an account? <a href="login.php" class="text-dark">Sign In</a></p>
         </form>
     </main>
 </body>

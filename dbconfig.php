@@ -195,6 +195,10 @@ if (isset($_GET['logout'])) {
     unset($_SESSION['type']);
     unset($_SESSION['name']);
     unset($_SESSION['email']);
+    unset($_SESSION['username']);
+    unset($_SESSION['settings']);
+    unset($_SESSION['consumer_login']);
+    unset($_SESSION['producer_login']);
     header("Location: login.php");
     exit;
 }

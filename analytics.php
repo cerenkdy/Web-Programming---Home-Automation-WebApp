@@ -3,7 +3,7 @@
 require_once 'dbconfig.php';
 
 // if user is not logged in, redirect to login.php
-if (!isset($_SESSION['user'])) {
+if (!isset($_SESSION['consumer_login'])) {
     header("Location: login.php");
     exit;
 }
@@ -142,7 +142,7 @@ $page = 'analytics';
                                 <span class="fs-4 m-auto">
                                     <i class="fas fa-lg text-info fa-thermometer-half"></i>
                                     <?php
-                                    echo round(array_sum($temperatures) / count($temperatures), 1) . '&deg;C';
+                                    echo (count($temperatures) > 0 ? round(array_sum($temperatures) / count($temperatures), 1) : 0) . '&deg;C';
                                     ?>
                                 </span>
                             </div>
