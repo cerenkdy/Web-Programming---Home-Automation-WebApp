@@ -110,7 +110,8 @@ CREATE TABLE logs (
     id INT NOT NULL AUTO_INCREMENT,
     user_id INT NOT NULL,
     user_type VARCHAR(255) NOT NULL DEFAULT 'consumers',
-    device_id INT NOT NULL,
+    device_id INT DEFAULT NULL,
+    config_id INT DEFAULT NULL,
     action INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
@@ -133,3 +134,5 @@ ALTER TABLE `devices` ADD FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`);
 ALTER TABLE `sensor_data` ADD FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`);
 
 ALTER TABLE `logs` ADD FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`);
+
+ALTER TABLE `logs` ADD FOREIGN KEY (`config_id`) REFERENCES `home_configs` (`id`);

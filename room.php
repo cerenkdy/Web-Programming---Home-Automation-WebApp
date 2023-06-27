@@ -47,8 +47,8 @@ foreach ($devices as $device) {
 
 // get camera datas
 $cameras = [];
-$stmt = $db->prepare("SELECT id, name FROM devices WHERE user_id = ? AND type = 'camera' AND status = '1'");
-$stmt->execute([$user_id]);
+$stmt = $db->prepare("SELECT id, name FROM devices WHERE room_id = ? AND user_id = ? AND type = 'camera'");
+$stmt->execute([$room_id, $user_id]);
 $camCounter = 0;
 while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     $camCounter++;
@@ -60,6 +60,21 @@ while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     if ($camCounter == 3) {
         $camCounter = 0;
     }
+}
+
+// get sensor datas
+$sensorLimit = 7;
+$sensors = [
+    'temperature' => array_fill(0, $sensorLimit, 0),
+    'humidity' => array_fill(0, $sensorLimit, 0),
+];
+$stmt = $db->prepare("SELECT temperature, humidity FROM sensor_data WHERE room_id = ? AND user_id = ? ORDER BY id DESC LIMIT 7");
+$stmt->execute([$room_id, $user_id]);
+$sensorCounter = $sensorLimit - 1;
+while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    $sensors['temperature'][$sensorCounter] = $row['temperature'];
+    $sensors['humidity'][$sensorCounter] = $row['humidity'];
+    $sensorCounter--;
 }
 
 // page
@@ -114,9 +129,9 @@ $page = 'rooms';
                     </button>
                 </div>
                 <div class="row">
-                    <div class="<?php echo (isset($cameras) && count($cameras) > 0) ? 'col-lg-4' : 'col-lg-4'; ?> mb-3">
+                    <div class="col-xl-3 col-lg-6 mb-3">
                         <!-- Lamps -->
-                        <div class="card bg-white-50 rounded-4 h-100 p-3 pe-2">
+                        <div class="card bg-white-50 rounded-4 h-100 p-3 pe-2 pb-0">
                             <div class="d-flex align-items-center">
                                 <i class="fas fa-lightbulb fa-lg me-2"></i>
                                 <h2 class="h5 m-0 me-2">Lamps</h2>
@@ -125,18 +140,18 @@ $page = 'rooms';
                                     <i class="fas fa-plus fa-lg"></i>
                                 </button>
                             </div>
-                            <ul class="list-unstyled p-0 m-0 overflow-auto pe-1" style="max-height: 170px">
+                            <ul class="list-unstyled p-0 m-0 overflow-auto pe-1 mt-2" style="max-height: 170px">
                                 <?php
                                 foreach ($devices as $device) {
                                     if ($device['type'] == 'light') {
                                         $deviceSettings = json_decode($device['data'], true);
                                         $device['color'] = isset($deviceSettings['color']) ? $deviceSettings['color'] : '#ffffff';
                                 ?>
-                                    <li class="d-flex align-items-center mt-3">
+                                    <li class="d-flex align-items-center mb-2 mt-1">
                                         <i class="fas fa-circle fa-lg me-2" style="color: <?php echo $device['color']; ?>"></i>
                                         <span class="fs-5 me-2"><?php echo htmlspecialchars($device['name']); ?></span>
-                                        <button class="btn btn-sm btn-sh me-2 edit-lamp-btn" type="button" data-id="<?php echo $device['id']; ?>">
-                                            <i class="fas fa-edit fa-lg"></i>
+                                        <button class="btn btn-sm p-1 px-2 btn-sh me-2 edit-lamp-btn" type="button" data-id="<?php echo $device['id']; ?>">
+                                            <i class="fas fa-edit"></i>
                                         </button>
                                         <label class="switch ms-auto">
                                             <input type="checkbox" class="apple-switch sh-switch" onchange="deviceStatus(<?php echo $device['id']; ?>, this.checked)" <?php if ($device['status'] == '1') { echo ' checked'; } ?>>
@@ -149,66 +164,68 @@ $page = 'rooms';
                             </ul>
                         </div>
                     </div>
-                    <div class="<?php echo (isset($cameras) && count($cameras) > 0) ? 'col-lg-4' : 'col-lg-8'; ?> mb-3">
-                        <div class="d-flex flex-row h-100">
-                            <!-- Temperature -->
-                            <div class="bg-white-50 rounded-4 p-3 me-3 w-50 temperature" data-room="<?php echo $room['id']; ?>" data-temperature="<?php echo (isset($room['data']['temperature']) ? $room['data']['temperature'] : 25); ?>">
-                                <div class="d-flex mb-3 align-items-center">
-                                    <i class="fas fa-thermometer-half fa-lg me-2 mb-1"></i>
-                                    <h5 class="h5 me-2">Temperature</h5>
-                                    <label class="switch ms-auto">
-                                        <input type="checkbox" class="apple-switch sh-switch" onchange="setRoomData(<?php  echo $room['id']; ?>, 'temperature_status', this.checked?'1':'0')"<?php if (isset($room['data']['temperature_status']) && $room['data']['temperature_status'] == '1') { echo ' checked'; } ?>>
-                                    </label>
+                    <div class="col-xl-3 col-lg-6 mb-3">
+                        <!-- Temperature -->
+                        <div class="bg-white-50 rounded-4 p-3 me-3 w-100 h-100 shadow-sm temperature" data-room="<?php echo $room['id']; ?>" data-temperature="<?php echo (isset($room['data']['temperature']) ? $room['data']['temperature'] : 25); ?>" data-chart="<?php echo json_encode($sensors['temperature']) ?>">
+                            <div class="d-flex mb-3 align-items-center justify-content-start">
+                                <i class="fas fa-thermometer-half fa-lg me-2"></i>
+                                <h5 class="mb-0 me-2">Temperature</h5>
+                                <label class="switch ms-auto d-flex align-items-center justify-content-start">
+                                    <input type="checkbox" class="apple-switch sh-switch" onchange="setRoomData(<?php  echo $room['id']; ?>, 'temperature_status', this.checked?'1':'0')"<?php if (isset($room['data']['temperature_status']) && $room['data']['temperature_status'] == '1') { echo ' checked'; } ?>>
+                                </label>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="d-flex flex-column me-auto">
+                                    <span class="fs-1 fs-2"><?php echo round((isset($room['data']['temperature']) ? $room['data']['temperature'] : 25) + (rand(-2*10, +2*10) / 10), 1); ?>&deg;</span>
                                 </div>
-                                <div class="d-flex align-items-center">
-                                    <div class="d-flex flex-column me-auto">
-                                        <span class="fs-1"><?php echo (isset($room['data']['temperature']) ? $room['data']['temperature'] : 25); ?>&deg;C</span>
-                                    </div>
-                                    <div class="d-flex flex-column">
-                                        <button class="btn btn-sm btn-sh mb-2 increase" type="button">
-                                            <i class="fas fa-chevron-up fa-lg"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-sh decrease" type="button">
-                                            <i class="fas fa-chevron-down fa-lg"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-center mt-auto">
-                                    <canvas id="temperatureChart" width="100%" height="80"></canvas>
+                                <span class="set-text me-2 rounded btn-sh p-1 py-3 shadow-sm h1 h2 mb-0 fw-normal"><?php echo (isset($room['data']['temperature']) ? $room['data']['temperature'] : 25); ?>&deg;</span>
+                                <div class="d-flex flex-column h-100">
+                                    <button class="btn btn-sm btn-sh mb-1 increase" type="button">
+                                        <i class="fas fa-chevron-up fa-lg"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-sh mt-1 decrease" type="button">
+                                        <i class="fas fa-chevron-down fa-lg"></i>
+                                    </button>
                                 </div>
                             </div>
-                            <!-- Humidifier -->
-                            <div class="bg-white-50 rounded-4 p-3 w-50 humidity" data-room="<?php echo $room['id']; ?>"  data-humidity="<?php echo (isset($room['data']['humidity']) ? $room['data']['humidity'] : 50); ?>">
-                                <div class="d-flex mb-3 align-items-center">
-                                    <i class="fa fa-tint fa-lg me-2 mb-1"></i>
-                                    <h5 class="h5 me-2">Humidifier</h5>
-                                    <label class="switch ms-auto">
-                                        <input type="checkbox" class="apple-switch sh-switch" onchange="setRoomData(<?php  echo $room['id']; ?>, 'humidity_status', this.checked?'1':'0')"<?php if (isset($room['data']['humidity_status']) && $room['data']['humidity_status'] == '1') { echo ' checked'; } ?>>
-                                    </label>
+                            <div class="d-flex justify-content-center mt-auto">
+                                <canvas id="temperatureChart" width="100%" height="80"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 mb-3">
+                        <!-- Humidifier -->
+                        <div class="bg-white-50 rounded-4 p-3 w-100 h-100 shadow-sm humidity" data-room="<?php echo $room['id']; ?>"  data-humidity="<?php echo (isset($room['data']['humidity']) ? $room['data']['humidity'] : 50); ?>" data-chart="<?php echo json_encode($sensors['humidity']) ?>">
+                            <div class="d-flex mb-3 align-items-center">
+                                <i class="fa fa-tint fa-lg me-2"></i>
+                                <h5 class="h5 me-2 mb-0">Humidifier</h5>
+                                <label class="switch ms-auto d-flex align-items-center justify-content-start">
+                                    <input type="checkbox" class="apple-switch sh-switch" onchange="setRoomData(<?php  echo $room['id']; ?>, 'humidity_status', this.checked?'1':'0')"<?php if (isset($room['data']['humidity_status']) && $room['data']['humidity_status'] == '1') { echo ' checked'; } ?>>
+                                </label>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="d-flex flex-column me-auto">
+                                    <span class="fs-1 fs-2"><?php echo round((isset($room['data']['humidity']) ? $room['data']['humidity'] : 0) + (rand(-2*10, +2*10) / 10)); ?>%</span>
                                 </div>
-                                <div class="d-flex align-items-center">
-                                    <div class="d-flex flex-column me-auto">
-                                        <span class="fs-1"><?php echo (isset($room['data']['humidity']) ? $room['data']['humidity'] : 0); ?>%</span>
-                                    </div>
-                                    <div class="d-flex flex-column">
-                                        <button class="btn btn-sm btn-sh mb-2 increase" type="button">
-                                            <i class="fas fa-chevron-up fa-lg"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-sh decrease" type="button">
-                                            <i class="fas fa-chevron-down fa-lg"></i>
-                                        </button>
-                                    </div>
+                                <span class="set-text me-2 rounded btn-sh p-1 py-3 shadow-sm h1 h2 mb-0 fw-normal"><?php echo (isset($room['data']['humidity']) ? $room['data']['humidity'] : 50); ?>%</span>
+                                <div class="d-flex flex-column">
+                                    <button class="btn btn-sm btn-sh mb-1 increase" type="button">
+                                        <i class="fas fa-chevron-up fa-lg"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-sh mt-1 decrease" type="button">
+                                        <i class="fas fa-chevron-down fa-lg"></i>
+                                    </button>
                                 </div>
-                                <div class="d-flex justify-content-center mt-auto">
-                                    <canvas id="humidityChart" width="100%" height="80"></canvas>
-                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center mt-auto">
+                                <canvas id="humidityChart" width="100%" height="80"></canvas>
                             </div>
                         </div>
                     </div>
                     <?php if (isset($cameras) && count($cameras) > 0) { ?>
-                    <div class="col-lg-4 mb-3">
+                    <div class="col-xl-3 col-lg-6 mb-3">
                         <!-- Camera -->
-                        <div class="card bg-white-50 rounded-4 h-100">
+                        <div class="card bg-white-50 rounded-4 shadow-sm h-100">
                             <div class="d-flex position-relative security-cam static-cam overflow-hidden position-relative" data-id="<?php echo (isset($cameras[0])) ? $cameras[0]['id'] : ''; ?>">
                                 <div class="position-absolute top-0 start-0 end-0 mt-2 ms-3 me-3 d-flex flex-row">
                                     <h2 class="h5 text-white-50 mb-0 cam-name">
@@ -255,11 +272,12 @@ $page = 'rooms';
                     }
                     if ($have['window'] || $have['tv'] || $have['speaker'] || $have['router'] || (isset($room['data']['fireco_status']) && $room['data']['fireco_status'] == '1')) {
                     ?>
-                    <div class="col-lg-4 mb-3">
-                        <div class="bg-white-50 rounded-4 shade-control position-relative" data-id="<?php echo (isset($have['window']['id']) ? $have['window']['id'] : 0); ?>" data-shade="<?php echo (isset($have['window']['data']['shade']) ? $have['window']['data']['shade'] : 50); ?>">
+                    <?php if($have['window']) { ?>
+                    <div class="col-xl-3 col-lg-6 mb-3">
+                        <div class="bg-white-50 h-100 rounded-4 shade-control position-relative" data-id="<?php echo (isset($have['window']['id']) ? $have['window']['id'] : 0); ?>" data-shade="<?php echo (isset($have['window']['data']['shade']) ? $have['window']['data']['shade'] : 50); ?>">
                             <div class="d-flex align-items-center p-2 px-3 pb-3">
                                 <i class="fas fa-person-booth fa-lg me-2"></i>
-                                <h2 class="h5">Shading Control</h2>
+                                <h2 class="h5 mb-0">Shading Control</h2>
                             </div>
                             <div class="d-flex align-items-center px-3 pb-3">
                                 <div class="d-flex flex-column flex-fill me-4">
@@ -276,24 +294,16 @@ $page = 'rooms';
                                     </button>
                                 </div>
                             </div>
-                            <?php if($have['window'] === false) { ?>
-                                <div class="bg-light opacity-75 shadow rounded-4 text-dark d-flex flex-column align-items-center justify-content-center w-100 h-100 position-absolute top-0 bottom-0">
-                                    <p>
-                                        <i class="fas fa-exclamation-circle fa-md me-1"></i>
-                                        <span>Window not plugged</span>
-                                    </p>
-                                    <a href="devices.php" class="btn btn-sm btn-sh mt-0">
-                                        <i class="fas fa-plug fa-lg me-2"></i>
-                                        <span>Plug Window</span>
-                                    </a>
-                                </div>
-                            <?php } ?>
                         </div>
+                    </div>
+                    <?php } ?>
+                    <?php if($have['router']) { ?>
+                    <div class="col-xl-3 col-lg-6 mb-3">
                         <!-- Wifi -->
-                        <div class="bg-white-50 rounded-4 mt-3 room-wifi position-relative">
+                        <div class="bg-white-50 h-100 rounded-4 room-wifi position-relative">
                             <div class="d-flex align-items-center p-2 px-3 pb-0">
                                 <i class="fas fa-wifi fa-lg text-dark me-2"></i>
-                                <h2 class="h5 me-2">Wi-Fi</h2>
+                                <h2 class="h5 mb-0 me-2">Wi-Fi</h2>
                                 <button class="btn btn-sm text-dark ms-auto on-off-btn" type="button" data-id="<?php echo (isset($have['router']) && $have['router']) ? $have['router']['id'] : '0'; ?>" data-status="<?php echo (isset($have['router']) && $have['router']['status'] == 1) ? '1' : '0'; ?>">
                                     <i class="fas fa-power-off fa-lg"></i>
                                 </button>
@@ -303,26 +313,16 @@ $page = 'rooms';
                                     <span class="fs-4 text-muted"><?php echo (isset($have['router']) && isset($have['router']['status']) && $have['router'] && $have['router']['status'] == 1) ? 'Connected' : 'Disconnected'; ?></span>
                                 </div>
                             </div>
-                            <?php if ($have['router'] === false) { ?>
-                                <div class="bg-light opacity-75 shadow rounded-4 text-dark d-flex flex-column align-items-center justify-content-center w-100 h-100 position-absolute top-0 bottom-0">
-                                    <p>
-                                        <i class="fas fa-exclamation-circle fa-md me-1"></i>
-                                        <span>Device not plugged</span>
-                                    </p>
-                                    <a href="devices.php" class="btn btn-sm btn-sh mt-0">
-                                        <i class="fas fa-plug fa-lg me-2"></i>
-                                        <span>Plug device</span>
-                                    </a>
-                                </div>
-                            <?php } ?>
                         </div>
                     </div>
-                    <div class="col-lg-4 mb-3 d-flex flex-column">
+                    <?php } ?>
+                    <?php if ($have['tv']) { ?>
+                    <div class="col-xl-3 col-lg-6 mb-3">
                         <!-- TV control -->
-                        <div class="card bg-white-50 rounded-4 tv-control position-relative flex-fill" data-id="<?php echo (isset($have['tv']['id']) ? $have['tv']['id'] : 0); ?>" data-channel="<?php echo (isset($have['tv']['data']['channel']) ? $have['tv']['data']['channel'] : 1); ?>" data-volume="<?php echo (isset($have['tv']['data']['volume']) ? $have['tv']['data']['volume'] : 50); ?>">
+                        <div class="card bg-white-50 h-100 rounded-4 tv-control position-relative flex-fill" data-id="<?php echo (isset($have['tv']['id']) ? $have['tv']['id'] : 0); ?>" data-channel="<?php echo (isset($have['tv']['data']['channel']) ? $have['tv']['data']['channel'] : 1); ?>" data-volume="<?php echo (isset($have['tv']['data']['volume']) ? $have['tv']['data']['volume'] : 50); ?>">
                             <div class="d-flex justify-content-between align-items-center p-2 px-3">
                                 <i class="fas fa-tv fa-lg text-dark me-2"></i>
-                                <h2 class="h5 me-auto">TV Control</h2>
+                                <h2 class="h5 mb-0 me-auto">TV Control</h2>
                                 <!-- On/Off -->
                                 <button class="btn btn-sm text-dark ms-auto on-off-btn" type="button" data-id="<?php echo (isset($have['tv'])) ? $have['tv']['id'] : '0'; ?>" data-status="<?php echo (isset($have['tv']) && $have['tv']['status'] == 1) ? '1' : '0'; ?>">
                                     <i class="fas fa-power-off fa-lg"></i>
@@ -349,24 +349,15 @@ $page = 'rooms';
                             <div class="card-body mt-auto d-flex off justify-content-start align-items-end text-muted<?php echo (isset($have['tv']) && $have['tv']['status'] == 1) ? ' d-none' : ''; ?>">
                                 Off
                             </div>
-                            <?php if($have['tv'] === false) { ?>
-                                <div class="bg-light opacity-75 shadow rounded-4 text-dark d-flex flex-column align-items-center justify-content-center w-100 h-100 position-absolute top-0 bottom-0">
-                                    <p>
-                                        <i class="fas fa-exclamation-circle fa-md me-1"></i>
-                                        <span>Device not plugged</span>
-                                    </p>
-                                    <a href="devices.php" class="btn btn-sm btn-sh mt-0">
-                                        <i class="fas fa-plug fa-lg me-2"></i>
-                                        <span>Plug device</span>
-                                    </a>
-                                </div>
-                            <?php } ?>
                         </div>
-
+                    </div>
+                    <?php } ?>
+                    <?php if(1 == 2 && isset($room['data']['fireco_status']) && $room['data']['fireco_status'] == '1') { ?>
+                    <div class="col-xl-3 col-lg-6 mb-3">
                         <!-- Fire/CO Alarm -->
-                        <div class="card bg-white-50 rounded-4 mt-3 position-relative">
+                        <div class="card bg-white-50 h-100 rounded-4 position-relative">
                             <div class="d-flex justify-content-between align-items-center p-2 px-3">
-                                <h2 class="h5">Fire/CO Alarm</h2>
+                                <h2 class="h5 mb-0">Fire/CO Alarm</h2>
                                 <i class="fas fa-fire fa-lg text-dark"></i>
                             </div>
                             <div class="card-body">
@@ -382,84 +373,54 @@ $page = 'rooms';
                                     </div>
                                 </div>
                             </div>
-                            <?php if(!isset($room['data']['fireco_status']) || $room['data']['fireco_status'] == '0') { ?>
-                                <div class="bg-light opacity-75 shadow rounded-4 text-dark d-flex flex-column align-items-center justify-content-center w-100 h-100 position-absolute top-0 bottom-0">
-                                    <p>
-                                        <i class="fas fa-exclamation-circle fa-md me-1"></i>
-                                        <span>Module not plugged</span>
-                                    </p>
-                                    <a href="devices.php" class="btn btn-sm btn-sh mt-0">
-                                        <i class="fas fa-plug fa-lg me-2"></i>
-                                        <span>Edit Room</span>
-                                    </a>
-                                </div>
-                            <?php } ?>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 mb-3">
-                        <?php
-                        $have_speaker = false;
-                        $stmt = $db->prepare("SELECT * FROM devices WHERE room_id = ? AND user_id = ? AND type = 'speaker' ORDER BY id ASC LIMIT 1");
-                        $stmt->execute([$room_id, $user_id]);
-                        if ($stmt->rowCount() > 0) {
-                            $speaker = $stmt->fetch(PDO::FETCH_ASSOC);
-                            $speaker_data = @json_decode($speaker['data'], true);
-                            $speaker_id = $speaker['id'];
-                            $speaker_status = $speaker_data['status'];
-                            $speaker_volume = $speaker_data['volume'];
-                        }
-                        ?>
-                        <div class="card bg-white-50 rounded-4 h-100 speaker position-relative">
-                            <div class="d-flex justify-content-between align-items-center p-2 px-3">
-                                <h2 class="h5">Speaker</h2>
-                                <i class="fas fa-music fa-lg text-dark"></i>
-                            </div>
-                            <div class="card-body">
-                                <div class="d-flex flex-row align-items-center">
-                                    <img src="https://i.scdn.co/image/ab67616d0000b273b6d4566db0d12894a1a3b7a2" alt=""
-                                        class="rounded-2 shadow song-cover" width="75" height="75">
-                                    <div class="ms-3">
-                                        <span class="d-block song-title">Undisclosed Desires</span>
-                                        <span class="text-muted d-block song-artist">Muse</span>
-                                        <span class="text-muted song-album">The Resistance</span>
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-center mt-3 gap-2">
-                                    <button class="btn btn-sm rounded-4 my-auto d-flex align-items-center btn-random"><i
-                                            class="fas fa-random fs-5"></i></button>
-                                    <button class="btn btn-sm rounded-4 my-auto d-flex align-items-center btn-prev"><i
-                                            class="fas fa-backward fs-5"></i></button>
-                                    <button class="btn btn-sm fa-2x btn-play" data-id="<?php echo isset($speaker_id) ? $speaker_id : 0; ?>">
-                                        <i class="fas fa-2x text-sh <?php if(isset($speaker_volume) && $speaker_status == 1) { echo "fa-pause-circle"; } else { echo "fa-play-circle"; } ?>"></i>
-                                    </button>
-                                    <button class="btn btn-sm rounded-4 my-auto d-flex align-items-center btn-next"><i
-                                            class="fas fa-forward fs-5"></i></button>
-                                    <button class="btn btn-sm rounded-4 my-auto d-flex align-items-center btn-toggle"><i
-                                            class="fas fa-redo fs-5"></i></button>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-center">
-                                    <button class="btn btn-sm rounded-circle mr-2 btn-mute">
-                                        <i class="fas fa-lg <?php if(isset($speaker_volume) && $speaker_volume < 1) { echo "fa-volume-mute"; } else { echo "fa-volume-up"; } ?>"></i>
-                                    </button>
-                                    <input type="range" class="form-range volume-range" min="0" max="100" data-id="<?php echo isset($speaker_id) ? $speaker_id : 0; ?>" value="<?php echo (isset($speaker_volume)) ? $speaker_volume : 100; ?>" step="1" style="max-width: 220px">
-                                </div>
-                            </div>
-                            <?php if(!isset($speaker)) { ?>
-                                <div class="bg-light opacity-75 shadow rounded-4 text-dark d-flex flex-column align-items-center justify-content-center w-100 h-100 position-absolute top-0 bottom-0">
-                                    <p>
-                                        <i class="fas fa-exclamation-circle fa-md me-1"></i>
-                                        <span>Device not plugged</span>
-                                    </p>
-                                    <a href="devices.php" class="rounded-1 btn btn-sm btn-sh mt-0">
-                                        <i class="fas fa-plug fa-lg me-2"></i>
-                                        <span>Plug device</span>
-                                    </a>
-                                </div>
-                            <?php } ?>
                         </div>
                     </div>
                     <?php } ?>
-                    <div class="d-flex align-items-center mb-3">
+                    <?php
+                    $stmt = $db->prepare("SELECT * FROM devices WHERE room_id = ? AND user_id = ? AND type = 'speaker' ORDER BY id ASC LIMIT 1");
+                    $stmt->execute([$room_id, $user_id]);
+                    if ($stmt->rowCount() > 0) {
+                        $speaker = $stmt->fetch(PDO::FETCH_ASSOC);
+                        $speaker_data = @json_decode($speaker['data'], true);
+                        $speaker_id = $speaker['id'];
+                        $speaker_status = $speaker_data['status'];
+                        $speaker_volume = $speaker_data['volume'];
+                        ?>
+                        <div class="col-xl-3 col-lg-6 mb-3">
+                            <div class="card bg-white-50 rounded-4 h-100 speaker position-relative">
+                                <div class="d-flex align-items-center p-2 px-3">
+                                    <i class="fas fa-music fa-lg text-dark me-2"></i>
+                                    <h2 class="h5 mb-0 me-2">Speaker</h2>
+                                    <div class="ms-auto d-flex align-items-center justify-content-center">
+                                        <button class="btn btn-sm rounded-circle mr-2 btn-mute">
+                                            <i class="fas fa-lg <?php if(isset($speaker_volume) && $speaker_volume < 1) { echo "fa-volume-mute"; } else { echo "fa-volume-up"; } ?>"></i>
+                                        </button>
+                                        <input type="range" class="form-range volume-range" min="0" max="100" data-id="<?php echo isset($speaker_id) ? $speaker_id : 0; ?>" value="<?php echo (isset($speaker_volume)) ? $speaker_volume : 100; ?>" step="1" style="max-width: 125px">
+                                    </div>
+                                </div>
+                                <div class="card-body d-flex flex-row w-100">
+                                    <img src="https://i.scdn.co/image/ab67616d0000b273b6d4566db0d12894a1a3b7a2" alt=""
+                                        class="rounded-2 shadow object-fit-cover song-cover" width="50" height="60">
+                                    <div class="ms-3 d-flex flex-column" style="max-width: calc(100% - 150px)">
+                                        <span class="song-title text-truncate">Undisclosed Desires</span>
+                                        <span class="text-muted song-artist text-truncate">Muse</span>
+                                        <span class="text-muted song-album text-truncate">The Resistance</span>
+                                    </div>
+                                    <div class="d-flex justify-content-center gap-2 ms-auto">
+                                        <button class="btn btn-sm p-0 rounded-4 my-auto d-flex align-items-center btn-prev"><i
+                                                class="fas fa-backward"></i></button>
+                                        <button class="btn btn-sm p-0 btn-play" data-id="<?php echo isset($speaker_id) ? $speaker_id : 0; ?>">
+                                            <i class="fas text-sh fs-1 <?php if(isset($speaker_volume) && $speaker_status == 1) { echo "fa-pause-circle"; } else { echo "fa-play-circle"; } ?>"></i>
+                                        </button>
+                                        <button class="btn btn-sm p-0 rounded-4 my-auto d-flex align-items-center btn-next"><i
+                                                class="fas fa-forward"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php } ?>
+                    <?php } ?>
+                    <div class="d-flex align-items-center mb-3 mt-3">
                         <h5 class="flex-grow-1 mr-2 mb-0 text-white fw-bold h5">Devices</h5>
                         <button class="btn btn-sm text-white add-device-btn" data-room="<?php echo $room_id; ?>">
                             <i class="fas fa-plus fa-lg"></i>
@@ -475,7 +436,7 @@ $page = 'rooms';
                             </ul>
                         </div>
                     </div>
-                    <div class="col-lg-12">
+                    <div class="col-xl-12">
                         <!-- device list -->
                         <div class="row d-flex">
                             <?php
@@ -487,11 +448,13 @@ $page = 'rooms';
                                     continue;
                                 }
 
-                                // skip first module devices
+                                /*
+                                / skip first module devices
                                 if(in_array($device['type'], ['speaker', 'ac', 'tv']) && !in_array($device['type'], $skipFirstModuleDevices)) {
                                     $skipFirstModuleDevices[] = $device['type'];
                                     continue;
                                 }
+                                */
 
                                 // get device data
                                 $device_id = intval($device['id']);
@@ -501,8 +464,8 @@ $page = 'rooms';
                                 $device = $device_group[$device_type];
                                 $deviceCounter++;
                             ?>
-                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12 mb-3">
-                                <div class="bg-white-50 shadow p-3 rounded-4 room-device d-flex flex-column">
+                            <div class="col-xl-2 col-md-4 col-sm-6 col-xs-12 room-device mb-3">
+                                <div class="bg-white-50 shadow p-3 rounded-4 d-flex flex-column">
                                     <div class="d-flex justify-content-center align-items-start mb-3">
                                         <div class="d-flex justify-content-center align-items-center rounded-circle btn-sh text-white me-2"
                                             style="width: 50px; height: 50px;">
@@ -517,13 +480,23 @@ $page = 'rooms';
                                             <span class="h5"><?php echo $device_name; ?></span>
                                             <span class="text-muted mt-auto"><?php echo ($device_status == 1) ? 'On' : 'Off'; ?></span>
                                         </div>
+                                        <div class="dropdown ms-auto mt-auto">
+                                            <button class="btn btn-sm text-dark" type="button" id="dropdownMenuButton1"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fas fa-ellipsis-v fa-lg"></i>
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                <li><a class="dropdown-item edit-device" href="#" data-id="<?php echo $device_id; ?>">Edit</a></li>
+                                                <li><a class="dropdown-item delete-device" href="#" data-id="<?php echo $device_id; ?>">Delete</a></li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <?php } ?>
                             <?php if ($deviceCounter == 0) { ?>
-                            <div class="col-lg-12 d-flex">
-                                <div class="bg-white-50 d-flex align-items-center justify-content-center shadow p-3 px-4 rounded-4 mr-auto">
+                            <div class="col-xl-12 d-flex">
+                                <div class="bg-white-50 d-flex align-items-center justify-content-center shadow-sm p-3 px-4 rounded-4 mr-auto">
                                     <i class="fas fa-exclamation-circle fa-1x me-2 text-muted"></i> No device found
                                 </div>
                             </div>
@@ -542,6 +515,7 @@ $page = 'rooms';
     include 'components/addLampModal.php';
     include 'components/editCamModal.php';
     include 'components/addCamModal.php';
+    include 'components/editDeviceModal.php';
     ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"

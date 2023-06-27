@@ -45,6 +45,8 @@ if(!isset($device_group)) {
                 </div>
             </div>
             <div class="modal-footer">
+                <!-- delete room button -->
+                <button type="button" class="btn btn-outline-danger me-auto delete-room" data-id="0">Delete Room</button>
                 <button type="submit" class="btn btn-sh">Edit Room</button>
             </div>
         </form>

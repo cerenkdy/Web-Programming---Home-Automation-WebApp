@@ -33,6 +33,7 @@ if(!isset($rooms)) {
                         <option selected disabled>Select device type</option>
                         <?php
                         foreach ($device_group as $type => $device) {
+                            if ($type == 'door') continue;
                             $device_name = $device['name'];
                         ?>
                         <option value="<?php echo $type; ?>"><?php echo $device_name; ?></option>

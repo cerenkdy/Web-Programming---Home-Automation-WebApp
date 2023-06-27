@@ -58,7 +58,8 @@ if(!isset($rooms)) {
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary me-auto" data-bs-dismiss="modal">Close</button>
+                <!-- Delete Device -->
+                <button type="button" class="btn btn-outline-danger delete-device me-auto" data-id="0">Delete</button>
                 <button type="submit" class="btn btn-sh">Edit Device</button>
             </div>
         </form>

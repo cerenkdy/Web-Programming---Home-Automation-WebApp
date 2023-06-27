@@ -29,7 +29,7 @@ if(!isset($device_group)) {
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-outline-danger me-auto delete-lamp-btn" data-bs-dismiss="modal">Delete</button>
+                <button class="btn btn-outline-danger me-auto delete-lamp-btn" data-id="0">Delete</button>
                 <button class="btn btn-sh ms-auto">Save</button>
             </div>
         </form>

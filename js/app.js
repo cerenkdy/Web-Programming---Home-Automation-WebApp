@@ -11,7 +11,7 @@ function usageData() {
             $('.water-usage').html(data.water);
             $('.gas-usage').html(data.gas);
             if ($('.indoor-temperature span.text').length) {
-                $('.indoor-temperature span.text').html(data.temperature + ' °C');
+                $('.indoor-temperature span.text').html(data.temperature + '&deg;');
                 $('.indoor-temperature div.progress-bar').css('width', (data.temperature) + '%');
             }
             if ($('.indoor-humidity span.text').length) {
@@ -81,8 +81,34 @@ function setDeviceData(deviceID, config, value) {
         });
 }
 
+function updateChart(chart, minValue = 0, maxValue = 100, value = false) {
+    var newData,
+        newDataSet = chart.data.datasets;
+
+    for (var i = 0; i < newDataSet.length; i++) {
+        if (value !== false) {
+            newData = value;
+        } else {
+            newData = Math.floor(Math.random() * maxValue) + minValue;
+        }
+        if (newData < minValue) {
+            newData = Math.floor(Math.random() * maxValue) + minValue;
+        }
+        if (newData > maxValue) {
+            newData = Math.floor(Math.random() * maxValue) + minValue;
+        }
+        newDataSet[i].data.push(Math.floor(newData));
+    }
+
+    for (var i = 0; i < newDataSet.length; i++) {
+        newDataSet[i].data.shift();
+    }
+    chart.data.datasets = newDataSet;
+    chart.update();
+}
+
 if ($('.electricity-usage').length) {
-    setInterval(usageData, 5000);
+    setInterval(usageData, 4000);
 }
 
 $(function () {
@@ -117,6 +143,10 @@ $(function () {
                     options: {
                         maintainAspectRatio: false,
                         responsive: true,
+                        animation: {
+                            duration: 100,
+                            easing: 'linear'
+                        },
                         legend: {
                             display: false
                         },
@@ -124,30 +154,61 @@ $(function () {
                             legend: {
                                 display: false
                             }
+                        },
+                        transitions: {
+                            show: {
+                                animations: {
+                                    x: {
+                                        from: 0
+                                    },
+                                    y: {
+                                        from: 0
+                                    }
+                                }
+                            },
+                            hide: {
+                                animations: {
+                                    x: {
+                                        to: 0
+                                    },
+                                    y: {
+                                        to: 0
+                                    }
+                                }
+                            }
                         }
                     }
                 });
+                setInterval(function () {
+                }, 4000);
             });
     }
 
     if ($('#temperatureChart').length) {
         var temperatureChartCanvas = document.getElementById('temperatureChart').getContext('2d');
+        var temperatureLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        var temperatureData = [
+            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
+            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
+            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
+            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
+            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
+            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
+            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30)
+        ];
+        var temperatureDataAttr = $('#temperatureChart').closest('.temperature[data-chart]');
+        if (temperatureDataAttr.length) {
+            temperatureLabels = temperatureDataAttr.data('chart');
+            temperatureData = temperatureDataAttr.data('chart');
+        }
         var temperatureChart = new Chart(temperatureChartCanvas, {
             type: 'line',
             data: {
-                labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                labels: temperatureLabels,
                 datasets: [
                     {
                         label: 'Temperature',
-                        data: [
-                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
-                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
-                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
-                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
-                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
-                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
-                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30)
-                        ],
+                        data: temperatureData,
                         backgroundColor: 'rgba(255, 99, 132, 0.2)',
                         borderColor: 'rgba(255, 99, 132, 1)',
                         borderWidth: 2,
@@ -163,6 +224,10 @@ $(function () {
             options: {
                 maintainAspectRatio: false,
                 responsive: true,
+                animation: {
+                    duration: 100,
+                    easing: 'linear'
+                },
                 legend: {
                     display: false
                 },
@@ -170,29 +235,48 @@ $(function () {
                     legend: {
                         display: false
                     }
+                },
+                scales: {
+                    x: {
+                        display: false
+                    }
                 }
             }
         });
+        
+        setInterval(function () {
+            var currentTemperature = $('.temperature[data-temperature]').data('temperature'),
+                newTemperature = Math.floor(currentTemperature) + (Math.ceil(Math.random() * 2) * (Math.round(Math.random()) ? 1 : -1));
+            updateChart(temperatureChart, 18, 30, newTemperature);
+            $('.temperature .fs-1').html(newTemperature + '.' + (Math.floor(Math.random() * 9) + 1) + '&deg;');
+        }, 4000);
     }
 
     if ($('#humidityChart').length) {
         var humidityChartCanvas = document.getElementById('humidityChart').getContext('2d');
+        var humidityLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        var humidityData = [
+            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
+            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
+            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
+            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
+            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
+            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
+            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30)
+        ];
+        var humidityDataAttr = $('#humidityChart').closest('.humidity[data-chart]');
+        if (humidityDataAttr.length) {
+            humidityData = humidityDataAttr.data('chart');
+            humidityLabels = humidityDataAttr.data('chart');
+        }
         var humidityChart = new Chart(humidityChartCanvas, {
             type: 'line',
             data: {
-                labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                labels: humidityLabels,
                 datasets: [
                     {
                         label: 'Humidity',
-                        data: [
-                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
-                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
-                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
-                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
-                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
-                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30),
-                            Math.floor(Math.random() * 18) + Math.floor(Math.random() * 30)
-                        ],
+                        data: humidityData,
                         backgroundColor: 'rgba(54, 162, 235, 0.2)',
                         borderColor: 'rgba(54, 162, 235, 1)',
                         borderWidth: 2,
@@ -208,6 +292,10 @@ $(function () {
             options: {
                 maintainAspectRatio: false,
                 responsive: true,
+                animation: {
+                    duration: 100,
+                    easing: 'linear'
+                },
                 legend: {
                     display: false
                 },
@@ -215,9 +303,20 @@ $(function () {
                     legend: {
                         display: false
                     }
+                },
+                scales: {
+                    x: {
+                        display: false
+                    }
                 }
             }
         });
+        setInterval(function () {
+            var currentHumidity = $('.humidity[data-humidity]').data('humidity'),
+                newHumidity = Math.floor(currentHumidity) + (Math.ceil(Math.random() * 2) * (Math.round(Math.random()) ? 1 : -1));
+            updateChart(humidityChart, 18, 30, newHumidity);
+            $('.humidity .fs-1').html(newHumidity + '%');
+        }, 4000);
     }
 
     if ($('.security-cam[data-cams]').length) {
@@ -231,7 +330,7 @@ $(function () {
                 }
                 $('.security-cam > img').attr('src', securityCams[securityCam].src);
                 $('.security-cam span.text-dark').text(securityCams[securityCam].name);
-            }, 5000);
+            }, 4000);
         }
     }
 
@@ -288,6 +387,9 @@ $(function () {
         $('.speaker .btn-next, .speaker .btn-prev').click(function (e) {
             e.preventDefault();
             var randomSong = songs[Math.floor(Math.random() * songs.length)];
+            if (randomSong.title == $('.speaker .song-title').text()) {
+                randomSong = songs[Math.floor(Math.random() * songs.length)];
+            }
             $('.speaker .song-title').text(randomSong.title);
             $('.speaker .song-artist').text(randomSong.artist);
             $('.speaker .song-album').text(randomSong.album);
@@ -371,11 +473,12 @@ $(function () {
                 $('#editDeviceModal form #editDeviceName').val(data.device.name);
                 $('#editDeviceModal form #editDeviceRoom').val(data.device.room_id);
                 $('#editDeviceModal form #editDeviceStatus').val(data.device.status);
+                $('#editDeviceModal .delete-device').attr('data-id', deviceID);
             }
         }, 'json');
     });
 
-    $('.delete-device').click(function (e) {
+    $('body').on('click', '.delete-device[data-id]', function (e) {
         e.preventDefault();
         if (!confirm('Are you sure you want to delete this device?')) {
             return false;
@@ -386,7 +489,11 @@ $(function () {
             id: deviceID
         }, function (data) {
             if (data.status == 'success') {
-                deviceEl.remove();
+                if (deviceEl.length) {
+                    deviceEl.remove();
+                } else {
+                    location.reload();
+                }
             }
         }, 'json');
     });
@@ -429,6 +536,7 @@ $(function () {
                 $('#editRoomModal form').attr('data-id', roomID);
                 $('#editRoomModal form #editRoomId').val(roomID);
                 $('#editRoomModal form #editRoomName').val(data.data.name);
+                $('#editRoomModal form .delete-room').attr('data-id', roomID);
                 if (typeof data.data.data.temperature != 'undefined' && parseInt(data.data.data.temperature) > 0) {
                     $('#editRoomModal form #editRoomTemperature').attr('checked', true).val(data.data.data.temperature);
                 } else {
@@ -447,13 +555,9 @@ $(function () {
                     $('#editRoomModal form #editRoomHumidity').attr('checked', false);
                 }
 
-                if (typeof data.data.data.fireco != 'undefined' && parseInt(data.data.data.fireco) > 0) {
-                    $('#editRoomModal form #editRoomFireCo').attr('checked', true).val(data.data.data.fireco);
-                } else {
-                    $('#editRoomModal form #editRoomFireCo').attr('checked', false);
-                }
-                if (typeof data.data.data.fireco_status != 'undefined' && data.data.data.fireco_status == 0) {
-                    $('#editRoomModal form #editRoomFireCo').attr('checked', false);
+                $('#editRoomModal form #editRoomFireCo').attr('checked', false);
+                if (typeof data.data.data.fireco_status != 'undefined' && data.data.data.fireco_status != 0) {
+                    $('#editRoomModal form #editRoomFireCo').attr('checked', true);
                 }
             }
         }, 'json');
@@ -480,7 +584,12 @@ $(function () {
             id: roomID
         }, function (data) {
             if (data.status == 'success') {
-                roomEl.remove();
+                console.log(roomEl);
+                if (roomEl.length > 0) {
+                    roomEl.remove();
+                } else {
+                    location.reload();
+                }
             }
         }, 'json');
     });
@@ -517,7 +626,7 @@ $(function () {
         }, 'json');
     });
 
-    $('.delete-lamp-btn[data-id]').click(function (e) {
+    $('body').on('click', '.delete-lamp-btn[data-id]', function (e) {
         e.preventDefault();
         if (!confirm('Are you sure you want to delete this lamp?')) {
             return false;
@@ -558,7 +667,7 @@ $(function () {
             temperature = 30;
         }
         tempEl.data('temperature', temperature);
-        tempEl.find('span.fs-1').text(temperature + '°C');
+        tempEl.find('span.set-text').html(temperature + '&deg;');
         setRoomData(tempEl.data('room'), 'temperature', temperature);
     });
 
@@ -577,7 +686,7 @@ $(function () {
             humidity = 80;
         }
         humEl.data('humidity', humidity);
-        humEl.find('span.fs-1').text(humidity + '%');
+        humEl.find('span.set-text').html(humidity + '%');
         setRoomData(humEl.data('room'), 'humidity', humidity);
     });
 
@@ -622,7 +731,7 @@ $(function () {
         var deviceEl = $(this).closest('.shade-control'),
             shade = parseInt($(this).val());
         deviceEl.data('shade', shade);
-        deviceEl.find('span.fs-1').text(shade + '%');
+        deviceEl.find('span.fs-1').html(shade + '%');
     });
 
     $('.shade-control .form-range').on('change', function (e) {
@@ -632,7 +741,7 @@ $(function () {
             shade = parseInt($(this).val());
         setDeviceData(deviceID, 'shade', shade);
         deviceEl.data('shade', shade);
-        deviceEl.find('span.fs-1').text(shade + '%');
+        deviceEl.find('span.fs-1').html(shade + '%');
     });
 
     $('.tv-control .on-off-btn').click(function (e) {
@@ -787,7 +896,7 @@ $(function () {
                 }
             }, 'json');
         });
-        setInterval(sendSensorData, 600000);
+        setInterval(sendSensorData, 4000);
     }
 
     $('.edit-device-producer[data-id]').click(function (e) {
@@ -800,6 +909,7 @@ $(function () {
                 $('#editDeviceDataModal .modal-body').html(data.data);
                 $('#editDeviceDataModal .modal-header h5').text(data.name);
                 $('#editDeviceDataModal #editDeviceId').val(deviceID);
+                $('editDeviceDataModal .delete-device').data('id', deviceID);
                 $('#editDeviceDataModal').modal('show');
             }
         }, 'json');

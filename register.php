@@ -87,6 +87,7 @@ if (isset($_POST['username']) && isset($_POST['email']) &&  isset($_POST['passwo
                 ])
             ]);
 
+            $_SESSION['consumer_login'] = $user_id;
             $_SESSION['user'] = $user_id;
             $_SESSION['type'] = 'consumer';
             $_SESSION['name'] = $name;

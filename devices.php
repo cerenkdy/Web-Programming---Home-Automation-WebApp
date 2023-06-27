@@ -120,7 +120,7 @@ $page = 'devices';
                         }
                         if ($deviceCounter == 0) {
                         ?>
-                        <div class="bg-white-50 d-flex align-items-center justify-content-center shadow p-3 px-4 rounded-4 mr-auto" style="min-width: 250px;">
+                        <div class="bg-white-50 d-flex align-items-center justify-content-center shadow-sm p-3 px-4 rounded-4 mr-auto" style="min-width: 250px;">
                             <i class="fas fa-exclamation-circle fa-1x me-2 text-muted"></i> No device found
                         </div>
                         <?php } ?>

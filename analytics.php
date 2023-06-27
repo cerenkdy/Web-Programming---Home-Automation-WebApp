@@ -142,7 +142,7 @@ $page = 'analytics';
                                 <span class="fs-4 m-auto">
                                     <i class="fas fa-lg text-info fa-thermometer-half"></i>
                                     <?php
-                                    echo (count($temperatures) > 0 ? round(array_sum($temperatures) / count($temperatures), 1) : 0) . '&deg;C';
+                                    echo (count($temperatures) > 0 ? round(array_sum($temperatures) / count($temperatures), 1) : 0) . '&deg;';
                                     ?>
                                 </span>
                             </div>

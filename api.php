@@ -49,7 +49,7 @@ switch ($action) {
                 "cover" => "https://i.scdn.co/image/ab67616d00004851aaeb5c9fb6131977995b7f0e",
                 "title" => "Sweden",
                 "artist" => "C418",
-                "album" => "Minecraft - Volume Alpha",
+                "album" => "Minecraft",
                 "duration" => "3:35",
                 "url" => "https://open.spotify.com/track/4NsPgRYUdHu2Q5JRNgXYU5"
             ]
@@ -132,6 +132,15 @@ switch ($action) {
                 $dataGas = [rand(100, 500), rand(100, 500), rand(100, 500), rand(100, 500), rand(100, 500), rand(100, 500), rand(100, 500), rand(100, 500), rand(100, 500), rand(100, 500), rand(100, 500), rand(100, 500)];
                 break;
             }
+
+        $checkSensorData = $db->prepare("SELECT COUNT(*) AS total FROM sensor_data WHERE user_id = ?");
+        $checkSensorData->execute([$user]);
+        $checkSensorData = $checkSensorData->fetch(PDO::FETCH_ASSOC)['total'];
+        if ($checkSensorData == 0) {
+            $dataElectric = [];
+            $dataGas = [];
+            $dataWater = [];
+        }
 
         $data = [
             [
@@ -263,9 +272,10 @@ switch ($action) {
         $value = $_POST['value'];
 
         // get config
-        $stmt = $db->prepare("SELECT data FROM home_configs WHERE " . $condition . " = ? AND user_id = ?");
+        $stmt = $db->prepare("SELECT id, data FROM home_configs WHERE " . $condition . " = ? AND user_id = ?");
         $stmt->execute([$name, $user]);
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        $config_id = $data['id'];
         $data = @json_decode($data["data"], true);
 
         // set config
@@ -277,6 +287,14 @@ switch ($action) {
         } else {
             $result = 'error';
         }
+
+        // add log
+        if ($result == 'success' && ($value == '1' || $value == '0')) {
+            $value = ($value == '1') ? '1' : '0';
+            $stmt = $db->prepare("INSERT INTO logs (user_id, user_type, config_id, action) VALUES (?, ?, ?, ?)");
+            $stmt->execute([$user, $_SESSION['type'], $config_id, $value]);
+        }
+        
         echo json_encode([
             'status' => $result
         ]);

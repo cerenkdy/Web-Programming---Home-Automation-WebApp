@@ -164,7 +164,7 @@ $page = 'devices';
                             </div>
                             <div class="d-flex align-items-center">
                                 <div class="d-flex flex-column me-auto">
-                                    <span class="fs-1"><?php echo (isset($room['data']['temperature']) ? $room['data']['temperature'] : 25); ?>&deg;C</span>
+                                    <span class="fs-1 set-text"><?php echo (isset($room['data']['temperature']) ? $room['data']['temperature'] : 25); ?>&deg;</span>
                                 </div>
                                 <div class="d-flex flex-column">
                                     <button class="btn btn-sm btn-sh mb-2 increase" type="button">

@@ -76,23 +76,23 @@ $page = 'myhome';
                         switch ($randomWeather) {
                             case 1:
                                 echo '<i class="fas fa-cloud fa-lg text-white me-2"></i>';
-                                echo '25 &deg;C';
+                                echo '25 &deg;';
                                 break;
                             case 2:
                                 echo '<i class="fas fa-cloud-sun fa-lg text-white me-2"></i>';
-                                echo '30 &deg;C';
+                                echo '30 &deg;';
                                 break;
                             case 3:
                                 echo '<i class="fas fa-cloud-sun-rain fa-lg text-white me-2"></i>';
-                                echo '20 &deg;C';
+                                echo '20 &deg;';
                                 break;
                             case 4:
                                 echo '<i class="fas fa-cloud-showers-heavy fa-lg text-white me-2"></i>';
-                                echo '15 &deg;C';
+                                echo '15 &deg;';
                                 break;
                             case 5:
                                 echo '<i class="fas fa-sun fa-lg text-white me-2"></i>';
-                                echo '35 &deg;C';
+                                echo '35 &deg;';
                                 break;
                         }
                         ?>
@@ -181,7 +181,7 @@ $page = 'myhome';
                                                 <?php
                                                 $temperature = count($temperatures) > 0 ? round(array_sum($temperatures) / count($temperatures), 1) : 0;
                                                 echo $temperature;
-                                                ?> &deg;C
+                                                ?> &deg;
                                             </span>
                                         </span>
                                     </div>
@@ -220,22 +220,22 @@ $page = 'myhome';
                     </div>
                     <!-- Security Cam -->
                     <div class="col-lg-4 rounded-4 position-relative mb-3">
-                        <div class="d-flex security-cam" data-cams="<?php echo htmlentities(json_encode($cameras)); ?>">
+                        <div class="d-flex security-cam rounded-4 bg-white-50" data-cams="<?php echo htmlentities(json_encode($cameras)); ?>">
                             <div class="position-absolute too-0 start-0 mt-2 ms-4">
                                 <span class="badge bg-white-50">
                                     <i class="fas fa-video fa-lg text-dark"></i>
                                     <span class="text-dark"><?php echo (isset($cameras[0]) && isset($cameras[0]['name'])) ? $cameras[0]['name'] : 'No Camera'; ?></span>
                                 </span>
                             </div>
-                            <img src="img/camera.jpg" alt="" class="w-100 rounded-4<?php echo (isset($cameras[0]) && isset($cameras[0]['name'])) ? '' : ' invisible'; ?>">
+                            <img src="img/camera.jpg" alt="" class="w-100 h-100 rounded-4<?php echo (isset($cameras[0]) && isset($cameras[0]['name'])) ? '' : ' invisible'; ?>">
                         </div>
                     </div>
                 </div>
                 <div class="row d-flex flex-wrap">
                     <div class="col-lg-4 mb-3">
                         <!-- Lamps control -->
-                        <div class="card bg-white-50 rounded-4 h-100">
-                            <div class="d-flex justify-content-between align-items-center p-2 px-3">
+                        <div class="card bg-white-50 rounded-4 h-100 p-3 pe-2 pb-0">
+                            <div class="d-flex justify-content-between align-items-center px-3 ps-0">
                                 <h2 class="h5">Lamps Control</h2>
                                 <i class="fas fa-lightbulb fa-lg text-dark"></i>
                             </div>
@@ -245,14 +245,17 @@ $page = 'myhome';
                                 $stmt->execute([$user_id]);
                                 $devices = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 foreach ($devices as $device) {
-                                    $device_id = $device['id'];
-                                    $device_name = $device['name'];
-                                    $device_status = $device['status'];
+                                    $deviceSettings = json_decode($device['data'], true);
+                                    $device['color'] = isset($deviceSettings['color']) ? $deviceSettings['color'] : '#ffffff';
                                     ?>
-                                <li class="d-flex align-items-center p-2 px-3">
-                                    <span class="fs-5 mr-2"><?php echo $device_name; ?></span>
+                                <li class="d-flex align-items-center mt-3 pe-2">
+                                    <i class="fas fa-circle fa-lg me-2" style="color: <?php echo $device['color']; ?>"></i>
+                                    <span class="fs-5 me-2"><?php echo htmlspecialchars($device['name']); ?></span>
+                                    <button class="btn btn-sm p-1 px-2 btn-sh me-2 edit-lamp-btn" type="button" data-id="<?php echo $device['id']; ?>">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
                                     <label class="switch ms-auto">
-                                        <input type="checkbox" class="apple-switch sh-switch" onchange="deviceStatus(<?php echo $device_id; ?>, this.checked)" <?php if($device_status == 1) echo "checked"; ?>>
+                                        <input type="checkbox" class="apple-switch sh-switch" onchange="deviceStatus(<?php echo $device['id']; ?>, this.checked)" <?php if ($device['status'] == '1') { echo ' checked'; } ?>>
                                     </label>
                                 </li>
                                 <?php }?>
@@ -294,6 +297,7 @@ $page = 'myhome';
                         $stmt = $db->prepare("SELECT * FROM devices WHERE type = 'speaker' AND user_id = ? ORDER BY id ASC LIMIT 1");
                         $stmt->execute([$user_id]);
                         if ($stmt->rowCount() > 0) {
+                            $have_speaker = true;
                             $speaker = $stmt->fetch(PDO::FETCH_ASSOC);
                             $speaker_data = @json_decode($speaker['data'], true);
                             $speaker_id = $speaker['id'];
@@ -307,6 +311,7 @@ $page = 'myhome';
                                 <i class="fas fa-music fa-lg text-dark"></i>
                             </div>
                             <div class="card-body">
+                                <?php if ($have_speaker) { ?>
                                 <div class="d-flex flex-row align-items-center">
                                     <img src="https://i.scdn.co/image/ab67616d0000b273b6d4566db0d12894a1a3b7a2" alt=""
                                         class="rounded-2 shadow song-cover" width="75" height="75">
@@ -335,19 +340,8 @@ $page = 'myhome';
                                     </button>
                                     <input type="range" class="form-range volume-range" min="0" max="100" data-id="<?php echo isset($speaker_id) ? $speaker_id : 0; ?>" value="<?php echo (isset($speaker_volume)) ? $speaker_volume : 100; ?>" step="1" style="max-width: 220px">
                                 </div>
+                                <?php } ?>
                             </div>
-                            <?php if(!isset($speaker)) { ?>
-                                <div class="bg-light opacity-75 shadow rounded-4 text-dark d-flex flex-column align-items-center justify-content-center w-100 h-100 position-absolute top-0 bottom-0">
-                                    <p>
-                                        <i class="fas fa-exclamation-circle fa-md me-1"></i>
-                                        <span>Device not plugged</span>
-                                    </p>
-                                    <a href="devices.php" class="rounded-1 btn btn-sm btn-sh mt-0">
-                                        <i class="fas fa-plug fa-lg me-2"></i>
-                                        <span>Plug device</span>
-                                    </a>
-                                </div>
-                            <?php } ?>
                         </div>
                     </div>
                 </div>
@@ -362,7 +356,21 @@ $page = 'myhome';
                             <div class="card-body">
                                 <ul class="list-unstyled mb-0">
                                     <?php
-                                    $stmt = $db->prepare("SELECT * FROM logs INNER JOIN devices ON logs.device_id = devices.id WHERE devices.user_id = ? ORDER BY logs.id DESC LIMIT 4");
+                                    $stmt = $db->prepare("SELECT
+                                    logs.id, 
+                                    logs.user_id, 
+                                    logs.user_type, 
+                                    logs.device_id, 
+                                    logs.config_id, 
+                                    logs.action, 
+                                    logs.created_at, 
+                                    devices.name AS device_name,
+                                    home_configs.type AS config_name,
+                                    home_configs.data AS config_data
+                                    FROM logs 
+                                    LEFT JOIN devices ON logs.device_id = devices.id 
+                                    LEFT JOIN home_configs ON logs.config_id = home_configs.id 
+                                    WHERE logs.user_id = ? ORDER BY logs.id DESC LIMIT 5");
                                     $stmt->execute([$user_id]);
                                     $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     $logs_user = [
@@ -370,29 +378,44 @@ $page = 'myhome';
                                         'consumers' => [],
                                     ];
                                     foreach ($logs as $log) {
-                                        $device_name = $log['name'];
-                                        $device_type = $log['type'];
-                                        $device_status = $log['status'];
-                                        $log_action = $log['action'];
-                                        $log_user_id = $log['user_id'];
-                                        $log_table = $log['user_type'] =='producers' ? 'producers' : 'consumers';
-                                        if ($log_action == 1) {
-                                            $log_action_text = "turned on";
-                                        } else {
-                                            $log_action_text = "turned off";
+                                        if ($log['device_name'] == null && $log['config_name'] == null) {
+                                            continue;
                                         }
-                                        if(!isset($logs_user[$log_table][$log_user_id])) {
-                                            $stmt = $db->prepare("SELECT * FROM `".$log_table."` WHERE id = ?");
+                                        $log_action = $log['action'];
+                                        if ($log['device_name'] == null) {
+                                            $device_name = $log['config_name'];
+                                            if ($device_name == 'outdoor_lock') {
+                                                $device_name = 'Outdoor Lock';
+                                            } elseif ($device_name == 'door') {
+                                                $device_data = @json_decode($log['config_data'], true);
+                                                $device_name = $device_data['name'];
+                                            }
+                                            if ($log_action == 1) {
+                                                $log_action_text = "locked";
+                                            } else {
+                                                $log_action_text = "unlocked";
+                                            }
+                                        } else {
+                                            $device_name = $log['device_name'];
+                                            if ($log_action == 1 ) {
+                                                $log_action_text = "turned on";
+                                            } else {
+                                                $log_action_text = "turned off";
+                                            }
+                                        }
+                                        $log_user_id = $log['user_id'];
+                                        if(!isset($logs_user[$log_user_id])) {
+                                            $stmt = $db->prepare("SELECT * FROM `consumers` WHERE id = ?");
                                             $stmt->execute([$log_user_id]);
                                             $user = $stmt->fetch(PDO::FETCH_ASSOC);
-                                            $logs_user[$log_table][$log_user_id] = $user['name'];
+                                            $logs_user[$log_user_id] = $user['name'];
                                         }
                                         ?>
                                     <li class="d-flex mb-2 align-items-start">
                                         <span class="me-2 text-<?php echo ($log_action == 1) ? "sh" : "light"; ?> shadow-sm"><i class="fas fa-circle fa-sm"></i></span>
                                         <div class="d-flex flex-column justify-content-center">
                                             <strong><?php echo $device_name; ?></strong>
-                                            <div><?php echo $log_action_text; ?> by <span class="text-muted"><?php echo $logs_user[$log_table][$log_user_id]; ?></span></div>
+                                            <div><?php echo $log_action_text; ?> by <span class="text-muted"><?php echo $logs_user[$log_user_id]; ?></span></div>
                                         </div>
                                         <date class="ms-auto text-secondary"><?php echo diffForHumans($log['created_at']); ?></date>
                                     </li>
@@ -431,7 +454,10 @@ $page = 'myhome';
         </div>
     </main>
 
-    <?php include 'components/historyModal.php'; ?>
+    <?php
+    include 'components/historyModal.php';
+    include 'components/editLampModal.php';
+    ?>
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"
         integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>

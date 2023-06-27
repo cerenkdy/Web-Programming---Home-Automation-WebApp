@@ -38,7 +38,7 @@ $page = 'rooms';
             <div class="rooms w-100">
                 <div class="d-flex align-items-center mb-3">
                     <h4 class="flex-grow-1 mr-2 mb-0 text-white">Rooms</h4>
-                    <button class="btn btn-sm ms-auto text-white" data-bs-toggle="modal"
+                    <button class="btn btn-secondary btn-sm ms-auto" data-bs-toggle="modal"
                         data-bs-target="#addRoomModal">
                         <i class="fas fa-plus"></i>
                     </button>
