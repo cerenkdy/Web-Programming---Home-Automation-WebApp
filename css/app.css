@@ -63,6 +63,7 @@ input.apple-switch {
     border: 1px solid #D9DADC;
     border-radius: 50px;
     box-shadow: inset -20px 0 0 0 #fff;
+    cursor: pointer;
 }
 
 input.apple-switch:after {
@@ -125,6 +126,10 @@ input.sh-switch:checked:after {
     top: 0;
     bottom: 0;
     z-index: 1000;
+}
+
+.sidebar .nav-item .nav-link i {
+    width: 24px;
 }
 
 .bg-white-50 {
@@ -277,7 +282,6 @@ input.sh-switch:checked:after {
         .sidebar-toggle .sidebar .dropdown {
             padding-bottom: 28px;
         }
-
 
         .sidebar-toggle .sidebar .dropdown .text-dark.ms-auto.me-2 {
             position: absolute;

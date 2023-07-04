@@ -1,9 +1,14 @@
 var songs = [],
     consumptionChart,
-    consumptionDatasets = [];
+    consumptionDatasets = [],
+    temperatureChart,
+    humidityChart;
 
 // functions
 function usageData() {
+    if ($('.electricity-usage').length === 0 && $('.water-usage').length === 0 && $('.gas-usage').length === 0 && $('.indoor-temperature').length === 0 && $('.indoor-humidity').length === 0) {
+        return false;
+    }
     fetch('api.php?action=getUsagesData')
         .then(response => response.json())
         .then(data => {
@@ -79,32 +84,6 @@ function setDeviceData(deviceID, config, value) {
         .then(response => response.json())
         .then(data => {
         });
-}
-
-function updateChart(chart, minValue = 0, maxValue = 100, value = false) {
-    var newData,
-        newDataSet = chart.data.datasets;
-
-    for (var i = 0; i < newDataSet.length; i++) {
-        if (value !== false) {
-            newData = value;
-        } else {
-            newData = Math.floor(Math.random() * maxValue) + minValue;
-        }
-        if (newData < minValue) {
-            newData = Math.floor(Math.random() * maxValue) + minValue;
-        }
-        if (newData > maxValue) {
-            newData = Math.floor(Math.random() * maxValue) + minValue;
-        }
-        newDataSet[i].data.push(Math.floor(newData));
-    }
-
-    for (var i = 0; i < newDataSet.length; i++) {
-        newDataSet[i].data.shift();
-    }
-    chart.data.datasets = newDataSet;
-    chart.update();
 }
 
 if ($('.electricity-usage').length) {
@@ -201,7 +180,7 @@ $(function () {
             temperatureLabels = temperatureDataAttr.data('chart');
             temperatureData = temperatureDataAttr.data('chart');
         }
-        var temperatureChart = new Chart(temperatureChartCanvas, {
+        window.temperatureChart = new Chart(temperatureChartCanvas, {
             type: 'line',
             data: {
                 labels: temperatureLabels,
@@ -243,13 +222,6 @@ $(function () {
                 }
             }
         });
-        
-        setInterval(function () {
-            var currentTemperature = $('.temperature[data-temperature]').data('temperature'),
-                newTemperature = Math.floor(currentTemperature) + (Math.ceil(Math.random() * 2) * (Math.round(Math.random()) ? 1 : -1));
-            updateChart(temperatureChart, 18, 30, newTemperature);
-            $('.temperature .fs-1').html(newTemperature + '.' + (Math.floor(Math.random() * 9) + 1) + '&deg;');
-        }, 4000);
     }
 
     if ($('#humidityChart').length) {
@@ -269,7 +241,7 @@ $(function () {
             humidityData = humidityDataAttr.data('chart');
             humidityLabels = humidityDataAttr.data('chart');
         }
-        var humidityChart = new Chart(humidityChartCanvas, {
+        window.humidityChart = new Chart(humidityChartCanvas, {
             type: 'line',
             data: {
                 labels: humidityLabels,
@@ -311,12 +283,24 @@ $(function () {
                 }
             }
         });
+    }
+
+    if ($('#temperatureChart').length || $('#humidityChart').length) {
+        var roomID = (typeof $('.temperature[data-room]').data('room') !== 'undefined') ? $('.temperature[data-room]').data('room') : $('.humidity[data-room]').data('room');
         setInterval(function () {
-            var currentHumidity = $('.humidity[data-humidity]').data('humidity'),
-                newHumidity = Math.floor(currentHumidity) + (Math.ceil(Math.random() * 2) * (Math.round(Math.random()) ? 1 : -1));
-            updateChart(humidityChart, 18, 30, newHumidity);
-            $('.humidity .fs-1').html(newHumidity + '%');
-        }, 4000);
+            $.post('api.php?action=roomSensorData', { id: roomID }, function (data) {
+                if (typeof data.sensors.temperature !== 'undefined') {
+                    temperatureChart.data.datasets[0].data = data.sensors.temperature;
+                    temperatureChart.update();
+                    $('.temperature .fs-1').html(data.temperature + '&deg;');
+                }
+                if (typeof data.sensors.humidity !== 'undefined') {
+                    humidityChart.data.datasets[0].data = data.sensors.humidity;
+                    humidityChart.update();
+                    $('.humidity .fs-1').html(data.humidity + '%');
+                }
+            }, 'json');
+        }, 2000);
     }
 
     if ($('.security-cam[data-cams]').length) {
@@ -442,10 +426,14 @@ $(function () {
         $.post('api.php?action=addRoom', $(this).serialize(), function (data) {
             if (data.status == 'success') {
                 $('#addRoomModal').modal('hide');
-                if (typeof data.id != 'undefined') {
-                    location.href = 'room.php?id=' + data.id;
+                if (location.href.indexOf('producer') > -1) {
+                    location.href = 'producer_rooms.php' + ($('#roomConsumer').length ? '?user=' + $('#roomConsumer').val() : '');
                 } else {
-                    location.reload();
+                    if (typeof data.id != 'undefined') {
+                        location.href = 'room.php?id=' + data.id;
+                    } else {
+                        location.reload();
+                    }
                 }
             }
         }, 'json');
@@ -458,24 +446,6 @@ $(function () {
         $(this).closest('.room-device').find('span.text-muted').text(deviceDataStatus ? 'On' : 'Off');
         $(this).data('status', deviceDataStatus);
         deviceStatus(deviceID, deviceDataStatus);
-    });
-
-    $('.edit-device[data-id]').click(function (e) {
-        e.preventDefault();
-        var deviceID = $(this).data('id');
-        $.post('api.php?action=getDevice', {
-            id: deviceID
-        }, function (data) {
-            if (data.status == 'success') {
-                $('#editDeviceModal').modal('show');
-                $('#editDeviceModal form').attr('data-id', deviceID);
-                $('#editDeviceModal form #editDeviceId').val(deviceID);
-                $('#editDeviceModal form #editDeviceName').val(data.device.name);
-                $('#editDeviceModal form #editDeviceRoom').val(data.device.room_id);
-                $('#editDeviceModal form #editDeviceStatus').val(data.device.status);
-                $('#editDeviceModal .delete-device').attr('data-id', deviceID);
-            }
-        }, 'json');
     });
 
     $('body').on('click', '.delete-device[data-id]', function (e) {
@@ -510,17 +480,11 @@ $(function () {
         $.post('api.php?action=addDevice', $(this).serialize(), function (data) {
             if (data.status == 'success') {
                 $('#addDeviceModal').modal('hide');
-                location.reload();
-            }
-        }, 'json');
-    });
-
-    $('#editDeviceModal form').submit(function (e) {
-        e.preventDefault();
-        $.post('api.php?action=editDevice', $(this).serialize(), function (data) {
-            if (data.status == 'success') {
-                $('#editDeviceModal').modal('hide');
-                location.reload();
+                if (location.href.indexOf('producer.php') > -1) {
+                    location.href = 'producer_devices.php';
+                } else {
+                    location.reload();
+                }
             }
         }, 'json');
     });
@@ -857,28 +821,43 @@ $(function () {
         }, 'json');
     });
 
+    $('.refrigerator[data-id] .btn-mode').click(function (e) {
+        e.preventDefault();
+        var deviceEl = $(this).closest('.refrigerator'),
+            deviceID = deviceEl.data('id'),
+            mode = $(this).data('mode'),
+            temperature = $(this).data('temperature');
+        deviceEl.find('.btn-mode').removeClass('btn-sh').addClass('btn-light');
+        $(this).addClass('btn-sh').removeClass('btn-light');
+        deviceEl.find('.set-text').html(temperature + '&deg;');
+        setDeviceData(deviceID, 'mode', mode);
+    });
+
+    $('.air-conditioner[data-id] .btn-mode').click(function (e) {
+        e.preventDefault();
+        var deviceEl = $(this).closest('.air-conditioner'),
+            deviceID = deviceEl.data('id'),
+            mode = $(this).data('mode');
+        deviceEl.find('.btn-mode').removeClass('btn-sh').addClass('btn-light');
+        $(this).addClass('btn-sh').removeClass('btn-light');
+        setDeviceData(deviceID, 'mode', mode);
+    });
+
     if ($('.send-data-btn').length) {
         var sendSensorData = function () {
+            if (!$('.sensor-toggler input').prop('checked')) {
+                return;
+            }
             var all_rooms = $('.send-data-btn').data('rooms'),
-                user_id = $('.send-data-btn').data('id'),
-                rooms = [];
-            all_rooms.forEach(function (room_id) {
-                var temperature = Math.floor(Math.random() * 20) + 18;
-                var humidity = Math.floor(Math.random() * 50) + 30;
-                rooms.push({
-                    room_id: room_id,
-                    temperature: temperature,
-                    humidity: humidity
-                });
-            });
-            $.post('api.php?action=sendData', {
-                rooms: rooms,
-                user_id: user_id
+                user_id = $('.send-data-btn').data('id');
+            $.post('producer_api.php?action=sendData', {
+                user_id: user_id,
+                type: 'sensor'
             }, function (data) { }, 'json');
         };
         $('.send-data-btn').click(function (e) {
             e.preventDefault();
-            $.post('api.php?action=getRoomsDataForm', {
+            $.post('producer_api.php?action=getRoomsDataForm', {
                 id: $(this).data('id')
             }, function (data) {
                 if (data.status == 'success') {
@@ -889,17 +868,26 @@ $(function () {
         });
         $('body').on('submit', '#sendDataModal form', function (e) {
             e.preventDefault();
-            $.post('api.php?action=sendData', $(this).serialize(), function (data) {
+            $.post('producer_api.php?action=sendData', $(this).serialize(), function (data) {
                 if (data.status == 'success') {
                     $('#sendDataModal').modal('hide');
                     location.reload();
                 }
             }, 'json');
         });
+        $('.sensor-toggler input').change(function (e) {
+            e.preventDefault();
+            if ($(this).prop('checked')) {
+                document.cookie = 'sensor-disabled=0; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            } else {
+                document.cookie = 'sensor-disabled=1';
+            }
+        });
+
         setInterval(sendSensorData, 4000);
     }
 
-    $('.edit-device-producer[data-id]').click(function (e) {
+    $('.edit-device[data-id], .edit-device-producer[data-id]').click(function (e) {
         e.preventDefault();
         var deviceID = $(this).data('id');
         $.post('api.php?action=getDeviceDataForm', {
@@ -909,7 +897,7 @@ $(function () {
                 $('#editDeviceDataModal .modal-body').html(data.data);
                 $('#editDeviceDataModal .modal-header h5').text(data.name);
                 $('#editDeviceDataModal #editDeviceId').val(deviceID);
-                $('editDeviceDataModal .delete-device').data('id', deviceID);
+                $('#editDeviceDataModal .delete-device').data('id', deviceID);
                 $('#editDeviceDataModal').modal('show');
             }
         }, 'json');
@@ -924,4 +912,72 @@ $(function () {
             }
         }, 'json');
     });
+
+    $('.edit-consumer[data-id]').click(function (e) {
+        e.preventDefault();
+        var consumerID = $(this).data('id');
+        $.post('producer_api.php?action=getConsumer', {
+            id: consumerID
+        }, function (data) {
+            if (data.status == 'success') {
+                $('#editConsumerModal #editConsumerId').val(consumerID);
+                $('#editConsumerModal #editConsumerName').val(data.consumer.name);
+                $('#editConsumerModal #editConsumerEmail').val(data.consumer.email);
+                $('#editConsumerModal #editConsumerUsername').val(data.consumer.username);
+                $('#editConsumerModal').modal('show');
+            }
+        }, 'json');
+    });
+
+    $('.producer-devices .temperature .set-text').click(function (e) {
+        e.preventDefault();
+        var tempEl = $(this).closest('.temperature'),
+            temperature = tempEl.data('temperature');
+        $(this).toggleClass('d-none');
+        tempEl.find('.set-input').toggleClass('d-none').val(temperature);
+    });
+
+    $('.producer-devices .temperature .set-input').keypress(function (e) {
+        if (e.which == 13) {
+            e.preventDefault();
+            var tempEl = $(this).closest('.temperature'),
+                temperature = $(this).val();
+
+            if (!$.isNumeric(temperature) || temperature < 18 || temperature > 30) {
+                alert('Temperature must be between 18 and 30');
+                return;
+            }
+            tempEl.find('.set-input').toggleClass('d-none');
+            tempEl.find('.set-text').toggleClass('d-none');
+            tempEl.data('temperature', temperature);
+            tempEl.find('span.set-text').html(temperature + '&deg;');
+            setRoomData(tempEl.data('room'), 'temperature', temperature);
+        }
+    });
+
+    $('.producer-devices .humidity .set-text').click(function (e) {
+        e.preventDefault();
+        var tempEl = $(this).closest('.humidity'),
+            humidity = tempEl.data('humidity');
+        $(this).toggleClass('d-none');
+        tempEl.find('.set-input').toggleClass('d-none').val(humidity);
+    });
+
+    $('.producer-devices .humidity .set-input').keypress(function (e) {
+        if (e.which == 13) {
+            e.preventDefault();
+            var tempEl = $(this).closest('.humidity'),
+                humidity = $(this).val();
+            if (!$.isNumeric(humidity) || humidity < 30 || humidity > 80) {
+                alert('Humidity must be between 30 and 80');
+                return;
+            }
+            tempEl.find('.set-input').toggleClass('d-none');
+            tempEl.find('.set-text').toggleClass('d-none');
+            tempEl.data('humidity', humidity);
+            tempEl.find('span.set-text').html(humidity + '%');
+            setRoomData(tempEl.data('room'), 'humidity', humidity);
+        }
+    });
+
 });

@@ -89,7 +89,7 @@ $page = 'devices';
                             $device = $device_group[$device_type];
                             $deviceCounter++;
                         ?>
-                        <div class="bg-white-50 shadow p-3 rounded-4 room-device d-flex flex-column" style="width: 250px;">
+                        <div class="bg-white-50 shadow-sm p-3 rounded-4 room-device d-flex flex-column" style="width: 250px;">
                             <div class="d-flex justify-content-center align-items-start mb-3">
                                 <div class="d-flex justify-content-center align-items-center rounded-circle btn-sh text-white me-2"
                                     style="width: 50px; height: 50px;">
@@ -101,8 +101,8 @@ $page = 'devices';
                             </div>
                             <div class="d-flex h-100">
                                 <div class="d-flex flex-column">
-                                    <span class="h5"><?php echo $device_name; ?></span>
-                                    <span class="text-muted mt-auto"><?php echo ($device_status == 1) ? 'On' : 'Off'; ?></span>
+                                    <span class="h5 text-truncate w-100"><?php echo $device_name; ?></span>
+                                    <span class="text-muted mt-auto" style="width: 200px;"><?php echo ($device_status == 1) ? 'On' : 'Off'; ?></span>
                                 </div>
                                 <div class="dropdown ms-auto mt-auto">
                                     <button class="btn btn-sm text-dark" type="button" id="dropdownMenuButton1"
@@ -133,7 +133,7 @@ $page = 'devices';
 
     <?php
     include 'components/addDeviceModal.php';
-    include 'components/editDeviceModal.php';
+    include 'components/editDeviceDataModal.php';
     include 'components/addRoomModal.php';
     include 'components/editRoomModal.php';
     ?>

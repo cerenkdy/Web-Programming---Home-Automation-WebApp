@@ -1,6 +1,6 @@
 <?php
 if(!isset($device_group)) {
-    header('Location: myhome.php');
+    header('Location: /myhome.php');
     exit;
 }
 ?>
@@ -13,6 +13,22 @@ if(!isset($device_group)) {
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body px-4">
+                <?php if(isset($_SESSION['producer_login'])) { ?>
+                    <div class="form-group mb-3">
+                        <label for="roomConsumer" class="form-label">Consumer</label>
+                        <select class="form-select" id="roomConsumer" name="consumer" required>
+                            <option value="" selected disabled>Select Consumer</option>
+                            <?php
+                            $stmt = $db->prepare("SELECT * FROM consumers WHERE deleted_at IS NULL");
+                            $stmt->execute();
+                            $consumers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                            foreach($consumers as $consumer) {
+                                echo '<option value="'.$consumer['id'].'" '.($consumer['id'] == $_SESSION['user'] ? 'selected' : '').'>'.$consumer['name'].'</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                <?php } ?>
                 <div class="form-group mb-3">
                     <label for="roomName" class="form-label">Room Name</label>
                     <input type="text" class="form-control" id="roomName" name="roomName" required>

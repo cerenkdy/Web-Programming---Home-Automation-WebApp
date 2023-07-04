@@ -1,6 +1,6 @@
 <?php
 if(!isset($device_group)) {
-    header('Location: producer.php');
+    header('Location: /producer.php');
     exit;
 }
 ?>

@@ -1,6 +1,6 @@
 <?php
 if(!isset($device_group)) {
-    header('Location: producer.php');
+    header('Location: /producer.php');
     exit;
 }
 ?>
@@ -14,6 +14,7 @@ if(!isset($device_group)) {
             </div>
             <div class="modal-body">Loading...</div>
             <div class="modal-footer">
+                <button class="btn btn-outline-danger me-auto delete-device" type="button" data-id="0">Delete</button>
                 <button class="btn btn-sh btn-sm" type="submit">Save</button>
             </div>
         </form>

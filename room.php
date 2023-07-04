@@ -47,7 +47,7 @@ foreach ($devices as $device) {
 
 // get camera datas
 $cameras = [];
-$stmt = $db->prepare("SELECT id, name FROM devices WHERE room_id = ? AND user_id = ? AND type = 'camera'");
+$stmt = $db->prepare("SELECT id, name FROM devices WHERE room_id = ? AND user_id = ? AND type = 'camera' AND status = '1'");
 $stmt->execute([$room_id, $user_id]);
 $camCounter = 0;
 while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -75,6 +75,20 @@ while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     $sensors['temperature'][$sensorCounter] = $row['temperature'];
     $sensors['humidity'][$sensorCounter] = $row['humidity'];
     $sensorCounter--;
+}
+
+// room current temperature and humidity
+$roomTemperature = @end($sensors['temperature']);
+$roomHumidity = @end($sensors['humidity']);
+if (!$roomTemperature) {
+    $roomTemperature = $room['data']['temperature'] + rand(-2, 2);
+} else {
+    $roomTemperature = rand(18, 30);
+}
+if (!$roomHumidity) {
+    $roomHumidity = $room['data']['humidity'] + rand(-2, 2);
+} else {
+    $roomHumidity = rand(30, 80);
 }
 
 // page
@@ -176,7 +190,7 @@ $page = 'rooms';
                             </div>
                             <div class="d-flex align-items-center">
                                 <div class="d-flex flex-column me-auto">
-                                    <span class="fs-1 fs-2"><?php echo round((isset($room['data']['temperature']) ? $room['data']['temperature'] : 25) + (rand(-2*10, +2*10) / 10), 1); ?>&deg;</span>
+                                    <span class="fs-1 fs-2"><?php echo $roomTemperature; ?>&deg;</span>
                                 </div>
                                 <span class="set-text me-2 rounded btn-sh p-1 py-3 shadow-sm h1 h2 mb-0 fw-normal"><?php echo (isset($room['data']['temperature']) ? $room['data']['temperature'] : 25); ?>&deg;</span>
                                 <div class="d-flex flex-column h-100">
@@ -205,7 +219,7 @@ $page = 'rooms';
                             </div>
                             <div class="d-flex align-items-center">
                                 <div class="d-flex flex-column me-auto">
-                                    <span class="fs-1 fs-2"><?php echo round((isset($room['data']['humidity']) ? $room['data']['humidity'] : 0) + (rand(-2*10, +2*10) / 10)); ?>%</span>
+                                    <span class="fs-1 fs-2"><?php echo $roomHumidity; ?>%</span>
                                 </div>
                                 <span class="set-text me-2 rounded btn-sh p-1 py-3 shadow-sm h1 h2 mb-0 fw-normal"><?php echo (isset($room['data']['humidity']) ? $room['data']['humidity'] : 50); ?>%</span>
                                 <div class="d-flex flex-column">
@@ -247,7 +261,6 @@ $page = 'rooms';
                                             ?>
                                         </ul>
                                     </h2>
-
                                     <button class="btn btn btn-sm btn-sh ms-auto edit-cam-btn">
                                         <i class="fas fa-edit fa-lg"></i>
                                     </button>
@@ -268,10 +281,7 @@ $page = 'rooms';
                             </div>
                         </div>
                     </div>
-                    <?php
-                    }
-                    if ($have['window'] || $have['tv'] || $have['speaker'] || $have['router'] || (isset($room['data']['fireco_status']) && $room['data']['fireco_status'] == '1')) {
-                    ?>
+                    <?php } ?>
                     <?php if($have['window']) { ?>
                     <div class="col-xl-3 col-lg-6 mb-3">
                         <div class="bg-white-50 h-100 rounded-4 shade-control position-relative" data-id="<?php echo (isset($have['window']['id']) ? $have['window']['id'] : 0); ?>" data-shade="<?php echo (isset($have['window']['data']['shade']) ? $have['window']['data']['shade'] : 50); ?>">
@@ -316,6 +326,30 @@ $page = 'rooms';
                         </div>
                     </div>
                     <?php } ?>
+                    <?php if($have['ac']) { ?>
+                    <div class="col-xl-3 col-lg-6 mb-3">
+                        <!-- Air Conditioner -->
+                        <div class="bg-white-50 h-100 rounded-4 position-relative air-conditioner d-flex flex-column" data-id="<?php echo (isset($have['ac']['id']) ? $have['ac']['id'] : 0); ?>">
+                            <div class="d-flex align-items-center p-2 px-3">
+                                <i class="fa fa-snowflake fa-lg me-2"></i>
+                                <h2 class="h5 mb-0">Air Conditioner</h2>
+                                <label class="switch ms-auto d-flex align-items-center justify-content-start">
+                                    <input type="checkbox" class="apple-switch sh-switch" onchange="deviceStatus(<?php echo $have['ac']['id']; ?>, this.checked)" <?php if(isset($have['ac']['status']) && $have['ac']['status'] == 1) { echo "checked"; } ?>>
+                                </label>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-center px-3 h-100">
+                                <div class="d-flex align-items-center justify-content-start gap-2 w-100 mb-2">
+                                    <?php foreach($device_group['ac']['modes'] as $mode_code => $mode) { ?>
+                                    <button style="width: 66px" class="btn btn-<?php echo (isset($have['ac']['data']['mode']) && $have['ac']['data']['mode'] == $mode_code) ? 'sh' : 'light'; ?> rounded-2 btn-mode d-flex flex-column justify-content-center gap-1 p-1 align-items-center" data-mode="<?php echo $mode_code; ?>">
+                                        <i class="<?php echo $mode['icon']; ?> mt-2"></i>
+                                        <?php echo $mode['name']; ?>
+                                    </button>
+                                    <?php } ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php } ?>
                     <?php if ($have['tv']) { ?>
                     <div class="col-xl-3 col-lg-6 mb-3">
                         <!-- TV control -->
@@ -352,7 +386,7 @@ $page = 'rooms';
                         </div>
                     </div>
                     <?php } ?>
-                    <?php if(1 == 2 && isset($room['data']['fireco_status']) && $room['data']['fireco_status'] == '1') { ?>
+                    <?php if(isset($room['data']['fireco_status']) && $room['data']['fireco_status'] == '1') { ?>
                     <div class="col-xl-3 col-lg-6 mb-3">
                         <!-- Fire/CO Alarm -->
                         <div class="card bg-white-50 h-100 rounded-4 position-relative">
@@ -419,6 +453,30 @@ $page = 'rooms';
                             </div>
                         </div>
                     <?php } ?>
+                    <?php if($have['refrigerator']) { ?>
+                    <div class="col-xl-3 col-lg-6 mb-3">
+                        <!-- Refrigerator -->
+                        <div class="bg-white-50 h-100 rounded-4 position-relative refrigerator d-flex flex-column" data-id="<?php echo $have['refrigerator']['id']; ?>">
+                            <div class="d-flex align-items-center p-2 px-3">
+                                <svg class="me-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" version="1.1" x="0px" y="0px" viewBox="0 0 100 100" width="24px" height="24px"><path d="M70,70L65,70L65,60L25,60L25,85C25,87.761,27.239,90,30,90L70,90C72.761,90,75,87.761,75,85L75,60L70,60L70,70Z" stroke="none"></path><path d="M65,45L70,45L70,55L75,55L75,15C75,12.239,72.761,10,70,10L30,10C27.239,10,25,12.239,25,15L25,55L65,55L65,45Z" stroke="none"></path></svg>
+                                <h2 class="h5 mb-0">Refrigerator</h2>
+                                <label class="switch ms-auto d-flex align-items-center justify-content-start">
+                                    <input type="checkbox" class="apple-switch sh-switch" onchange="deviceStatus(<?php echo $have['refrigerator']['id']; ?>, this.checked)" <?php if(isset($have['refrigerator']['data']['status']) && $have['refrigerator']['data']['status'] == 1) { echo "checked"; } ?>>
+                                </label>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-center px-3 h-100">
+                                <div class="d-flex align-items-center justify-content-start gap-2 w-100 mb-2">
+                                    <?php foreach($device_group['refrigerator']['modes'] as $mode_code => $mode) { ?>
+                                    <button style="width: 66px" class="btn btn-<?php echo (isset($have['refrigerator']['data']['mode']) && $have['refrigerator']['data']['mode'] == $mode_code) ? 'sh' : 'light'; ?> rounded-2 btn-mode d-flex flex-column justify-content-center gap-1 p-1 align-items-center" data-mode="<?php echo $mode_code; ?>" data-temperature="<?php echo $mode['temperature']; ?>">
+                                        <i class="<?php echo $mode['icon']; ?> mt-2"></i>
+                                        <?php echo $mode['name']; ?>
+                                    </button>
+                                    <?php } ?>
+                                    <span class="set-text ms-auto h1 h2 mb-0 fw-normal"><?php echo $device_group['refrigerator']['modes'][$have['refrigerator']['data']['mode']]['temperature']; ?>&deg;</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <?php } ?>
                     <div class="d-flex align-items-center mb-3 mt-3">
                         <h5 class="flex-grow-1 mr-2 mb-0 text-white fw-bold h5">Devices</h5>
@@ -465,7 +523,7 @@ $page = 'rooms';
                                 $deviceCounter++;
                             ?>
                             <div class="col-xl-2 col-md-4 col-sm-6 col-xs-12 room-device mb-3">
-                                <div class="bg-white-50 shadow p-3 rounded-4 d-flex flex-column">
+                                <div class="bg-white-50 shadow-sm p-3 rounded-4 d-flex flex-column">
                                     <div class="d-flex justify-content-center align-items-start mb-3">
                                         <div class="d-flex justify-content-center align-items-center rounded-circle btn-sh text-white me-2"
                                             style="width: 50px; height: 50px;">
@@ -515,7 +573,7 @@ $page = 'rooms';
     include 'components/addLampModal.php';
     include 'components/editCamModal.php';
     include 'components/addCamModal.php';
-    include 'components/editDeviceModal.php';
+    include 'components/editDeviceDataModal.php';
     ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"

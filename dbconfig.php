@@ -27,13 +27,19 @@ $device_group = [
         'short' => 'AC',
         'icon' => 'fas fa-snowflake',
         'electricity' => true,
+        'modes' => [
+            'cool' => ['name' => 'Cool', 'icon' => 'fas fa-snowflake'],
+            'heat' => ['name' => 'Heat', 'icon' => 'fas fa-fire'],
+            'dry' => ['name' => 'Dry', 'icon' => 'fas fa-tint'],
+            'auto' => ['name' => 'Auto', 'icon' => 'fas fa-cog'],
+        ],
         'data' => [
             'status' => 1,
-            'temperature' => 25
+            'mode' => 'auto',
         ]
     ],
     'tv' => [
-        'name' => 'TV',
+        'name' => 'Television',
         'short' => 'TV',
         'icon' => 'fas fa-tv',
         'electricity' => true,
@@ -54,11 +60,17 @@ $device_group = [
     ],
     'refrigerator' => [
         'name' => 'Refrigerator',
-        'short' => 'Fridge',
-        'icon' => 'fas fa-ice-cream',
+        'short' => 'Refrigerator',
+        'icon' => 'fas fa-door-closed',
         'electricity' => true,
+        'modes' => [
+            'eco' => ['name' => 'Eco', 'icon' => 'fas fa-leaf', 'temperature' => 7],
+            'normal' => ['name' => 'Normal', 'icon' => 'fas fa-circle', 'temperature' => 5],
+            'turbo' => ['name' => 'Turbo', 'icon' => 'fas fa-bolt', 'temperature' => 3],
+        ],
         'data' => [
             'status' => 1,
+            'mode' => 'normal',
         ]
     ],
     'washing_machine' => [
@@ -179,6 +191,7 @@ try {
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     echo "Connection failed: " . $e->getMessage();
+    die();
 }
 
 $query = $db->query("SELECT NOW() AS timestamp");
@@ -221,4 +234,34 @@ function diffForHumans($date) {
     } else {
         return round($diff / 31536000) . ' years ago';
     }
+}
+
+if(isset($_SESSION['user'])) {
+
+    if(isset($_SESSION['producer_login'])) {
+        $stmt = $db->prepare("SELECT COUNT(*) AS count FROM consumers WHERE id = ?");
+        $stmt->execute([$_SESSION['user']]);
+        $count = $stmt->fetchColumn();
+        if($count == 0) {
+            $_SESSION['user'] = false;
+        }
+    } else {
+        $stmt = $db->prepare("SELECT COUNT(*) AS count FROM consumers WHERE id = ? AND deleted_at IS NULL");
+        $stmt->execute([$_SESSION['user']]);
+        $count = $stmt->fetchColumn();
+        if($count == 0) {
+            session_destroy();
+            unset($_SESSION['user']);
+            unset($_SESSION['type']);
+            unset($_SESSION['name']);
+            unset($_SESSION['email']);
+            unset($_SESSION['username']);
+            unset($_SESSION['settings']);
+            unset($_SESSION['consumer_login']);
+            unset($_SESSION['producer_login']);
+            header("Location: login.php");
+            exit;
+        }
+    }
+    
 }

@@ -5,13 +5,17 @@ CREATE TABLE consumers (
     password VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
+    birth_date DATE NULL DEFAULT NULL,
     settings text NOT NULL DEFAULT '{}',
+    deleted_at DATETIME NULL DEFAULT NULL,
+    disabled_at DATETIME NULL DEFAULT NULL,
+    reason VARCHAR(255) NOT NULL DEFAULT '',
     PRIMARY KEY (id)
 );
 
 -- inserting mock data for consumers
 
-INSERT INTO consumers (id, username, password, name, email, settings) VALUES (1, 'demouser', 'Who0808', 'Consumer Demo', 'user@localhost', '{"theme": "light", "language": "en", "notifications": true}');
+INSERT INTO consumers (id, username, password, name, email, birth_date, settings) VALUES (1, 'demouser', 'Who0808', 'Consumer Demo', 'user@localhost', '2000-01-01', '{"theme": "light", "language": "en", "notifications": true}');
 
 -- table for producers
 CREATE TABLE producers (
@@ -21,6 +25,9 @@ CREATE TABLE producers (
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     settings text NOT NULL DEFAULT '{}',
+    deleted_at DATETIME NULL DEFAULT NULL,
+    disabled_at DATETIME NULL DEFAULT NULL,
+    reason VARCHAR(255) NOT NULL DEFAULT '',
     PRIMARY KEY (id)
 );
 
@@ -39,10 +46,10 @@ CREATE TABLE rooms (
 );
 
 -- inserting rooms information
-INSERT INTO rooms (id, name, user_id, data) VALUES (1, 'Living room', 1, '{"temperature": 24, "humidity": 51, "temperature_status":"1","humidity_status":"1"}');
-INSERT INTO rooms (id, name, user_id, data) VALUES (2, 'Bedroom', 1, '{"temperature": 23, "humidity": 45, "temperature_status":"1","humidity_status":"1"}');
-INSERT INTO rooms (id, name, user_id, data) VALUES (3, 'Kitchen', 1, '{"temperature": 25, "humidity": 55, "temperature_status":"1","humidity_status":"1"}');
-INSERT INTO rooms (id, name, user_id, data) VALUES (4, 'Bathroom', 1, '{"temperature": 23, "humidity": 65, "temperature_status":"1","humidity_status":"1"}');
+INSERT INTO rooms (id, name, user_id, data) VALUES (1, 'Living room', 1, '{"temperature": 24, "humidity": 51, "temperature_status":"1", "humidity_status":"1", "fireco": 0, "fireco_status": 1}');
+INSERT INTO rooms (id, name, user_id, data) VALUES (2, 'Bedroom', 1, '{"temperature": 23, "humidity": 45, "temperature_status":"1", "humidity_status":"1", "fireco": 0, "fireco_status": 1}');
+INSERT INTO rooms (id, name, user_id, data) VALUES (3, 'Kitchen', 1, '{"temperature": 25, "humidity": 55, "temperature_status":"1", "humidity_status":"1", "fireco": 0, "fireco_status": 1}');
+INSERT INTO rooms (id, name, user_id, data) VALUES (4, 'Bathroom', 1, '{"temperature": 23, "humidity": 65, "temperature_status":"1", "humidity_status":"1", "fireco": 0, "fireco_status": 1}');
 
 
 -- table for devices
@@ -65,7 +72,7 @@ INSERT INTO devices (id, user_id, name, room_id, type, status, data, electricity
 INSERT INTO devices (id, user_id, name, room_id, type, status, data, electricity) VALUES (3, 1, 'Bedroom Lamp', 2, 'light', 0, '{"color": "#ffffff"}', 1);
 INSERT INTO devices (id, user_id, name, room_id, type, status, data, electricity) VALUES (4, 1, 'Kitchen Lamp', 3, 'light', 0, '{"color": "#ffffff"}', 1);
 INSERT INTO devices (id, user_id, name, room_id, type, status, data, electricity) VALUES (5, 1, 'Bathroom Lamp', 4, 'light', 0, '{"color": "#ffffff"}', 1);
-INSERT INTO devices (id, user_id, name, room_id, type, status, data, electricity) VALUES (6, 1, 'Air Conditioner', 1, 'ac', 0, '{"auto_start": 25}', 1);
+INSERT INTO devices (id, user_id, name, room_id, type, status, data, electricity) VALUES (6, 1, 'Air Conditioner', 1, 'ac', 0, '{"mode": "auto"}', 1);
 INSERT INTO devices (id, user_id, name, room_id, type, status, data, electricity) VALUES (7, 1, 'TV', 1, 'tv', 1, '{"channel": 1, "volume": 50}', 1);
 
 -- home configs table

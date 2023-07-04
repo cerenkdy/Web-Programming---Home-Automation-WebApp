@@ -1,7 +1,7 @@
 <?php
 // If the user is not logged in, redirect to login.php
 if (!isset($_SESSION['user'])) {
-    header("Location: login.php");
+    header("Location: /login.php");
     exit;
 }
 ?>

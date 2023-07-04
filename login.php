@@ -19,11 +19,11 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     $type = (isset($_GET['type']) && $_GET['type'] == 'producers') ? 'producers' : 'consumers';
 
     // getting username and password
-    $username = isset($_POST['username']) ? $_POST['username'] : '';
-    $password = isset($_POST['password']) ? $_POST['password'] : '';
+    $username = $_POST['username'];
+    $password = $_POST['password'];
 
     // database select statement
-    $stmt = $db->prepare("SELECT * FROM " . $type . " WHERE username = ? AND password = ? LIMIT 1");
+    $stmt = $db->prepare("SELECT * FROM " . $type . " WHERE username = ? AND password = ? AND deleted_at IS NULL LIMIT 1");
     $stmt->setFetchMode(PDO::FETCH_ASSOC);
     $stmt->execute([$username, $password]);
 
@@ -43,12 +43,21 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
         unset($_SESSION['consumer_login']);
         unset($_SESSION['producer_login']);
 
+        // check reactivation
+        if ($row['disabled_at'] != null) {
+            $_SESSION['disabled'] = true;
+        }
+        
         $_SESSION['user'] = $row['id'];
         $_SESSION['type'] = $type;
         $_SESSION['name'] = $row['name'];
         $_SESSION['email'] = $row['email'];
         $_SESSION['username'] = $row['username'];
         $_SESSION['settings'] = json_decode($row['settings'], true);
+        
+        if(isset($row['birth_date'])) {
+            $_SESSION['birth_date'] = $row['birth_date'];
+        }
 
         if ($_SESSION['type'] == 'producers') {
             $_SESSION['producer_login'] = $row['id'];

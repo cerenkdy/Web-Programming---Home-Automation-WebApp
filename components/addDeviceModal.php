@@ -1,6 +1,6 @@
 <?php
 if(!isset($device_group)) {
-    header('Location: myhome.php');
+    header('Location: /myhome.php');
     exit;
 }
 

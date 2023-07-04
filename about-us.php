@@ -25,7 +25,7 @@
             </div>
         </div>
 
-        <article class="container-fluid p-5">
+        <article class="container-fluid p-3 p-md-5">
             <p class="mb-7">Welcome to SmartHome, where innovation and technology converge to create smart living experiences. 
                 At SmartHome, we are passionate about transforming houses into intelligent homes that make life easier and more convenient. 
                 With our cutting-edge smart home solutions, we aim to simplify everyday tasks, enhance security, and provide seamless control over your devices. 
@@ -37,5 +37,7 @@
         </article>
 
     </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 </body>
 </html>

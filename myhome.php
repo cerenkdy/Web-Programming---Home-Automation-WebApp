@@ -98,6 +98,20 @@ $page = 'myhome';
                         ?>
                     </span>
                 </div>
+                <!-- Reactivate Account -->
+                <?php 
+                if(isset($_SESSION['disabled'])) {
+                    $stmt = $db->prepare("UPDATE consumers SET disabled_at = NULL, reason = NULL WHERE id = ?");
+                    $stmt->execute([$user_id]);
+                ?>
+                    <div class="alert bg-white-50 rounded-4 shadow-sm alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i> Your account has been reactivated successfully.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php
+                    unset($_SESSION['disabled']);
+                }
+                ?>
                 <div class="row d-flex flex-wrap">
                     <div class="col-lg-8 rounded-4 position-relative mb-3">
                         <div class="row">
@@ -110,8 +124,7 @@ $page = 'myhome';
                                             <i class="fas fa-bolt fa-lg text-warning"></i>
                                             <span class="electricity-usage">
                                             <?php
-                                            $query = "SELECT COUNT(*) FROM devices WHERE user_id = ? AND status = 1 AND electricity = 1";
-                                            $stmt = $db->prepare($query);
+                                            $stmt = $db->prepare("SELECT COUNT(*) FROM devices WHERE user_id = ? AND status = 1 AND electricity = 1");
                                             $stmt->execute([$_SESSION['user']]);
                                             echo $stmt->fetchColumn() . ' KWh';
                                             ?>
@@ -282,8 +295,8 @@ $page = 'myhome';
                                     ?>
                                 <li class="d-flex justify-content-between align-items-center p-2 px-3">
                                     <span class="fs-5"><?php echo $device_name; ?></span>
-                                    <span class="badge rounded-pill p-2 <?php if($device_status == 1){ echo "bg-secondary"; } else { echo "btn-sh"; } ?>" data-device="<?php echo $device_id; ?>">
-                                        <i class="fas fa-lg <?php if($device_status == 1) { echo "fa-lock"; } else { echo "fa-lock-open"; } ?>"></i>
+                                    <span class="badge rounded-pill p-2 <?php echo ($device_status == 1) ? "bg-secondary" : "btn-sh"; ?>" data-device="<?php echo $device_id; ?>">
+                                        <i class="fas fa-lg <?php echo ($device_status == 1) ? "fa-lock" : "fa-lock-open"; ?>"></i>
                                         <span><?php echo ($device_status == 0) ? "Unlocked" : "Locked"; ?></span>
                                     </span>
                                 </li>
@@ -397,7 +410,7 @@ $page = 'myhome';
                                             }
                                         } else {
                                             $device_name = $log['device_name'];
-                                            if ($log_action == 1 ) {
+                                            if ($log_action == 1) {
                                                 $log_action_text = "turned on";
                                             } else {
                                                 $log_action_text = "turned off";

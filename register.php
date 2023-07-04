@@ -15,10 +15,10 @@ if (isset($_SESSION['consumer_login']) || isset($_SESSION['producer_login'])) {
 if (isset($_POST['username']) && isset($_POST['email']) &&  isset($_POST['password'])) {
 
     // get username, email and password
-    $username = isset($_POST['username']) ? $_POST['username'] : '';
-    $email = isset($_POST['email']) ? $_POST['email'] : '';
-    $password = isset($_POST['password']) ? $_POST['password'] : '';
-    $name = isset($_POST['name']) ? $_POST['name'] : '';
+    $username = $_POST['username'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $name = isset($_POST['name']) ? $_POST['name'] : $username;
 
     // check if username or email already exists
     $stmt = $db->prepare("SELECT * FROM consumers WHERE username = ? OR email = ? LIMIT 1");
@@ -130,7 +130,7 @@ if (isset($_POST['username']) && isset($_POST['email']) &&  isset($_POST['passwo
             <?php }?>
             <div class="mb-3">
                 <label for="name" class="form-label">Full Name</label>
-                <input class="form-control" type="text" name="name" id="name" required>
+                <input class="form-control" type="text" name="name" id="name">
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email address</label>
