@@ -117,7 +117,7 @@ $page = 'analytics';
                                 <h2 class="h6 pb-0">Water Usage</h2>
                                 <span class="fs-4 m-auto">
                                     <i class="fas fa-lg text-primary fa-tint"></i>
-                                    <span class="water-usage"><?php echo rand(0, 5) . ' m<sup>3</sup>'; ?></span>
+                                    <span class="water-usage"><?php echo rand(0, 5) . ' L'; ?></span>
                                 </span>
                             </div>
                         </div>

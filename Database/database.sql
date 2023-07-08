@@ -6,10 +6,10 @@ CREATE TABLE consumers (
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     birth_date DATE NULL DEFAULT NULL,
-    settings text NOT NULL DEFAULT '{}',
+    settings TEXT NOT NULL DEFAULT '{}',
     deleted_at DATETIME NULL DEFAULT NULL,
     disabled_at DATETIME NULL DEFAULT NULL,
-    reason VARCHAR(255) NOT NULL DEFAULT '',
+    reason VARCHAR(255) NULL DEFAULT NULL,
     PRIMARY KEY (id)
 );
 
@@ -68,10 +68,10 @@ CREATE TABLE devices (
 );
 
 -- devices data
-INSERT INTO devices (id, user_id, name, room_id, type, status, data, electricity) VALUES (2, 1, 'Main Lamp', 1, 'light', 0, '{"color": "#ffffff"}', 1);
-INSERT INTO devices (id, user_id, name, room_id, type, status, data, electricity) VALUES (3, 1, 'Bedroom Lamp', 2, 'light', 0, '{"color": "#ffffff"}', 1);
-INSERT INTO devices (id, user_id, name, room_id, type, status, data, electricity) VALUES (4, 1, 'Kitchen Lamp', 3, 'light', 0, '{"color": "#ffffff"}', 1);
-INSERT INTO devices (id, user_id, name, room_id, type, status, data, electricity) VALUES (5, 1, 'Bathroom Lamp', 4, 'light', 0, '{"color": "#ffffff"}', 1);
+INSERT INTO devices (id, user_id, name, room_id, type, status, data, electricity) VALUES (2, 1, 'Main Lamp', 1, 'light', 0, '{"color": "#ffffff", "brightness":"100"}', 1);
+INSERT INTO devices (id, user_id, name, room_id, type, status, data, electricity) VALUES (3, 1, 'Bedroom Lamp', 2, 'light', 0, '{"color": "#ffffff", "brightness":"100"}', 1);
+INSERT INTO devices (id, user_id, name, room_id, type, status, data, electricity) VALUES (4, 1, 'Kitchen Lamp', 3, 'light', 0, '{"color": "#ffffff", "brightness":"100"}', 1);
+INSERT INTO devices (id, user_id, name, room_id, type, status, data, electricity) VALUES (5, 1, 'Bathroom Lamp', 4, 'light', 0, '{"color": "#ffffff", "brightness":"100"}', 1);
 INSERT INTO devices (id, user_id, name, room_id, type, status, data, electricity) VALUES (6, 1, 'Air Conditioner', 1, 'ac', 0, '{"mode": "auto"}', 1);
 INSERT INTO devices (id, user_id, name, room_id, type, status, data, electricity) VALUES (7, 1, 'TV', 1, 'tv', 1, '{"channel": 1, "volume": 50}', 1);
 

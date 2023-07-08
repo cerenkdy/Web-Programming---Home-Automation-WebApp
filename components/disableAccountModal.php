@@ -21,7 +21,7 @@ if(!isset($device_group)) {
                 </div>
                 <div class="mb-3">
                     <label for="disableAccountReason" class="form-label">Reason</label>
-                    <textarea class="form-control" id="disableAccountReason" rows="2" placeholder="Reason"></textarea>
+                    <textarea class="form-control" id="disableAccountReason" rows="2" placeholder="Reason" name="reason"></textarea>
                 </div>
             </div>
             <div class="modal-footer">

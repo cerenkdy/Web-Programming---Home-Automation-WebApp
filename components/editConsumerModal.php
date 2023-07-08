@@ -29,11 +29,11 @@ if(!isset($device_group)) {
                 </div>
                 <div class="mb-3">
                     <label for="editConsumerPassword" class="form-label">Password</label>
-                    <input type="password" id="editConsumerPassword" name="password" class="form-control" required>
+                <input type="password" id="editConsumerPassword" name="password" class="form-control" >
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-sh ms-auto" type="submit">Add</button>
+                <button class="btn btn-sh ms-auto" type="submit">Edit</button>
             </div>
         </form>
     </div>

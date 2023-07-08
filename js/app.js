@@ -426,7 +426,9 @@ $(function () {
         $.post('api.php?action=addRoom', $(this).serialize(), function (data) {
             if (data.status == 'success') {
                 $('#addRoomModal').modal('hide');
-                if (location.href.indexOf('producer') > -1) {
+                if (location.href.indexOf('producer.php') > -1 || location.href.indexOf('producer_devices.php') > -1) {
+                    location.href = 'producer_devices.php' + ($('#roomConsumer').length ? '?user=' + $('#roomConsumer').val() : '');
+                } else if (location.href.indexOf('producer_rooms.php') > -1) {
                     location.href = 'producer_rooms.php' + ($('#roomConsumer').length ? '?user=' + $('#roomConsumer').val() : '');
                 } else {
                     if (typeof data.id != 'undefined') {
@@ -459,11 +461,7 @@ $(function () {
             id: deviceID
         }, function (data) {
             if (data.status == 'success') {
-                if (deviceEl.length) {
-                    deviceEl.remove();
-                } else {
-                    location.reload();
-                }
+                location.reload();
             }
         }, 'json');
     });
@@ -805,6 +803,7 @@ $(function () {
             if (data.status == 'success') {
                 $('#editCamModal').modal('show');
                 $('#editCamModal #editCamId').val(camID);
+                $('#editCamModal .delete-cam-btn').data('id', camID);
                 $('#editCamModal #editCamName').val(data.device.name);
                 $('#editCamModal #editCamStatus').val(data.device.status);
             }
@@ -814,6 +813,19 @@ $(function () {
     $('body').on('submit', '#editCamModal form', function (e) {
         e.preventDefault();
         $.post('api.php?action=editDevice', $(this).serialize(), function (data) {
+            if (data.status == 'success') {
+                $('#editCamModal').modal('hide');
+                location.reload();
+            }
+        }, 'json');
+    });
+
+    $('body').on('click', '#editCamModal .delete-cam-btn', function (e) {
+        e.preventDefault();
+        var camID = $('.static-cam').data('id');
+        $.post('api.php?action=deleteDevice', {
+            id: camID
+        }, function (data) {
             if (data.status == 'success') {
                 $('#editCamModal').modal('hide');
                 location.reload();

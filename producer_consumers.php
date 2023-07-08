@@ -24,8 +24,6 @@ if(isset($_POST['add_consumer']) && isset($_POST['username']) && isset($_POST['e
 
     if (empty($username) || empty($email) || empty($password) || empty($name)) {
         $error = 'Please fill in all fields.';
-    } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error = 'Please enter a valid email address.';
     }
 
     // if username or email already exists, show error message
@@ -107,8 +105,6 @@ if(isset($_POST['edit_consumer']) && isset($_POST['username']) && isset($_POST['
 
     if (empty($username) || empty($email) || empty($name)) {
         $error = 'Please fill in all fields.';
-    } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error = 'Please enter a valid email address.';
     }
 
     // if username or email already exists, show error message
@@ -119,7 +115,6 @@ if(isset($_POST['edit_consumer']) && isset($_POST['username']) && isset($_POST['
         $stmt = $db->prepare("UPDATE consumers SET username = ?, email = ?, name = ? WHERE id = ? LIMIT 1");
         if ($stmt->execute([
             $username,
-            $password,
             $email,
             $name,
             $_POST['edit_consumer'],

@@ -317,7 +317,7 @@ switch ($action) {
         ]);
         break;
     case 'addRoom':
-        $name = $_POST['roomName'];
+        $name = strip_tags($_POST['roomName']);
 
         if(isset($_SESSION['producer_login']) && isset($_POST['consumer'])) {
             $user = intval($_POST['consumer']);
@@ -337,11 +337,11 @@ switch ($action) {
         $roomID = $db->lastInsertId();
         
         if ($roomID && isset($_POST['device']) && is_array($_POST['device']) && count($_POST['device']) > 0) {
-            $stmt = $db->prepare('INSERT INTO devices (name, user_id, room_id, type, data, status) VALUES (?, ?, ?, ?, ?, 1)');
+            $stmt = $db->prepare('INSERT INTO devices (name, user_id, room_id, type, data, electricity, status) VALUES (?, ?, ?, ?, ?, ?, 1)');
             foreach ($_POST['device'] as $device) {
                 $deviceData = $device_group[$device];
                 if ($deviceData) {
-                    $stmt->execute([$name . ' ' . $deviceData['name'], $user, $roomID, $device, json_encode($deviceData['data'])]);
+                    $stmt->execute([$name . ' ' . $deviceData['name'], $user, $roomID, $device, json_encode($deviceData['data']), $deviceData['electricity']]);
                 }
             }
         }
@@ -387,7 +387,7 @@ switch ($action) {
                     $room['data']['fireco_status'] = '0';
                 }
 
-                $name = $_POST['roomName'];
+                $name = strip_tags($_POST['roomName']);
                 $stmt = $db->prepare('UPDATE rooms SET name = ?, data = ? WHERE id = ? AND user_id = ?');
                 $stmt->execute([$name, json_encode($room['data']), $_POST['id'], $user]);
                 echo json_encode([
@@ -449,7 +449,7 @@ switch ($action) {
         break;
     case 'addDevice':
         if (isset($_POST['type']) && isset($device_group[$_POST['type']]) && !empty($_POST['name']) && !empty($_POST['room_id'])) {
-            $name = $_POST['name'];
+            $name = strip_tags($_POST['name']);
             $type = $_POST['type'];
             $room_id = $_POST['room_id'];
             $status = isset($_POST['status']) ? '1' : '0';
@@ -474,6 +474,20 @@ switch ($action) {
         echo json_encode([
             'status' => 'success',
             'device' => $device
+        ]);
+        break;
+    case 'editDevice':
+        $id = intval($_POST['id']);
+        $name = strip_tags($_POST['name']);
+        $room_id = $_POST['room_id'];
+        $status = $_POST['status'];
+
+        $stmt = $db->prepare("UPDATE devices SET name = ?, room_id = ?, status = ? WHERE id = ? AND user_id = ? LIMIT 1");
+        $stmt->execute([$name, $room_id, $status, $id, $user]);
+        $result = $stmt->rowCount() ? 'success' : 'error';
+
+        echo json_encode([
+            'status' => $result
         ]);
         break;
     case 'deleteDevice':
@@ -589,7 +603,7 @@ switch ($action) {
         $data = @json_decode($device["data"], true);
 
         // update name
-        $name = $_POST['name'];
+        $name = strip_tags($_POST['name']);
         unset($_POST['name']);
         $stmt = $db->prepare("UPDATE devices SET name = ? WHERE id = ? AND user_id = ?");
         $stmt->execute([$name, $id, $user]);
@@ -601,22 +615,22 @@ switch ($action) {
         $stmt->execute([$room_id, $id, $user]);
 
         // check brightness
-        if (isset($_POST['brightness']) && !is_numeric($_POST['brightness'])) {
+        if (isset($_POST['brightness']) && (!is_numeric($_POST['brightness']) || $_POST['brightness'] < 0)) {
             unset($_POST['brightness']);
         }
 
         // check channel
-        if (isset($_POST['channel']) && !is_numeric($_POST['channel'])) {
+        if (isset($_POST['channel']) && (!is_numeric($_POST['channel']) || $_POST['channel'] < 1)) {
             unset($_POST['channel']);
         }
 
         // check volume
-        if (isset($_POST['volume']) && !is_numeric($_POST['volume'])) {
+        if (isset($_POST['volume']) && (!is_numeric($_POST['volume']) || $_POST['volume'] < 0)) {
             unset($_POST['volume']);
         }
 
         // check shade
-        if (isset($_POST['shade']) && !is_numeric($_POST['shade'])) {
+        if (isset($_POST['shade']) && (!is_numeric($_POST['shade']) || $_POST['shade'] < 0)) {
             unset($_POST['shade']);
         }
 
@@ -683,9 +697,16 @@ switch ($action) {
                                 break;
                         case 'brightness':
                         case 'shade':
+                        case 'volume':
                             $data .= '<div class="mb-3">
                                 <label for="device-data-' . $deviceDataKey . '">' . ucwords($deviceDataKey) . '</label>
                                 <input type="range" class="form-range" id="device-data-' . $deviceDataKey . '" name="' . $deviceDataKey . '" value="' . htmlentities($deviceDataValue) . '" min="0" max="100">
+                            </div>';
+                            break;
+                        case 'channel':
+                            $data .= '<div class="mb-3">
+                                <label for="device-data-' . $deviceDataKey . '">' . ucwords($deviceDataKey) . '</label>
+                                <input type="number" min="1" max="999" class="form-control" id="device-data-' . $deviceDataKey . '" name="' . $deviceDataKey . '" value="' . htmlentities($deviceDataValue) . '" min="1" max="100">
                             </div>';
                             break;
                         case 'status':

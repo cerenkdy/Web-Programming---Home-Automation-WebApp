@@ -12,12 +12,12 @@ if (!isset($_SESSION['consumer_login'])) {
 $page = 'settings';
 $user = intval($_SESSION['user']);
 $settings = $_SESSION['settings'];
+$type = ($_SESSION['type'] == 'producers') ? 'producers' : 'consumers';
 
 
 // delete and disable account
 if (isset($_POST['account_action']) && ($_POST['account_action'] == 'disable' || $_POST['account_action'] == 'delete')) {
     // check password
-    $type = ($_SESSION['type'] == 'producers') ? 'producers' : 'consumers';
     $stmt = $db->prepare("SELECT * FROM " . $type . " WHERE id = ? AND password = ? LIMIT 1");
     $stmt->setFetchMode(PDO::FETCH_ASSOC);
     $stmt->execute([$user, $_POST['password']]);
@@ -82,6 +82,17 @@ if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['name'])
     header("Location: settings.php");
     exit;
 }
+
+// fetch updated data
+$stmt = $db->prepare("SELECT * FROM " . $type . " WHERE id = ? LIMIT 1");
+$stmt->execute([$user]);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+$_SESSION['name'] = $row['name'];
+$_SESSION['email'] = $row['email'];
+$_SESSION['username'] = $row['username'];
+$_SESSION['birth_date'] = $row['birth_date'];
+$_SESSION['settings'] = json_decode($row['settings'], true);
+$settings = $_SESSION['settings'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -172,7 +183,7 @@ if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['name'])
                                     <label for="emailNotifications" class="form-label">Email Notifications</label>
                                     <select class="form-select" id="emailNotifications" name="notifications">
                                         <option value="1"<?php if($settings['notifications'] == 1) { echo ' selected'; } ?>>Enabled</option>
-                                        <option value="0"<?php if($settings['notifications'] == 0) { echo ' selected'; } ?>>Disabled</option>
+                                        <option value="0"<?php if($settings['notifications'] == 0) { echo ' selected'; } ?> disabled>Disabled</option>
                                     </select>
                                 </div>
                                 <div class="mb-3">

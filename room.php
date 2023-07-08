@@ -79,16 +79,12 @@ while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
 // room current temperature and humidity
 $roomTemperature = @end($sensors['temperature']);
-$roomHumidity = @end($sensors['humidity']);
 if (!$roomTemperature) {
     $roomTemperature = $room['data']['temperature'] + rand(-2, 2);
-} else {
-    $roomTemperature = rand(18, 30);
 }
+$roomHumidity = @end($sensors['humidity']);
 if (!$roomHumidity) {
     $roomHumidity = $room['data']['humidity'] + rand(-2, 2);
-} else {
-    $roomHumidity = rand(30, 80);
 }
 
 // page
